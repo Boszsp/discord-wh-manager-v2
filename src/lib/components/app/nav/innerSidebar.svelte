@@ -1,0 +1,19 @@
+<script lang="ts">
+	import { Button } from '$lib/components/ui/button';
+	import { CardTitle } from '$lib/components/ui/card';
+	import { ScrollArea } from '$lib/components/ui/scroll-area';
+    import { LayoutTemplateIcon,ServerIcon,CogIcon } from 'lucide-svelte';
+
+</script>
+
+<nav>
+	<div class="border-b p-2">
+		<CardTitle class="mx-auto text-center p-2 bg-secondary rounded-md">Home Page</CardTitle>
+	</div>
+	<ScrollArea class="h-full px-4 pt-2">
+		<Button variant="ghost" class="w-full text-start justify-start"><ServerIcon/>Server</Button>
+		<Button variant="ghost" class="w-full text-start justify-start"><LayoutTemplateIcon/>Template</Button>
+		<Button variant="ghost" class="w-full text-start justify-start"><CogIcon/>Setting</Button>
+
+	</ScrollArea>
+</nav>

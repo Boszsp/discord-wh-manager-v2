@@ -20,7 +20,7 @@
 </header>
 <div class="flex">
 	<Sidebar />
-	<main class="h-full w-full min-h-[96dvh] border-t border-l rounded-tl-2xl">
+	<main class="w-full h-[96dvh] border-t border-l rounded-tl-2xl">
 		{@render children?.()}
 	</main>
 </div>

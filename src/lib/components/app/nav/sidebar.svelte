@@ -5,13 +5,14 @@
 	import { cn } from '$lib/utils';
 	import { Separator } from '$lib/components/ui/separator';
 	import { goto } from '$app/navigation';
+	import { DEFAULT_SIDEBAR_FIRST_MENU } from '$lib/default';
 
-	interface sidebarMenuProps {
+	export interface sidebarMenuProps {
 		image: string;
 		fallback: string;
 		title: string;
 		link?: string;
-		isSelect?: boolean;
+		isSelected?: boolean;
 		class?: ClassValue;
 	}
 	const {
@@ -19,13 +20,7 @@
 		class: className
 	}: { sidebarMenu?: sidebarMenuProps[]; class?: ClassValue } = $props();
 	const sidebarMenus: sidebarMenuProps[] = [
-		{
-			image: '/logo.png',
-			fallback: 'DWM',
-			title: 'Dashboard',
-			link: '/',
-			isSelect: !sidebarMenu?.some((v) => v.isSelect)
-		}
+		{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: !sidebarMenu?.some((v) => v.isSelected) }
 	];
 </script>
 
@@ -33,7 +28,7 @@
 	<nav class={cn('flex flex-col gap-2 px-4', className)}>
 		{#each sidebarMenus as menu, i (menu.title + i)}
 			<div class={cn('group relative', menu?.class)}>
-				{#if menu?.isSelect}
+				{#if menu?.isSelected}
 					<div class="absolute top-0 -left-4 h-full w-1 rounded-r-2xl bg-foreground/60"></div>
 				{:else}
 					<div
