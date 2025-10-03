@@ -24,7 +24,7 @@
 			fallback: 'DWM',
 			title: 'Dashboard',
 			link: '/',
-			isSelect: false && !sidebarMenu?.some((v) => v.isSelect)
+			isSelect: !sidebarMenu?.some((v) => v.isSelect)
 		}
 	];
 </script>

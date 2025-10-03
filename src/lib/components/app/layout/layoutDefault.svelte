@@ -3,7 +3,7 @@
 	import Sidebar from '$lib/components/app/nav/sidebar.svelte';
 	let { children } = $props();
 </script>
-
+<div class="h-dvh w-dvw overflow-hidden bg-theme-accent">
 <header class="flex items-center-safe justify-between px-8 py-2">
 	<span></span>
 	<span>
@@ -20,7 +20,8 @@
 </header>
 <div class="flex">
 	<Sidebar />
-	<main>
+	<main class="h-full w-full min-h-[96dvh] border-t border-l rounded-tl-2xl">
 		{@render children?.()}
 	</main>
+</div>
 </div>
