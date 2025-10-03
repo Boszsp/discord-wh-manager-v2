@@ -16,7 +16,7 @@ Our project is built on a modern, fast, and type-safe stack.
 
 * **Framework:** **SvelteKit** with **Svelte 5**
 * **Frontend:**
-    * **UI Components:** **shadcn-svelte**, custom Svelte components
+    * **UI Components:** **shadcn-svelte**. The source code for these components is located in `src/lib/components/ui/`. This is not a typical library; we have full control over the code. Refer to the official documentation at `https://shadcn-svelte.com/docs` for usage and conventions.
     * **Styling:** **Tailwind CSS v4** with the Tailwind Variants plugin
     * **Icons:** **Lucide Svelte**
 * **Backend & Data Management:**
@@ -51,6 +51,19 @@ discord-wh-manager-v2/
 ├── static/                      # Publicly served static files (logo, robots.txt)
 ├── svelte.config.js
 ├── vite.config.ts
-├── package.json                 # (Resistrict to modify,read-only)
+├── package.json                 # (Resistrict to modify,read-only) (allow update by `pnpm i [name]` only)
 └── README.md
 ```
+
+## 3. Additional Docs You Must Read
+- https://svelte.dev/docs/kit/introduction
+- https://svelte.dev/docs/svelte/overview
+- https://shadcn-svelte.com/docs #For component in /ui
+- https://tailwindcss.com/
+
+## 4. Rule 
+- you must understand project structure before do anything
+- you must understand old code/codebase before do anything
+- you must how to use tech stack used in this project (may search or read the docs)
+- if have anything may improve your understand you can update data into GEMINI.md
+- in 1 file should have morethan 300 lines

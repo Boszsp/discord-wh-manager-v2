@@ -6,3 +6,5 @@ export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     title: 'Dashboard',
     link: '/',
 }
+
+export const APP_NAME = "Discord Webhook Manager v.2"
