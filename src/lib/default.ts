@@ -8,4 +8,4 @@ export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     class:"mt-0.25"
 }
 
-export const APP_NAME = "Discord Webhook Manager v.2"
+export const APP_NAME = "Discord Webhook Manager"

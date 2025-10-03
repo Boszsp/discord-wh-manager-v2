@@ -9,15 +9,17 @@
 	import { fly } from 'svelte/transition';
 	import { cn } from '$lib/utils';
 	import { ServerIcon } from 'lucide-svelte';
+	import * as Avatar from '$lib/components/ui/avatar';
 
 	type Server = {
 		id: string;
 		name: string;
+		color?: string;
 	};
 
 	let servers = $state<Server[]>([
-		{ id: '1', name: 'Production Server' },
-		{ id: '2', name: 'Staging Server' },
+		{ id: '1', name: 'Production Server', color: 'red' },
+		{ id: '2', name: 'Staging Server', color: 'green' },
 		{ id: '3', name: 'Development Server' }
 	]);
 
@@ -87,9 +89,9 @@
 </script>
 
 <DashboardContainer class="bg-background">
-	<div class="m-0 inline-flex gap-4 w-full items-center-safe border-b px-4 py-2">
+	<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2">
 		<span class="inline-flex gap-2">
-			<ServerIcon class="size-4"/>
+			<ServerIcon class="size-4" />
 			<Card.Title>Manage Servers</Card.Title>
 		</span>
 		<Dialog.Root bind:open={isCreateDialogOpen}>
@@ -117,8 +119,9 @@
 				</Dialog.Footer>
 			</Dialog.Content>
 		</Dialog.Root>
+		<Button variant="ghost" size="sm">Import Json Datas</Button>
 	</div>
-	<div class="p-8">
+	<div class="py-4">
 		<Card.Content class="flex max-w-full flex-col gap-4">
 			<div class="flex justify-between gap-2">
 				<div class="relative w-full">
@@ -127,6 +130,8 @@
 				</div>
 			</div>
 
+			<small class="py-2 text-sm leading-none font-medium">All Server | เซิร์ฟเวอร์ทั้งหมด - {filteredServers?.length}</small>
+
 			<div class="rounded-md border">
 				<div class="flex flex-col">
 					{#each filteredServers as server (server.id)}
@@ -134,6 +139,19 @@
 							class="flex items-center gap-4 border-b p-4 last:border-b-0"
 							in:fly={{ y: 20, duration: 300 }}
 						>
+							<Avatar.Root
+								class={cn('text-primary-secondary size-10 rounded-xl bg-secondary/60')}
+								style={{ backgroundColor: server?.color }}
+							>
+								<Avatar.Image src={undefined} alt="server logo" />
+								<Avatar.Fallback class="scale-75 bg-transparent"
+									>{server.name
+										.split(' ')
+										.slice(0, 3)
+										.flatMap((v) => v.slice(0, 1).toUpperCase())
+										.join('')}</Avatar.Fallback
+								>
+							</Avatar.Root>
 							{#if editingId === server.id}
 								<Input
 									bind:value={editingName}
@@ -141,18 +159,18 @@
 									class="flex-1"
 									autofocus
 								/>
-								<Button onclick={saveEdit} size="icon" variant="outline">
+								<Button onclick={saveEdit} size="icon" variant="default">
 									<SaveIcon class="h-4 w-4" />
 								</Button>
 							{:else}
 								<p class="flex-1 font-medium">{server.name}</p>
-								<Button onclick={() => startEditing(server)} size="icon" variant="ghost">
+								<Button onclick={() => startEditing(server)} size="icon" variant="secondary">
 									<PencilIcon class="h-4 w-4" />
 								</Button>
 								<Button
 									onclick={() => openDeleteDialog(server)}
 									size="icon"
-									variant="ghost"
+									variant="secondary"
 									class="text-destructive hover:text-destructive"
 								>
 									<Trash2Icon class="h-4 w-4" />

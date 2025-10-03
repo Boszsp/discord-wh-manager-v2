@@ -1,8 +1,8 @@
 <script lang="ts">
     import * as Resizable from "$lib/components/ui/resizable";
 	import type { ClassValue } from "svelte/elements";
-	import InnerSidebar from "$lib/components/app/nav/innerSidebar.svelte";
 	import { cn } from "$lib/utils";
+	import ChannelSidebar from "$lib/components/app/nav/channelSidebar.svelte";
 	let { children,class:className }:{
         children:any
         class?:ClassValue
@@ -11,8 +11,8 @@
 </script>
  
 <Resizable.PaneGroup class="h-full" direction="horizontal">
- <Resizable.Pane defaultSize={22} class="h-full">
-    <InnerSidebar/>
+ <Resizable.Pane defaultSize={20} class="h-full">
+    <ChannelSidebar/>
  </Resizable.Pane>
  <Resizable.Handle withHandle />
  <Resizable.Pane class={cn( 'relative w-fit',className)} defaultSize={78}>

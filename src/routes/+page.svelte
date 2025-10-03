@@ -10,6 +10,7 @@
 	} from '$lib/components/ui/card';
 	import { LayoutTemplateIcon, ServerIcon, CogIcon, ChevronRightIcon } from 'lucide-svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import { goto } from '$app/navigation';
 </script>
 
 <DashboardContainer class="bg-background">
@@ -32,7 +33,7 @@
 					</CardDescription>
 				</CardHeader>
 				<CardFooter class="justify-end">
-					<Button>Goto Server Setting <ChevronRightIcon /></Button>
+					<Button  onclick={()=>goto('/server')}>Goto Server Setting <ChevronRightIcon /></Button>
 				</CardFooter>
 			</Card>
 			<Card>
@@ -52,7 +53,7 @@
 					</CardDescription>
 				</CardHeader>
 				<CardFooter class="justify-end">
-					<Button>Goto Templates Setting <ChevronRightIcon /></Button>
+					<Button  onclick={()=>goto('/template')}>Goto Templates Setting <ChevronRightIcon /></Button>
 				</CardFooter>
 			</Card>
 			<Card>
@@ -71,7 +72,7 @@
 					</CardDescription>
 				</CardHeader>
 				<CardFooter class="justify-end">
-					<Button>Goto Server Setting <ChevronRightIcon /></Button>
+					<Button  onclick={()=>goto('/setting')}>Goto Server Setting <ChevronRightIcon /></Button>
 				</CardFooter>
 			</Card>
 		</div>
