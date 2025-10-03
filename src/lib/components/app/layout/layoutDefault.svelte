@@ -1,10 +1,10 @@
-<script>
-	import { Button } from '$lib/components/ui/button';
+<script lang="ts">
 	import { HouseIcon, LogInIcon } from 'lucide-svelte';
+	import Sidebar from '$lib/components/app/nav/sidebar.svelte';
 	let { children } = $props();
 </script>
 
-<header class="flex items-center-safe justify-between border-b px-8 py-2">
+<header class="flex items-center-safe justify-between px-8 py-2">
 	<span></span>
 	<span>
 		<a href="/" class="flex items-center justify-self-center-safe">
@@ -19,7 +19,7 @@
 	</span>
 </header>
 <div class="flex">
-	<aside>x</aside>
+	<Sidebar />
 	<main>
 		{@render children?.()}
 	</main>

@@ -10,5 +10,5 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 <LayoutDefault>
-{@render children?.()}
+	{@render children?.()}
 </LayoutDefault>
