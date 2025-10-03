@@ -28,11 +28,11 @@
 	<nav class={cn('flex flex-col gap-2 px-4', className)}>
 		{#each sidebarMenus as menu, i (menu.title + i)}
 			<div class={cn('group relative', menu?.class)}>
-				{#if menu?.isSelected}
-					<div class="absolute top-0 -left-4 h-full w-1 rounded-r-2xl bg-foreground/60"></div>
+				{#if  menu?.isSelected}
+					<div class="absolute top-0 -left-4 h-10 w-1 rounded-r-2xl bg-foreground/60"></div>
 				{:else}
 					<div
-						class="absolute top-0 -left-4 h-full w-0 scale-y-50 rounded-r-2xl bg-foreground/60 transition-all group-hover:w-1"
+						class="absolute top-0 -left-4 h-10 w-0 scale-y-50 rounded-r-2xl bg-foreground/60 transition-all group-hover:w-1"
 					></div>
 				{/if}
 				<div class="item-center flex">

@@ -1,6 +1,12 @@
 <script lang="ts">
- import * as Resizable from "$lib/components/ui/resizable";
+    import * as Resizable from "$lib/components/ui/resizable";
+	import type { ClassValue } from "svelte/elements";
 	import InnerSidebar from "../nav/innerSidebar.svelte";
+	let { children,class:className }:{
+        children:any
+        class?:ClassValue
+    } = $props();
+
 </script>
  
 <Resizable.PaneGroup class="h-full" direction="horizontal">
@@ -8,5 +14,7 @@
     <InnerSidebar/>
  </Resizable.Pane>
  <Resizable.Handle  />
- <Resizable.Pane defaultSize={78}>Two</Resizable.Pane>
+ <Resizable.Pane class={className} defaultSize={78}>
+    {@render children?.()}
+ </Resizable.Pane>
 </Resizable.PaneGroup>
