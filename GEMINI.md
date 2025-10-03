@@ -2,6 +2,12 @@
 
 This document provides an overview of the project's technology stack, code structure. The architecture is built around a modern SvelteKit frontend, with plans to Discord Webhook Manager Link & Customable template for reuse able content style.
 
+This web app is svelte static so it don't have server function
+
+Feature
+- Server Data Management: CRUD server data(title) use as webhook's group
+- Webhook Data Mangement: CRUD WH link data(url , title)
+- Tempalte: resusealbe content body use as webhook fetch(post) content `{content:template}` ,Ex.`# Hello {name}`//you can set `name` to any value
 ---
 
 ## 1. Technology Stack
@@ -13,9 +19,10 @@ Our project is built on a modern, fast, and type-safe stack.
     * **UI Components:** **shadcn-svelte**, custom Svelte components
     * **Styling:** **Tailwind CSS v4** with the Tailwind Variants plugin
     * **Icons:** **Lucide Svelte**
-* **Backend & API:**
-    * **Server Logic:** Handled within SvelteKit's server-side routes (`+server.ts`) and hooks.
-    * **API Communication:** RESTful APIs using native `fetch`.
+* **Backend & Data Management:**
+    * **Data Store:** **Firebase Firestore** is used for all CRUD operations.
+    * **Architecture:** The application is a **static site**. All interactions with Firebase are done on the **client-side**.
+    * **Server Logic:** SvelteKit's server-side features (`+page.server.ts`, `+server.ts`) are **not used**, ensuring the final output is a purely static application that can be deployed to any static hosting provider.
 * **Build & Tooling:**
     * **Bundler:** **Vite**
     * **Language:** **TypeScript**
