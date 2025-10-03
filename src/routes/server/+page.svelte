@@ -1,34 +1,20 @@
 <script lang="ts">
 	import DashboardContainer from '$lib/components/app/container/dashboardContainer.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import {
-		Card,
-		CardDescription,
-		CardHeader,
-		CardTitle,
-		CardContent
-	} from '$lib/components/ui/card';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import {
-		Dialog,
-		DialogContent,
-		DialogDescription,
-		DialogFooter,
-		DialogHeader,
-		DialogTitle,
-		DialogTrigger,
-		DialogClose
-	} from '$lib/components/ui/dialog';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Trash2Icon, PencilIcon, SaveIcon, SearchIcon, PlusIcon } from 'lucide-svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { fly } from 'svelte/transition';
+	import { cn } from '$lib/utils';
+	import { ServerIcon } from 'lucide-svelte';
 
 	type Server = {
 		id: string;
 		name: string;
 	};
 
-	// Dummy data for servers, now using $state
 	let servers = $state<Server[]>([
 		{ id: '1', name: 'Production Server' },
 		{ id: '2', name: 'Staging Server' },
@@ -44,7 +30,6 @@
 	let isCreateDialogOpen = $state(false);
 	let isDeleteDialogOpen = $state(false);
 
-	// Use $derived for computed values
 	let filteredServers = $derived(
 		servers.filter((server) => server.name.toLowerCase().includes(searchTerm.toLowerCase()))
 	);
@@ -69,19 +54,13 @@
 	}
 
 	function handleEditKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			saveEdit();
-		} else if (event.key === 'Escape') {
-			cancelEdit();
-		}
+		if (event.key === 'Enter') saveEdit();
+		else if (event.key === 'Escape') cancelEdit();
 	}
 
 	function createServer() {
 		if (!newServerName) return;
-		servers.push({
-			id: crypto.randomUUID(),
-			name: newServerName
-		});
+		servers.push({ id: crypto.randomUUID(), name: newServerName });
 		newServerName = '';
 		isCreateDialogOpen = false;
 	}
@@ -107,56 +86,52 @@
 	}
 </script>
 
-<DashboardContainer class="p-8">
-	<Card>
-		<CardHeader>
-			<CardTitle>Manage Servers</CardTitle>
-			<CardDescription>A list of your servers.</CardDescription>
-		</CardHeader>
-		<CardContent class="flex flex-col gap-4">
-			<div class="flex justify-between gap-2">
-				<div class="relative w-full max-w-sm">
-					<SearchIcon class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-					<Input
-						bind:value={searchTerm}
-						placeholder="Search servers..."
-						class="pl-9"
-					/>
+<DashboardContainer class="bg-background">
+	<div class="m-0 inline-flex gap-4 w-full items-center-safe border-b px-4 py-2">
+		<span class="inline-flex gap-2">
+			<ServerIcon class="size-4"/>
+			<Card.Title>Manage Servers</Card.Title>
+		</span>
+		<Dialog.Root bind:open={isCreateDialogOpen}>
+			<Dialog.Trigger class={cn(buttonVariants({ size: 'sm' }), 'p-0')}>
+				<PlusIcon />
+				Create Server
+			</Dialog.Trigger>
+			<Dialog.Content>
+				<Dialog.Header>
+					<Dialog.Title>Create New Server</Dialog.Title>
+				</Dialog.Header>
+				<div>
+					<div class="flex w-full flex-col gap-1.5">
+						<Label for="new-server-name">Name</Label>
+						<Input
+							id="new-server-name"
+							bind:value={newServerName}
+							class="w-full"
+							onkeydown={(e) => e.key === 'Enter' && createServer()}
+						/>
+					</div>
 				</div>
-				<Dialog bind:open={isCreateDialogOpen}>
-					<DialogTrigger asChild let:builder>
-						<Button builders={[builder]}>
-							<PlusIcon class="mr-2 h-4 w-4" />
-							Create Server
-						</Button>
-					</DialogTrigger>
-					<DialogContent>
-						<DialogHeader>
-							<DialogTitle>Create New Server</DialogTitle>
-						</DialogHeader>
-						<div class="grid gap-4 py-4">
-							<div class="grid grid-cols-4 items-center gap-4">
-								<Label for="new-server-name" class="text-right">Name</Label>
-								<Input
-									id="new-server-name"
-									bind:value={newServerName}
-									class="col-span-3"
-									onkeydown={(e) => e.key === 'Enter' && createServer()}
-								/>
-							</div>
-						</div>
-						<DialogFooter>
-							<Button onclick={createServer}>Create</Button>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+				<Dialog.Footer>
+					<Button onclick={createServer}>Create</Button>
+				</Dialog.Footer>
+			</Dialog.Content>
+		</Dialog.Root>
+	</div>
+	<div class="p-8">
+		<Card.Content class="flex max-w-full flex-col gap-4">
+			<div class="flex justify-between gap-2">
+				<div class="relative w-full">
+					<SearchIcon class="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+					<Input bind:value={searchTerm} placeholder="Search servers..." class="pl-9" />
+				</div>
 			</div>
 
 			<div class="rounded-md border">
 				<div class="flex flex-col">
 					{#each filteredServers as server (server.id)}
 						<div
-							class="flex items-center gap-4 p-4 border-b last:border-b-0"
+							class="flex items-center gap-4 border-b p-4 last:border-b-0"
 							in:fly={{ y: 20, duration: 300 }}
 						>
 							{#if editingId === server.id}
@@ -187,20 +162,20 @@
 					{/each}
 				</div>
 			</div>
-		</CardContent>
-	</Card>
+		</Card.Content>
+	</div>
 </DashboardContainer>
 
-<Dialog bind:open={isDeleteDialogOpen}>
-	<DialogContent>
-		<DialogHeader>
-			<DialogTitle>Delete Server</DialogTitle>
-			<DialogDescription>
-				This action cannot be undone. To confirm, please type
-				<span class="font-bold text-foreground">{serverToDelete?.name}</span>
-				below.
-			</DialogDescription>
-		</DialogHeader>
+<Dialog.Root bind:open={isDeleteDialogOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Delete Server</Dialog.Title>
+		</Dialog.Header>
+		<Dialog.Description>
+			This action cannot be undone. To confirm, please type
+			<span class="font-bold text-foreground">{serverToDelete?.name}</span>
+			below.
+		</Dialog.Description>
 		<div class="grid gap-4 py-4">
 			<Input
 				id="delete-confirm"
@@ -209,11 +184,11 @@
 				onkeydown={(e) => e.key === 'Enter' && confirmDelete()}
 			/>
 		</div>
-		<DialogFooter>
-			<DialogClose asChild let:builder>
-				<Button builders={[builder]} variant="outline">Cancel</Button>
-			</DialogClose>
+		<Dialog.Footer>
+			<Dialog.Close>
+				<Button variant="outline">Cancel</Button>
+			</Dialog.Close>
 			<Button onclick={confirmDelete} variant="destructive">Delete</Button>
-		</DialogFooter>
-	</DialogContent>
-</Dialog>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>

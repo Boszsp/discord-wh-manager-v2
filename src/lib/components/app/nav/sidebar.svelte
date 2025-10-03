@@ -46,7 +46,7 @@
 								<Avatar.Root
 									class="text-primary-secondary size-10 rounded-2xl border bg-secondary/60"
 								>
-									<Avatar.Image src="/logo.png" alt="@shadcn" />
+									<Avatar.Image src={menu?.image} alt="@shadcn" />
 									<Avatar.Fallback class="bg-transparent">{menu.fallback}</Avatar.Fallback>
 								</Avatar.Root>
 							</Tooltip.Trigger>
@@ -54,7 +54,7 @@
 								side="right"
 								class="border bg-secondary text-secondary-foreground"
 								arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
-								>Dashboard</Tooltip.Content
+								>{menu.title}</Tooltip.Content
 							>
 						</Tooltip.Root>
 					</Tooltip.Provider>

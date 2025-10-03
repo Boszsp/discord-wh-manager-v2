@@ -12,10 +12,10 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 </script>
 
-<DashboardContainer>
+<DashboardContainer class="bg-background">
 	<ScrollArea class="h-full w-full">
 		<div class="flex flex-col gap-4 p-8">
-			<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Feature</h3>
+			<h3 class="scroll-m-20 text-2xl font-semibold text-center tracking-tight">Feature</h3>
 			<Card>
 				<CardHeader>
 					<div class="size-fit rounded-md border p-2">
