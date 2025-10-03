@@ -5,6 +5,7 @@ export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     fallback: 'DWM',
     title: 'Dashboard',
     link: '/',
+    class:"mt-0.25"
 }
 
 export const APP_NAME = "Discord Webhook Manager v.2"
