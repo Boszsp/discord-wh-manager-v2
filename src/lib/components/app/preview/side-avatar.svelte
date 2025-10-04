@@ -3,17 +3,20 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { CardTitle } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
+	import { convertMdToHTML } from '$lib/utilsFn/md';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import type { Snippet } from 'svelte';
 
 	let {
 		children,
-		image = '/webhook/dwh.png',
-		name = 'Webhook Name'
+		image = '/webhook/dwh-sm.png',
+		name = 'Webhook Name',
+        content = "# Hello World"
 	}: {
 		children: Snippet;
 		image?: string;
 		name?: string;
+        content?:string;
 	} = $props();
 
     let dateTime = $state(new Date().toLocaleString())
@@ -35,7 +38,20 @@
             <span class="text-xs font-normal mt-1.5">{dateTime}</span>
         </div>
         <div>
+            {#await convertMdToHTML(content)}
+                <div></div>
+            {:then res} 
+                <div class="md-content">{@html res}</div>
+            {/await}
+        </div>
+        <div>
         {@render children?.()}
         </div>
     </span>
 </div>
+
+<style>
+    .md-content>h1{
+        font-size: 24px !important;
+    }
+</style>
