@@ -6,12 +6,17 @@
 	import { convertMdToHTML } from '$lib/utilsFn/md';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import type { Snippet } from 'svelte';
+	import "./side-avatar.css"
 
 	let {
 		children,
 		image = '/webhook/dwh-sm.png',
 		name = 'Webhook Name',
-        content = "# Hello World"
+        content = `# h1
+## h2
+### h3
+> qoute
+		`
 	}: {
 		children: Snippet;
 		image?: string;
@@ -50,8 +55,3 @@
     </span>
 </div>
 
-<style>
-    .md-content>h1{
-        font-size: 24px !important;
-    }
-</style>
