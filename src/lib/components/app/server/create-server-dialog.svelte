@@ -2,19 +2,20 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import Label from '$lib/components/ui/label/label.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { PlusIcon } from 'lucide-svelte';
+	import { PlusIcon, ServerIcon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 	import { serverSchema } from '$lib/schema/serverSchema';
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import { convertToFallbackString } from '$lib/utilsFn/string';
 
 	const form = superForm(
-		{ name: '' },
+		{ name: '', color: '#2d2829' },
 		{
-			validators: zod4(serverSchema)
+			validators: zod4(serverSchema),
+			validationMethod:"oninput"
 		}
 	);
 
@@ -37,27 +38,60 @@
 		<PlusIcon />
 		Create Server
 	</Dialog.Trigger>
-	<Dialog.Content>
+	<Dialog.Content class="w-md">
 		<Dialog.Header>
-			<Dialog.Title>Create New Server</Dialog.Title>
+			<Dialog.Title class="mx-auto w-fit">Create New Server</Dialog.Title>
+			<Dialog.Description class="mx-auto"
+				>The server will use a group of webhooks</Dialog.Description
+			>
+			<Dialog.Description class="mx-auto">เซิร์ฟเวอร์จะใช้เป็นกลุ่มของเว็บฮุก</Dialog.Description>
 		</Dialog.Header>
 		<form method="POST" use:enhance>
-			<Form.Field {form} name="name">
+			<Form.Field {form} name="color" class="pb-8">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label>Name</Form.Label>
-						<Input
-							{...props}
-							bind:value={$formData.name}
-							onkeydown={(e) => e.key === 'Enter' && createServer()}
-							placeholder="server name"
-						/>
+						<Form.Label class="mx-auto w-fit">Server Color</Form.Label>
+						<div class="relative mx-auto size-24 overflow-hidden rounded-full border border-dashed">
+							<Input
+								{...props}
+								bind:value={$formData.color}
+								type="color"
+								class="size-full scale-200 bg-transparent opacity-60"
+							/>
+						</div>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
+			<Form.Field {form} name="name">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Name</Form.Label>
+						<div class="relative">
+							<ServerIcon class="absolute top-2.5 left-2.5 size-4" />
+							<Input
+								{...props}
+								bind:value={$formData.name}
+								onkeydown={(e) => e.key === 'Enter' && createServer()}
+								class="pl-8"
+								placeholder="server name"
+							/>
+						</div>
+					{/snippet}
+				</Form.Control>
+				<Form.Description>
+					<code
+						class="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-sans text-sm font-semibold mr-1"
+					>
+						{convertToFallbackString($formData.name)}
+					</code>will be displayed as the server icon.
+				</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
 		</form>
 		<Dialog.Footer>
+			<Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
+
 			<Button onclick={createServer}>Create</Button>
 		</Dialog.Footer>
 	</Dialog.Content>

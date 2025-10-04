@@ -6,10 +6,11 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { goto } from '$app/navigation';
 	import { DEFAULT_SIDEBAR_FIRST_MENU } from '$lib/default';
+	import { convertToFallbackString } from '$lib/utilsFn/string';
 
 	export interface sidebarMenuProps {
 		image?: string;
-		fallback: string;
+		fallback?: string;
 		title: string;
 		link?: string;
 		isSelected?: boolean;
@@ -45,7 +46,7 @@
 									class={cn('text-primary-secondary size-10 rounded-xl bg-secondary/60')}
 								>
 									<Avatar.Image src={menu?.image} alt="server logo" />
-									<Avatar.Fallback class="scale-75 bg-transparent">{menu.fallback}</Avatar.Fallback>
+									<Avatar.Fallback class="scale-75 bg-transparent">{convertToFallbackString(menu.title)}</Avatar.Fallback>
 								</Avatar.Root>
 							</Tooltip.Trigger>
 							<Tooltip.Content

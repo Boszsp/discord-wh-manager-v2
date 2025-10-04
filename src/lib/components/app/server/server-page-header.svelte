@@ -11,5 +11,5 @@
 		<Card.Title>Manage Servers</Card.Title>
 	</span>
 	<CreateServerDialog on:createServer />
-	<Button variant="ghost" size="sm">Import Json Datas</Button>
+	<Button variant="ghost" size="sm">Import Json Data</Button>
 </div>

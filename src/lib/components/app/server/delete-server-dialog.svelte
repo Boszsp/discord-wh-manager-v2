@@ -28,7 +28,7 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content>
+	<Dialog.Content class="w-md">
 		<Dialog.Header>
 			<Dialog.Title>Delete Server</Dialog.Title>
 		</Dialog.Header>

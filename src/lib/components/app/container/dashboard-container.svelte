@@ -3,8 +3,9 @@
 	import type { ClassValue } from "svelte/elements";
 	import InnerSidebar from "$lib/components/app/nav/inner-sidebar.svelte";
 	import { cn } from "$lib/utils";
+    import type { Snippet } from 'svelte';
 	let { children,class:className }:{
-        children:any
+        children:Snippet
         class?:ClassValue
     } = $props();
 
