@@ -14,6 +14,7 @@
 	import { Card } from '$lib/components/ui/card';
 	import { toHex } from '$lib/utilsFn/string';
 	import { colorCodeToInteger } from '$lib/utilsFn/color';
+	import { Textarea } from '$lib/components/ui/textarea';
 
 	let {
 		form
@@ -124,7 +125,7 @@
 							</div>
 						</Accordion.Trigger>
 						<Accordion.Content>
-							<div class="grid grid-cols-2 gap-4 py-4">
+							<div >
 								<Form.Field {form} name={`embeds[${i}].title`}>
 									<Form.Control>
 										{#snippet children({ props })}
@@ -138,12 +139,13 @@
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Description</Form.Label>
-											<Input {...props} bind:value={embed.description} />
+											<Textarea {...props} bind:value={embed.description} class="h-32"  />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
-								<Form.Field {form} name={`embeds[${i}].color`}>
+								<div class="inline-flex w-full gap-4">
+								<Form.Field {form} name={`embeds[${i}].color`} class="w-16">
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Color</Form.Label>
@@ -158,7 +160,7 @@
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
-								<Form.Field {form} name={`embeds[${i}].url`}>
+								<Form.Field {form} name={`embeds[${i}].url`} class="grow">
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>URL</Form.Label>
@@ -167,6 +169,7 @@
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
+								</div>
 							</div>
 							<div class="border-t pt-4">
 								<Accordion.Root type="multiple" class="w-full">
@@ -182,7 +185,8 @@
 												</Form.Control>
 												<Form.FieldErrors />
 											</Form.Field>
-											<Form.Field {form} name={`embeds[${i}].author.url`}>
+											<div class="inline-flex gap-4">
+											<Form.Field {form} name={`embeds[${i}].author.url`} class="flex-1">
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>URL</Form.Label>
@@ -191,7 +195,7 @@
 												</Form.Control>
 												<Form.FieldErrors />
 											</Form.Field>
-											<Form.Field {form} name={`embeds[${i}].author.icon_url`}>
+											<Form.Field {form} name={`embeds[${i}].author.icon_url`} class="flex-1">
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>Icon URL</Form.Label>
@@ -200,9 +204,45 @@
 												</Form.Control>
 												<Form.FieldErrors />
 											</Form.Field>
+											</div>
 										</Accordion.Content>
 									</Accordion.Item>
-									<Accordion.Item value="footer">
+									<Accordion.Item value="thumbnail">
+										<Accordion.Trigger>Thumbnail</Accordion.Trigger>
+										<Accordion.Content>
+											<Form.Field {form} name={`embeds[${i}].thumbnail.url`}>
+												<Form.Control>
+													{#snippet children({ props })}
+														<Form.Label>URL</Form.Label>
+														<Input {...props} bind:value={embed.thumbnail.url} />
+													{/snippet}
+												</Form.Control>
+												<Form.FieldErrors />
+											</Form.Field>
+										</Accordion.Content>
+									</Accordion.Item>
+									<Accordion.Item value="fields">
+										<Accordion.Trigger>Fields</Accordion.Trigger>
+										<Accordion.Content>
+											<ChannelFormEmbedFields {form} embedIndex={i} />
+										</Accordion.Content>
+									</Accordion.Item>
+									<Accordion.Item value="image">
+										<Accordion.Trigger>Image</Accordion.Trigger>
+										<Accordion.Content>
+											<Form.Field {form} name={`embeds[${i}].image.url`}>
+												<Form.Control>
+													{#snippet children({ props })}
+														<Form.Label>URL</Form.Label>
+														<Input {...props} bind:value={embed.image.url} />
+													{/snippet}
+												</Form.Control>
+												<Form.FieldErrors />
+											</Form.Field>
+										</Accordion.Content>
+									</Accordion.Item>
+									
+								<Accordion.Item value="footer">
 										<Accordion.Trigger>Footer</Accordion.Trigger>
 										<Accordion.Content>
 											<Form.Field {form} name={`embeds[${i}].footer.text`}>
@@ -223,40 +263,6 @@
 												</Form.Control>
 												<Form.FieldErrors />
 											</Form.Field>
-										</Accordion.Content>
-									</Accordion.Item>
-									<Accordion.Item value="thumbnail">
-										<Accordion.Trigger>Thumbnail</Accordion.Trigger>
-										<Accordion.Content>
-											<Form.Field {form} name={`embeds[${i}].thumbnail.url`}>
-												<Form.Control>
-													{#snippet children({ props })}
-														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={embed.thumbnail.url} />
-													{/snippet}
-												</Form.Control>
-												<Form.FieldErrors />
-											</Form.Field>
-										</Accordion.Content>
-									</Accordion.Item>
-									<Accordion.Item value="image">
-										<Accordion.Trigger>Image</Accordion.Trigger>
-										<Accordion.Content>
-											<Form.Field {form} name={`embeds[${i}].image.url`}>
-												<Form.Control>
-													{#snippet children({ props })}
-														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={embed.image.url} />
-													{/snippet}
-												</Form.Control>
-												<Form.FieldErrors />
-											</Form.Field>
-										</Accordion.Content>
-									</Accordion.Item>
-									<Accordion.Item value="fields">
-										<Accordion.Trigger>Fields</Accordion.Trigger>
-										<Accordion.Content>
-											<ChannelFormEmbedFields {form} embedIndex={i} />
 										</Accordion.Content>
 									</Accordion.Item>
 								</Accordion.Root>

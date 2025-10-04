@@ -37,7 +37,7 @@
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h4 class="text-md font-medium">Fields</h4>
-		<Button onclick={addField} type="button">Add Field</Button>
+		<Button onclick={addField} class="text-xs h-fit p-1" size="sm" type="button">Add Field</Button>
 	</div>
 	{#if $formData.embeds?.[embedIndex]?.fields}
 		{#each $formData.embeds[embedIndex].fields as field, i (`embed-${embedIndex}-field-${i}`)}

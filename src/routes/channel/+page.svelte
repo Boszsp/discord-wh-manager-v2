@@ -14,24 +14,11 @@
 	import { Card } from '$lib/components/ui/card';
 	import { HashIcon, SendIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
-
-	const serverId = $derived(parseNumber(page.url.searchParams.get('id') ?? '-1'));
-	const channelId = $derived(parseNumber(page.url.searchParams.get('channel') ?? '1'));
-	function init() {
-		channelCurId.set({ id: serverId ?? 0, cid: channelId ?? 0 });
-	}
-	init();
-	onMount(() => {
-		if (!page.url.searchParams.has('channel')) {
-			page.url.searchParams.set('channel', '1');
-		}
-		goto(page.url.toString());
-	});
 	const { data } = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
 		validators: zod4(hookJsonPartial),
-		validationMethod: 'onblur',
+		validationMethod: 'oninput',
 		onSubmit: (inp) => {
 			console.log(inp);
 			inp.cancel();
@@ -59,7 +46,7 @@
 		</ScrollArea>
 		<ScrollArea class="h-full w-full overflow-y-hidden ">
 			<div class="p-4">
-				<Card class="bg-gradient-to-br from-indigo-800 to-violet-950 p-2 overflow-hidden">
+				<Card class="bg-gradient-to-br from-indigo-800 to-violet-950 p-2 overflow-hidden mb-4">
 					<div class="inline-flex center gap-4 w-full h-full">
 						<span class="grow">
 							<h3 class="text-lg font-medium">Sent To</h3>
@@ -68,7 +55,7 @@
 							>
 								<HashIcon class="size-4" />
 								<span>Channel: {data?.channel?.name} </span>
-								<span>(Server 1) </span>
+								<span>(Server: {data?.server?.name} ) </span>
 							</div>
 						</span>
 						<span class="h-16">
