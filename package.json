@@ -57,6 +57,7 @@
 		]
 	},
 	"dependencies": {
+		"consola": "^3.4.2",
 		"isomorphic-dompurify": "^2.28.0",
 		"lucide-svelte": "^0.544.0",
 		"marked": "^16.3.0"
