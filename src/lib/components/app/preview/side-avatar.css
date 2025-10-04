@@ -1,0 +1,33 @@
+.md-content h1 {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+    font-weight: var(--font-weight-bold);
+    margin-top: calc(var(--spacing) * 6);
+    margin-bottom: calc(var(--spacing) * 6);
+}
+
+.md-content h2 {
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+    font-weight: var(--font-weight-bold);
+    margin-top: calc(var(--spacing) * 4);
+    margin-bottom: calc(var(--spacing) * 4);
+}
+
+.md-content h3 {
+    font-size: var(--text-md);
+    line-height: var(--tw-leading, var(--text-md--line-height));
+    font-weight: var(--font-weight-bold);
+    margin-top: calc(var(--spacing) * 4);
+    margin-bottom: calc(var(--spacing) * 4);
+}
+
+.md-content blockquote {
+    border-inline-start-width: .25rem;
+    border-inline-start-color: var(--muted-foreground);
+    color: var(--muted-foreground);
+    quotes: "\201C" "\201D" "\2018" "\2019";
+    padding-inline-start: 0.6em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+}
