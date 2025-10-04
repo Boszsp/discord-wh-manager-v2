@@ -9,10 +9,16 @@
 
 	let {
 		ref = $bindable(null),
+		username = $bindable(''),
+		password = $bindable(''),
+		passkey = $bindable(''),
 		class: className,
 		form,
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & {
+		username?: string;
+		password?: string;
+		passkey?: string;
 		form: SuperForm<loginSchemaType, any>;
 	} = $props();
 	const id = $props.id();

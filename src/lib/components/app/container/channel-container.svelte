@@ -8,7 +8,6 @@
 	let { children,class:className }:{
         children:Snippet
         class?:ClassValue
-        
     } = $props();
 
 </script>
