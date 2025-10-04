@@ -48,7 +48,7 @@
 	</header>
 	<div class="flex">
 		<Sidebar sidebarMenu={datas} />
-		<main class="h-[96dvh] w-full rounded-tl-2xl border-t border-l">
+		<main class="h-[96dvh] w-full rounded-tl-2xl border-t border-l overflow-hidden">
 			{@render children?.()}
 		</main>
 	</div>

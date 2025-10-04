@@ -6,6 +6,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import type { fieldsSchema } from '$lib/schema/webhookContentSchema';
 	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { Textarea } from '$lib/components/ui/textarea';
 
 	let {
 		form,
@@ -46,7 +47,7 @@
 					<p class="font-semibold">Field {i + 1}</p>
 					<Button onclick={() => removeField(i)} type="button" variant="destructive" size="sm">Remove</Button>
 				</div>
-				<div class="grid grid-cols-2 gap-4 py-4">
+				<div>
 					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`}>
 						<Form.Control>
 							{#snippet children({ props })}
@@ -60,7 +61,7 @@
 						<Form.Control>
 							{#snippet children({ props })}
 								<Form.Label>Value</Form.Label>
-								<Input {...props} bind:value={field.value} />
+								<Textarea class="h-12" {...props} bind:value={field.value} />
 						{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
