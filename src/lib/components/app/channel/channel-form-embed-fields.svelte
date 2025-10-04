@@ -5,6 +5,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import type { fieldsSchema } from '$lib/schema/webhookContentSchema';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 
 	let {
 		form,
@@ -69,7 +70,7 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<div class="flex items-center gap-2">
-										<Input type="checkbox" {...props} bind:checked={field.inline} class="size-4"/>
+										<Checkbox {...props} bind:checked={field.inline} class="size-4"/>
 										<Form.Label>Inline</Form.Label>
 									</div>
 								{/snippet}

@@ -28,7 +28,7 @@
 								<Form.Label class="inline-flex w-full justify-between"
 									><span class="w-full">Username</span><span
 										class="text-sm font-light text-muted-foreground"
-										>{$formData.username?.length}/80</span
+										>{$formData.username?.length ?? 0}/80</span
 									></Form.Label
 								>
 								<Input {...props} bind:value={$formData.username} />
@@ -85,7 +85,7 @@
 							<Form.Label class="inline-flex w-full justify-between"
 								><span class="w-full">Thread Name</span><span
 									class="text-sm font-light text-muted-foreground"
-									>{$formData.thread_name?.length}/100</span
+									>{$formData.thread_name?.length ?? 0}/100</span
 								></Form.Label
 							>
 							<Input {...props} bind:value={$formData.thread_name} />

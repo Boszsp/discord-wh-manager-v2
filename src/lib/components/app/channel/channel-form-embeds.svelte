@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { SuperForm } from 'sveltekit-superforms';
 	import * as Form from '$lib/components/ui/form';
-	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
+	import type { embedsSchemaType, hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import { Button } from '$lib/components/ui/button';
-	import { embedsSchema } from '$lib/schema/webhookContentSchema';
 	import { z } from 'zod';
 	import { Input } from '$lib/components/ui/input';
 	import * as Accordion from '$lib/components/ui/accordion';
@@ -39,7 +38,7 @@
             },
             fields:[]
 		};
-		$formData.embeds = [...($formData.embeds || []), newEmbed];
+		$formData.embeds = [...($formData.embeds || []), newEmbed] as embedsSchemaType[];
 	}
 
 	function removeEmbed(index: number) {

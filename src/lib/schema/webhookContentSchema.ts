@@ -48,3 +48,9 @@ export const hookJsonPartial = hookJsonSchema.partial()
 
 export type hookJsonSchemaType = z.infer<typeof hookJsonSchema> 
 export type hookJsonPartialSchemaType = z.infer<typeof hookJsonPartial> 
+export type embedsSchemaType = z.infer<typeof embedsSchema> 
+export type fieldsSchemaType = z.infer<typeof fieldsSchema> 
+export type authorSchemaType = z.infer<typeof authorSchema> 
+export type filesSchemaType = z.infer<typeof filesSchema> 
+export type fileSchemaType = z.infer<typeof fileSchema> 
+export type urlSchemaType = z.infer<typeof urlSchema>
