@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LoginForm from '$lib/components/app/form/loginForm.svelte';
+	import LoginForm from '$lib/components/app/form/login-form.svelte';
 	import { APP_NAME } from '$lib/default';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4 } from 'sveltekit-superforms/adapters';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DashboardContainer from '$lib/components/app/container/dashboardContainer.svelte';
+	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import {
 		Card,

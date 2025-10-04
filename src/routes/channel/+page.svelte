@@ -1,5 +1,5 @@
 <script>
-	import ChannelContainer from "$lib/components/app/container/channelContainer.svelte";
+	import ChannelContainer from "$lib/components/app/container/channel-container.svelte";
 
 </script>
 <ChannelContainer class="bg-background">

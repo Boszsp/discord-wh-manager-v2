@@ -2,7 +2,7 @@
     import * as Resizable from "$lib/components/ui/resizable";
 	import type { ClassValue } from "svelte/elements";
 	import { cn } from "$lib/utils";
-	import ChannelSidebar from "$lib/components/app/nav/channelSidebar.svelte";
+	import ChannelSidebar from "$lib/components/app/nav/channel-sidebar.svelte";
 	let { children,class:className }:{
         children:any
         class?:ClassValue

@@ -41,7 +41,7 @@ discord-wh-manager-v2/
 │   ├── lib/
 │   │   ├── assets/              # Static assets like icons
 │   │   ├── components/
-│   │   │   ├── app/             # Application-specific composite components (layouts, nav)
+│   │   │   ├── app/             # Application-specific composite components (layouts, nav) (in this folder use  case)
 │   │   │   └── ui/              # Generic, reusable UI components (Button, Card, etc.) (Resistrict to modify,read-only)
 │   │   ├── hooks/               # SvelteKit hooks
 │   │   └── utils.ts             # Utility functions (Resistrict to modify,read-only)
@@ -62,9 +62,11 @@ discord-wh-manager-v2/
 - https://tailwindcss.com/
 
 ## 4. Rule 
+- respect old code , code base , tech stack
+- check code base provide and write new code base on codebase style
 - you must understand project structure before do anything
 - you must understand old code/codebase before do anything
 - you must how to use tech stack used in this project (may search or read the docs)
 - if have anything may improve your understand you can update data into GEMINI.md
-- in 1 file should have morethan 300 lines
+- in 1 file should have morethan 200 lines
 - in svelte no `on:click` or other event just write only `onclick`

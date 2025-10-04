@@ -1,7 +1,7 @@
 <script lang="ts">
     import * as Resizable from "$lib/components/ui/resizable";
 	import type { ClassValue } from "svelte/elements";
-	import InnerSidebar from "$lib/components/app/nav/innerSidebar.svelte";
+	import InnerSidebar from "$lib/components/app/nav/inner-sidebar.svelte";
 	import { cn } from "$lib/utils";
 	let { children,class:className }:{
         children:any
