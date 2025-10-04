@@ -1,10 +1,17 @@
 import z from "zod";
 import { consola } from "consola/browser";
-export const strNumberSchema = z.string().transform(
+export const strNumberSchema = z.string().regex(/[0-9]+/).transform(
     (s)=>parseInt(s)
 )
 
 export const numberSchema = z.number()
+
+export const testSchema = z.object(
+    {
+        x: z.string().trim().nonempty(),
+        y:z.string().trim().nonempty()
+    }
+)
 
 export function parseNumber(numStr: string) {
     const { data, error } = strNumberSchema.safeParse(numStr)

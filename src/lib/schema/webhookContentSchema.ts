@@ -37,10 +37,10 @@ export const embedsSchema = z.object({
 
 export const hookJsonSchema = z
     .object({
-        username: z.string().max(80, "Username length must be less than 80 characters"),
+        username: z.string().trim().max(80, "Username length must be less than 80 characters"),
         avatar_url: z.string().url("Please enter a valid image URL for the profile avatar"),
         content: z.string().max(2000, "Content length must be less than 2,000 characters"),
-        embeds: embedsSchema.array().optional(), //.max(10, "Embeds length must be less than 10 items")
+        embeds: embedsSchema.array().max(10, "Embeds length must be less than 10 items").optional(), //.max(10, "Embeds length must be less than 10 items")
         files: filesSchema.optional(),
         thread_name: z.string().max(100, "Thread name length must be less than 100 characters"),
     })

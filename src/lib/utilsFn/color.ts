@@ -1,3 +1,5 @@
+import z from "zod";
+
 const COLOR_MAP: Record<string, string> = {
     aliceblue: "#f0f8ff",
     antiquewhite: "#faebd7",
@@ -38,4 +40,12 @@ const COLOR_MAP: Record<string, string> = {
 
 export function colorNameToHex(name: string): string | null {
     return COLOR_MAP[name.toLowerCase()] ?? null;
+}
+
+export function colorCodeToInteger(colorCode:string) {
+    colorCode = z.string().regex(/#[0-9a-fA-F]{3,8}/).parse(colorCode)
+    if (typeof colorCode === "string" && colorCode.startsWith("#") && colorCode.length > 3) {
+        return parseInt(colorCode.slice(1), 16);
+    }
+    return null; 
 }

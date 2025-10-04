@@ -11,6 +11,9 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import { Card } from '$lib/components/ui/card';
+	import { HashIcon, SendIcon } from 'lucide-svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
 
 	const serverId = $derived(parseNumber(page.url.searchParams.get('id') ?? '-1'));
 	const channelId = $derived(parseNumber(page.url.searchParams.get('channel') ?? '1'));
@@ -41,16 +44,40 @@
 	const { form: formData } = form;
 </script>
 
-<ChannelContainer class="bg-background overflow-hidden">
-		<div class="mx-auto grid w-full h-full max-w-6xl grid-cols-2 gap-8 p-4 overflow-hidden">
-			<div>
+<ChannelContainer class="overflow-hidden bg-background">
+	<div class="mx-auto grid h-full w-full max-w-6xl grid-cols-2 gap-4 overflow-y-hidden">
+		<ScrollArea class="h-full w-full overflow-y-hidden">
+			<div class=" p-4">
 				<h3 class="mb-4 text-lg font-medium">Preview</h3>
 				<div>
 					<Preview content={$formData} />
+					<pre>
+					{JSON.stringify($formData, null, 2)}
+					</pre>
 				</div>
 			</div>
-			<ScrollArea class="h-full w-full overflow-hidden">
+		</ScrollArea>
+		<ScrollArea class="h-full w-full overflow-y-hidden ">
+			<div class="p-4">
+				<Card class="bg-gradient-to-br from-indigo-800 to-violet-950 p-2 overflow-hidden">
+					<div class="inline-flex center gap-4 w-full h-full">
+						<span class="grow">
+							<h3 class="text-lg font-medium">Sent To</h3>
+							<div
+								class="inline-flex w-full items-center gap-1 rounded-md bg-secondary/60 p-2 text-sm"
+							>
+								<HashIcon class="size-4" />
+								<span>Channel: {data?.channel?.name} </span>
+								<span>(Server 1) </span>
+							</div>
+						</span>
+						<span class="h-16">
+							<Button class="h-full"><SendIcon/></Button>
+						</span>
+					</div>
+				</Card>
 				<ChannelForm {form} />
-			</ScrollArea>
-		</div>
+			</div>
+		</ScrollArea>
+	</div>
 </ChannelContainer>

@@ -12,6 +12,8 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import ChannelFormEmbedFields from './channel-form-embed-fields.svelte';
 	import { Card } from '$lib/components/ui/card';
+	import { toHex } from '$lib/utilsFn/string';
+	import { colorCodeToInteger } from '$lib/utilsFn/color';
 
 	let {
 		form
@@ -22,9 +24,9 @@
 
 	function addEmbed() {
 		const newEmbed: embedsSchemaType = {
-			title: 'New Embed',
-			description: 'New Description',
-			color: 0,
+			title: '',
+			description: '',
+			color: 5858545,
 			url: '',
 			author: {
 				name: '',
@@ -82,13 +84,13 @@
 		<p class="font-bold">Embeds</p>
 		<Button onclick={addEmbed} type="button">Add Embed</Button>
 	</div>
-	<Accordion.Root type="multiple" class="w-full flex flex-col gap-2">
+	<Accordion.Root type="multiple" class="flex w-full flex-col gap-2">
 		{#if $formData.embeds}
 			{#each $formData.embeds as embed, i ('embed-' + i)}
 				<Card class="p-2 px-4">
 					<Accordion.Item value={'embed-' + i}>
 						<Accordion.Trigger class="hover:no-underline">
-							<div class="flex items-center justify-between w-full">
+							<div class="flex w-full items-center justify-between">
 								<p>Embed {i + 1}</p>
 								<div class="flex gap-2">
 									<Button
@@ -145,7 +147,13 @@
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Color</Form.Label>
-											<Input {...props} type="color" bind:value={embed.color} />
+											<Input
+												{...props}
+												type="color"
+												value={toHex(embed.color)}
+												oninput={(e) =>
+													(embed.color = colorCodeToInteger(e?.currentTarget?.value) || 0)}
+											/>
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />

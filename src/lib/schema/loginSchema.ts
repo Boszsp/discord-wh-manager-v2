@@ -6,3 +6,4 @@ export const loginSchema = z.object({
 	passkey: z.string().length(16, { message: 'Passkey must be exactly 16 characters long' })
 });
 export type loginSchemaType = z.infer<typeof loginSchema>;
+
