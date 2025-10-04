@@ -12,16 +12,16 @@
     "embeds": [
         {
             "avatar_url": "",
-            "color": 5864,
+            "color": "#5864f2",
             "author": {
                 "name": "xxxxxxx",
                 "url": "xxx",
-                "icon_url": ""
+                "icon_url": "https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png"
             },
             "title": "pppp",
             "description": "opppp",
             "image": {
-                "url": ""
+                "url": "https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png"
             },
             "fields": [
                 {
@@ -39,12 +39,12 @@
                     "value": "xxxxx",
                     "inline": true
                 },
-				 {
+                {
                     "name": "xxx",
                     "value": "xxxxx",
                     "inline": false
                 },
-				 {
+                {
                     "name": "33",
                     "value": "333",
                     "inline": true
@@ -57,11 +57,11 @@
             ],
             "footer": {
                 "text": "xxxxx",
-                "icon_url": ""
+                "icon_url": "https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png"
             },
             "timestamp": "2025-10-04T16:34",
             "thumbnail": {
-                "url": ""
+                "url": "https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png"
             },
             "url": ""
         }
