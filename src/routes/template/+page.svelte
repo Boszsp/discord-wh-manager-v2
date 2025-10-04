@@ -12,7 +12,6 @@
     "embeds": [
         {
             "avatar_url": "",
-            "color": "#5864f2",
             "author": {
                 "name": "xxxxxxx",
                 "url": "xxx",
