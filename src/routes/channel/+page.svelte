@@ -9,7 +9,9 @@
 	import { onMount } from 'svelte';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
+	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+
 	const serverId = $derived(parseNumber(page.url.searchParams.get('id') ?? '-1'));
 	const channelId = $derived(parseNumber(page.url.searchParams.get('channel') ?? '1'));
 	function init() {
@@ -36,10 +38,20 @@
 		clearOnSubmit:"errors"
 		
 	});
+
+	const { form: formData } = form;
 </script>
 
 <ChannelContainer class="bg-background">
-	<ScrollArea class="w-full h-full max-w-4xl mx-auto p-4 pt-8">
-		<ChannelForm form={form}/>
-	</ScrollArea>
+	<div class="grid grid-cols-2 gap-8 w-full max-w-6xl mx-auto p-4 pt-8">
+		<ScrollArea class="w-full h-full">
+			<ChannelForm form={form}/>
+		</ScrollArea>
+		<div>
+			<h3 class="text-lg font-medium mb-4">Preview</h3>
+			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+				<Preview content={$formData} />
+			</div>
+		</div>
+	</div>
 </ChannelContainer>
