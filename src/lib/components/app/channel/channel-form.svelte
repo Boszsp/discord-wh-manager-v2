@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
 	import { cn, type WithElementRef } from '$lib/utils.js';
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { SuperForm } from 'sveltekit-superforms';
-	import * as Form from '$lib/components/ui/form';
-	import type { loginSchemaType } from '$lib/schema/loginSchema';
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
-	import * as Accordion from '$lib/components/ui/accordion';
-	import { Card } from '$lib/components/ui/card';
 	import ChannelFormProfileThread from './channel-form-profile-thread.svelte';
+	import ChannelFormContent from './channel-form-content.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import ChannelFormEmbeds from './channel-form-embeds.svelte';
+	import { Card } from '$lib/components/ui/card';
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -22,11 +20,17 @@
 </script>
 
 <form
-	class={cn('flex flex-col gap-6', className)}
+	class={cn('flex flex-col gap-4', className)}
 	bind:this={ref}
 	{...restProps}
 	method="POST"
 	use:enhance
 >
-	<ChannelFormProfileThread form={form} />
+	<ChannelFormContent {form} />
+	<Separator />
+	<Card class="p-2 px-4">
+		<ChannelFormProfileThread {form} />
+	</Card>
+	<Separator />
+	<ChannelFormEmbeds {form} />
 </form>

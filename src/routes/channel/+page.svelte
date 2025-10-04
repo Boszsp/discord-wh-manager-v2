@@ -17,41 +17,40 @@
 	function init() {
 		channelCurId.set({ id: serverId ?? 0, cid: channelId ?? 0 });
 	}
-	init()
+	init();
 	onMount(() => {
 		if (!page.url.searchParams.has('channel')) {
 			page.url.searchParams.set('channel', '1');
 		}
 		goto(page.url.toString());
 	});
-	const {data} = $props()
+	const { data } = $props();
 	const form = superForm(data.form, {
-		dataType:"json",
+		dataType: 'json',
 		validators: zod4(hookJsonPartial),
-		validationMethod:"onblur",
-		onSubmit:(inp)=>{
+		validationMethod: 'onblur',
+		onSubmit: (inp) => {
 			console.log(inp);
-			inp.cancel()
+			inp.cancel();
 			console.log(inp.formData);
-			return false
+			return false;
 		},
-		clearOnSubmit:"errors"
-		
+		clearOnSubmit: 'errors'
 	});
 
 	const { form: formData } = form;
 </script>
 
-<ChannelContainer class="bg-background">
-	<div class="grid grid-cols-2 gap-8 w-full max-w-6xl mx-auto p-4 pt-8">
-		<ScrollArea class="w-full h-full">
-			<ChannelForm form={form}/>
-		</ScrollArea>
-		<div>
-			<h3 class="text-lg font-medium mb-4">Preview</h3>
-			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-				<Preview content={$formData} />
+<ChannelContainer class="bg-background overflow-hidden">
+		<div class="mx-auto grid w-full h-full max-w-6xl grid-cols-2 gap-8 p-4 overflow-hidden">
+			<div>
+				<h3 class="mb-4 text-lg font-medium">Preview</h3>
+				<div>
+					<Preview content={$formData} />
+				</div>
 			</div>
+			<ScrollArea class="h-full w-full overflow-hidden">
+				<ChannelForm {form} />
+			</ScrollArea>
 		</div>
-	</div>
 </ChannelContainer>

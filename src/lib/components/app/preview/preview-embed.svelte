@@ -11,7 +11,7 @@
 	} = $props();
 </script>
 
-<Card class="relative grid w-md gap-2 overflow-hidden rounded-sm p-4 text-sm">
+<Card class="relative grid max-w-md w-full gap-2 overflow-hidden rounded-sm p-4 text-sm">
 	<div
 		class="absolute top-0 left-0 h-full w-1"
 		style={`background-color: ${embed?.color ? toHex(embed.color) : 'var(--primary)'}`}

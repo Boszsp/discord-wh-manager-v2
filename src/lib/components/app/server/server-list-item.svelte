@@ -49,7 +49,7 @@
 			<Input
 				type="color"
 				value={colorNameToHex(server.color ?? 'black')}
-				class="size-10 scale-[200] bg-transparent "
+				class="size-10 scale-200 bg-transparent p-0"
 			/>
 		</div>
 		<Input bind:value={editingName} onkeydown={handleEditKeydown} class="flex-1" autofocus />

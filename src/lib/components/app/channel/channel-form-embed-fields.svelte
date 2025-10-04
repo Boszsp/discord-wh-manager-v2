@@ -40,7 +40,7 @@
 		<Button onclick={addField} type="button">Add Field</Button>
 	</div>
 	{#if $formData.embeds?.[embedIndex]?.fields}
-		{#each $formData.embeds[embedIndex].fields as field, i}
+		{#each $formData.embeds[embedIndex].fields as field, i (`embed-${embedIndex}-field-${i}`)}
 			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
 				<div class="flex items-center justify-between">
 					<p class="font-semibold">Field {i + 1}</p>

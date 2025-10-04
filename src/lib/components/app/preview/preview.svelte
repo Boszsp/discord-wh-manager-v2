@@ -16,7 +16,7 @@
 <SideAvatar name={content?.username} image={content?.avatar_url} content={content?.content}>
 	<div class="pt-4">
 		{#if content?.embeds}
-			{#each content.embeds as embed (embed.title)}
+			{#each content.embeds as embed ,i (`preview-embed-${i}`)}
 				<PreviewEmbed embed={embed} />
 			{/each}
 		{/if}
