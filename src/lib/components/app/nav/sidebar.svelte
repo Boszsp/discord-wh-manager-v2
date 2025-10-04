@@ -38,7 +38,7 @@
 						<Tooltip.Root delayDuration={0}>
 							<Tooltip.Trigger
 								onclick={() => {
-									if (menu?.link) goto(menu?.link);
+									if (menu?.link) goto(menu?.link,{invalidate:["channel:get"]});
 								}}
 							>
 								<Avatar.Root
