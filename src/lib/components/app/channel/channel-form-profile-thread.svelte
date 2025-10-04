@@ -5,6 +5,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import * as Accordion from '$lib/components/ui/accordion';
+	import ChannelFormEmbeds from './channel-form-embeds.svelte';
 		let {
 		class: className,
         form
@@ -47,6 +48,32 @@
 			</Accordion.Content>
 		</Accordion.Item>
 		<Accordion.Item value="item-2">
+			<Accordion.Trigger>Content</Accordion.Trigger>
+			<Accordion.Content>
+				<Form.Field {form} name="content">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label class="inline-flex w-full justify-between"
+								><span class="w-full">Content</span><span
+									class="text-sm font-light text-muted-foreground"
+									>{$formData.content?.length}/2000</span
+								></Form.Label
+							>
+							<Input {...props} bind:value={$formData.content} />
+						{/snippet}
+					</Form.Control>
+					<Form.Description />
+					<Form.FieldErrors />
+				</Form.Field>
+			</Accordion.Content>
+		</Accordion.Item>
+		<Accordion.Item value="item-3">
+			<Accordion.Trigger>Embeds</Accordion.Trigger>
+			<Accordion.Content>
+				<ChannelFormEmbeds {form} />
+			</Accordion.Content>
+		</Accordion.Item>
+		<Accordion.Item value="item-4">
 			<Accordion.Trigger>Thread</Accordion.Trigger>
 			<Accordion.Content class="flex flex-col gap-4 text-balance">
 				<Form.Field {form} name="thread_name">
@@ -64,7 +91,6 @@
 					<Form.Description />
 					<Form.FieldErrors />
 				</Form.Field>
-				
 			</Accordion.Content>
 		</Accordion.Item>
 	</Accordion.Root>
