@@ -34,43 +34,51 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h4 class="text-md font-medium">Fields</h4>
+	<div class="flex items-center justify-between">
+		<h4 class="text-md font-medium">Fields</h4>
+		<Button onclick={addField} type="button">Add Field</Button>
+	</div>
 	{#if $formData.embeds?.[embedIndex]?.fields}
 		{#each $formData.embeds[embedIndex].fields as field, i}
 			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-				<div class="flex justify-between">
+				<div class="flex items-center justify-between">
 					<p class="font-semibold">Field {i + 1}</p>
 					<Button onclick={() => removeField(i)} type="button" variant="destructive" size="sm">Remove</Button>
 				</div>
-				<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Name</Form.Label>
-							<Input {...props} bind:value={field.name} />
+				<div class="grid grid-cols-2 gap-4 py-4">
+					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`}>
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Name</Form.Label>
+								<Input {...props} bind:value={field.name} />
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].value`}>
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Value</Form.Label>
+								<Input {...props} bind:value={field.value} />
 						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].value`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Value</Form.Label>
-							<Input {...props} bind:value={field.value} />
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].inline`}>
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Inline</Form.Label>
-							<Input type="checkbox" {...props} bind:checked={field.inline} />
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<div class="col-span-2">
+						<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].inline`}>
+							<Form.Control>
+								{#snippet children({ props })}
+									<div class="flex items-center gap-2">
+										<Input type="checkbox" {...props} bind:checked={field.inline} class="size-4"/>
+										<Form.Label>Inline</Form.Label>
+									</div>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+					</div>
+				</div>
 			</div>
 		{/each}
 	{/if}
-	<Button onclick={addField} type="button">Add Field</Button>
 </div>

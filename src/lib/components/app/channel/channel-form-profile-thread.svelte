@@ -6,6 +6,7 @@
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import ChannelFormEmbeds from './channel-form-embeds.svelte';
+	import { Textarea } from '$lib/components/ui/textarea';
 		let {
 		class: className,
         form
@@ -20,31 +21,33 @@
 		<Accordion.Item value="item-1">
 			<Accordion.Trigger>Profile</Accordion.Trigger>
 			<Accordion.Content>
-				<Form.Field {form} name="username">
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label class="inline-flex w-full justify-between"
-								><span class="w-full">Username</span><span
-									class="text-sm font-light text-muted-foreground"
-									>{$formData.username?.length}/80</span
-								></Form.Label
-							>
-							<Input {...props} bind:value={$formData.username} />
-						{/snippet}
-					</Form.Control>
-					<Form.Description />
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field {form} name="avatar_url">
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label class="inline-flex w-full justify-between">Avatar URL</Form.Label>
-							<Input {...props} bind:value={$formData.avatar_url} />
-						{/snippet}
-					</Form.Control>
-					<Form.Description />
-					<Form.FieldErrors />
-				</Form.Field>
+				<div class="grid grid-cols-2 gap-4">
+					<Form.Field {form} name="username">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label class="inline-flex w-full justify-between"
+									><span class="w-full">Username</span><span
+										class="text-sm font-light text-muted-foreground"
+										>{$formData.username?.length}/80</span
+									></Form.Label
+								>
+								<Input {...props} bind:value={$formData.username} />
+							{/snippet}
+						</Form.Control>
+						<Form.Description />
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="avatar_url">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label class="inline-flex w-full justify-between">Avatar URL</Form.Label>
+								<Input {...props} bind:value={$formData.avatar_url} />
+							{/snippet}
+						</Form.Control>
+						<Form.Description />
+						<Form.FieldErrors />
+					</Form.Field>
+				</div>
 			</Accordion.Content>
 		</Accordion.Item>
 		<Accordion.Item value="item-2">
@@ -59,7 +62,7 @@
 									>{$formData.content?.length}/2000</span
 								></Form.Label
 							>
-							<Input {...props} bind:value={$formData.content} />
+							<Textarea {...props} bind:value={$formData.content} class="h-32" />
 						{/snippet}
 					</Form.Control>
 					<Form.Description />

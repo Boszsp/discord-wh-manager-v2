@@ -38,7 +38,7 @@
 </script>
 
 <ChannelContainer class="bg-background">
-	<div class="w-full p-4">
-	<ChannelForm form={form}/>
+	<div class="w-full max-w-4xl mx-auto p-4 pt-8">
+		<ChannelForm form={form}/>
 	</div>
 </ChannelContainer>
