@@ -10,6 +10,9 @@
 	import { HashIcon, SendIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Resizable from '$lib/components/ui/resizable';
+	import { cleanUpBlank } from '$lib/utilsFn/webhook.js';
+	import { Label } from '$lib/components/ui/label';
+	import Autocomplelte from '$lib/components/app/form/autocomplelte.svelte';
 	const { data } = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
@@ -25,9 +28,13 @@
 	});
 
 	const { form: formData } = form;
+	function onSm(){
+		console.log(cleanUpBlank($formData))
+		
+	}
 </script>
 
-<ChannelContainer class="overflow-hidden bg-background">
+<ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
 	<Resizable.PaneGroup direction="horizontal">
 		<Resizable.Pane defaultSize={40} class="w-fit">
 			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
@@ -45,7 +52,7 @@
 		<Resizable.Handle withHandle />
 		<Resizable.Pane defaultSize={60} class="w-fit overflow-hidden">
 			<ScrollArea class="h-full w-full overflow-hidden">
-				<div class="w-full overflow-hidden px-4">
+				<div class="w-full overflow-hidden p-4">
 					<Card
 						class="mb-4 w-full overflow-hidden bg-gradient-to-br from-indigo-800 to-violet-950 p-2"
 					>
@@ -61,8 +68,12 @@
 								</div>
 							</span>
 							<span class="h-16">
-								<Button class="h-full"><SendIcon /></Button>
+								<Button onclick={onSm} class="h-full"><SendIcon /></Button>
 							</span>
+						</div>
+						<div>
+							<Label>Template</Label>
+							<Autocomplelte />
 						</div>
 					</Card>
 					<ChannelForm {form} />

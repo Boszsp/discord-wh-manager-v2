@@ -31,3 +31,7 @@
     margin-top: 0.6em;
     margin-bottom: 0.6em;
 }
+.md-content a {
+    text-decoration: underline;
+    color: var(--color-blue-400);
+}

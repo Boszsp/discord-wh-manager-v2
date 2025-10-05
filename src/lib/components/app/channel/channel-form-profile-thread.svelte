@@ -6,6 +6,7 @@
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Label } from '$lib/components/ui/label';
+	import { cn } from '$lib/utils';
 	let {
 		class: className,
 		form
@@ -16,10 +17,10 @@
 	const { form: formData } = form;
 </script>
 
-<Accordion.Root type="multiple" class={className}>
-	<Accordion.Item value="item-1">
-		<Accordion.Trigger>Profile</Accordion.Trigger>
-		<Accordion.Content>
+<Accordion.Root type="multiple" >
+	<Accordion.Item value="profile">
+		<Accordion.Trigger class={className}>Profile</Accordion.Trigger>
+		<Accordion.Content class={className}>
 			<Form.Field {form} name="username">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -48,9 +49,9 @@
 		</Accordion.Content>
 	</Accordion.Item>
 
-	<Accordion.Item value="item-4">
-		<Accordion.Trigger>Thread</Accordion.Trigger>
-		<Accordion.Content class="flex flex-col gap-4 text-balance">
+	<Accordion.Item value="thread">
+		<Accordion.Trigger class={className}>Thread</Accordion.Trigger>
+		<Accordion.Content class={cn("flex flex-col gap-4 text-balance",className)}>
 			<Form.Field {form} name="thread_name">
 				<Form.Control>
 					{#snippet children({ props })}

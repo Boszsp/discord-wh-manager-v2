@@ -88,9 +88,9 @@
 	<Accordion.Root type="multiple" class="flex w-full flex-col gap-2">
 		{#if $formData.embeds}
 			{#each $formData.embeds as embed, i ('embed-' + i)}
-				<Card class="p-2 px-4">
+				<Card class="p-2 overflow-hidden">
 					<Accordion.Item value={'embed-' + i}>
-						<Accordion.Trigger class="hover:no-underline">
+						<Accordion.Trigger class="hover:no-underline mx-4">
 							<div class="flex w-full items-center justify-between">
 								<p>Embed {i + 1}</p>
 								<div class="flex gap-2">
@@ -124,7 +124,7 @@
 								</div>
 							</div>
 						</Accordion.Trigger>
-						<Accordion.Content>
+						<Accordion.Content  class="px-4">
 							<div>
 								<Form.Field {form} name={`embeds[${i}].title`}>
 									<Form.Control>

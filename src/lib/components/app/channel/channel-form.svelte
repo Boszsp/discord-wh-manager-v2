@@ -28,8 +28,8 @@
 >
 	<ChannelFormContent {form} />
 	<Separator />
-	<Card class="p-2 px-4">
-		<ChannelFormProfileThread {form} />
+	<Card class="p-2 overflow-hidden">
+		<ChannelFormProfileThread {form} class="px-4"  />
 	</Card>
 	<Separator />
 	<ChannelFormEmbeds {form} />
