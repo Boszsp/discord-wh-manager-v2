@@ -36,7 +36,7 @@
 					variant="outline"
 					{...props}
 					role="combobox"
-					class={cn('w-full justify-between text-start', className)}
+					class={cn('w-full justify-between text-star', className)}
 					aria-expanded={open}
 					{id}
 				>

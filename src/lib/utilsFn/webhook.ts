@@ -1,5 +1,6 @@
 import consola from "consola";
 import { colorCodeToInteger } from "./color";
+import { hookJsonPartial } from "$lib/schema/webhookContentSchema";
 
 export function cleanUpBlank(obj:any) {
     try{
@@ -23,7 +24,7 @@ export function cleanUpBlank(obj:any) {
             if (obj[k].length < 1) delete obj[k];
         }
     }
-    return obj;
+    return hookJsonPartial.parse(obj);
 }catch (e){
     consola.error(e)
     return {}

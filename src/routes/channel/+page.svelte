@@ -6,18 +6,14 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import { Card } from '$lib/components/ui/card';
-	import { HashIcon, SendIcon } from 'lucide-svelte';
-	import { Button } from '$lib/components/ui/button';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { cleanUpBlank } from '$lib/utilsFn/webhook.js';
-	import { Label } from '$lib/components/ui/label';
-	import Autocomplelte from '$lib/components/app/form/autocomplelte.svelte';
 	import type { Snapshot } from './$types';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import { Separator } from '$lib/components/ui/separator';
-	import { channelCurId } from '$lib/store/channel.svelte';
-
+	import ChannelSentCard from '$lib/components/app/channel/channel-sent-card.svelte';
+	import ChannelFile from '$lib/components/app/channel/channel-file.svelte';
+	
 	const { data } = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
@@ -33,9 +29,7 @@
 	});
 
 	const { form: formData } = form;
-	function onSm() {
-		console.log(cleanUpBlank($formData));
-	}
+	let files:File[] = $state([])
 
 	const isMoble = new IsMobile();
 
@@ -43,6 +37,10 @@
 		capture: () => $formData,
 		restore: (value) => ($formData = value)
 	};
+
+	function onSm() {
+		console.log(cleanUpBlank($formData));
+	}
 </script>
 
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
@@ -53,9 +51,7 @@
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
 						<Preview content={$formData} />
-						<pre class="text-wrap break-all">
-					{JSON.stringify($formData, null, 2)}
-					</pre>
+						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
 					</div>
 				</div>
 			</ScrollArea>
@@ -65,30 +61,11 @@
 			<ScrollArea class="h-full w-full overflow-hidden">
 				<div class="w-full overflow-hidden p-4">
 					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
-
-					<Card
-						class="overflow-hidde mb-4 w-full bg-indigo-800 bg-gradient-to-br bg-[url('/banner-1.png')] from-indigo-800 to-violet-950 bg-cover p-4"
-					>
-						<div class="center inline-flex h-full w-full gap-4">
-							<span class="grow">
-								<div
-									class="inline-flex w-full items-center gap-1 rounded-md border-t bg-input/40 p-2 text-sm"
-								>
-									<HashIcon class="size-4" />
-									<span>Channel: {data?.channel?.name} </span>
-									<span>(Server: {data?.server?.name} ) </span>
-								</div>
-							</span>
-							<span>
-								<Button onclick={onSm} class="h-full"><SendIcon /></Button>
-							</span>
-						</div>
-						<div>
-							<Label for="template-select">Template</Label>
-							<Autocomplelte class="mt-2 border-0 border-t" id="template-select" />
-						</div>
-					</Card>
+					<ChannelSentCard server={data.server} channel={data.channel} onsent={onSm} />
 					<Separator class="my-4" />
+					<ChannelFile />
+					<Separator class="mt-8 mb-4" />
+
 					<ChannelForm {form} />
 				</div>
 			</ScrollArea>
