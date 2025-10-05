@@ -15,6 +15,7 @@
 	import ChannelFile from '$lib/components/app/channel/channel-file.svelte';
 	import { fromStore } from '$lib/store/form.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -49,7 +50,7 @@
 		console.log(cleanUpBlank($formData));
 	}
 </script>
-
+<PageTransition/>
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
 	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 		<Resizable.Pane defaultSize={40} class="w-fit">

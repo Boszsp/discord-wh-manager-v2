@@ -6,13 +6,15 @@
 		CardDescription,
 		CardHeader,
 		CardTitle,
-		CardFooter
 	} from '$lib/components/ui/card';
 	import { LayoutTemplateIcon, ServerIcon, CogIcon } from 'lucide-svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { goto } from '$app/navigation';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 </script>
 
+
+<PageTransition/>
 <DashboardContainer class="relative bg-black bg-gradient-to-br from-indigo-950/0 to-indigo-800/60">
 	<img alt="bg" src="/bg-3.jpg" class="absolute h-full w-full object-top object-cover brightness-105" />
 	<ScrollArea class="h-full w-full">

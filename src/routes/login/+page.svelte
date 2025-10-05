@@ -4,6 +4,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/schema/loginSchema';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	let { data } = $props();
 	const form = superForm(data.form, {
 		validators: zod4(loginSchema),
@@ -18,7 +19,7 @@
 		
 	});
 </script>
-
+<PageTransition/>
 <div class="fixed top-0 left-0 z-60 grid h-svh min-h-svh w-svw bg-background lg:grid-cols-2">
 	<div class="relative hidden bg-muted lg:block">
 		<img

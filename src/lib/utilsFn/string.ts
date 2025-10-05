@@ -1,5 +1,5 @@
 import { DEFAULT_COLOR_NUM } from "$lib/default";
-import { jsonSchema } from "$lib/schema/jsonSchema";
+import { jsonRegexSchema, jsonSchema } from "$lib/schema/jsonSchema";
 import consola from "consola";
 import {
     parseTarGzip,
@@ -22,7 +22,7 @@ export const toBase64 = (str: string) => {
 
 export const toBase64WithGzip = async (str: string) => {
     try {
-        return toBase64((await createTarGzip([{ name: "data", data: str }])).toString())
+        return (await createTarGzip([{ name: "data", data: str }])).toString()
     } catch (e) {
         consola.error(e)
         return ""
@@ -31,20 +31,39 @@ export const toBase64WithGzip = async (str: string) => {
 
 export const toBase64Optimize = async (str: string) => {
     const b1 = toBase64(str)
-    const b2 = await toBase64WithGzip(str)
+    return b1
+    /* const b2 = toBase64(await toBase64WithGzip(str))
     if (b1?.length > b2?.length) {
         return b2
     }
-    return b1
+    return b1*/
+}
+export function fromBase64(base64String: string): Uint8Array {
+    return Uint8Array.from(atob(base64String), (c) => c.charCodeAt(0));
 }
 
 export const parseBase64ToJson = async (str: string) => {
     const normalParse = atob(str)
+    const { success, error } = jsonRegexSchema.safeParse(normalParse)
+
     try {
         return jsonSchema.safeParse(JSON.parse(normalParse))?.data
+        if (success) {
+            return jsonSchema.safeParse(JSON.parse(normalParse))?.data
+        }
+        else if (normalParse.length > 9) {
+            consola.info(error)
+            //return jsonSchema.safeParse({ "content": "" })?.data
+            //console.log(fromBase64(str))
+            console.log(normalParse?.split(",").map(v => parseInt(v)))
+            return parseTarGzip(new Uint8Array(normalParse?.split(",").map(v => parseInt(v))))
+        }
+        else {
+            throw Error("invalid json")
+        }
     } catch (e) {
         consola.error(e)
-        return jsonSchema.safeParse({"content":""})?.data
+        return jsonSchema.safeParse({ "content": "" })?.data
     }
 
 }

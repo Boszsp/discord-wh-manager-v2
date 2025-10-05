@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 
@@ -11,8 +12,9 @@
 	const mockPdf = new File([new Blob()], 'mock-document.pdf', { type: 'application/pdf' });
 </script>
 
+<PageTransition />
 <DashboardContainer>
-	<ScrollArea class="w-full h-full p-4">
+	<ScrollArea class="h-full w-full p-4">
 		<Preview
 			content={{
 				username: '',
@@ -21,6 +23,7 @@
 				embeds: [
 					{
 						avatar_url: '',
+						color: 111,
 						author: {
 							name: 'xxxxxxx',
 							url: 'xxx',
@@ -30,8 +33,7 @@
 						title: 'pppp',
 						description: 'opppp',
 						image: {
-							url:
-								'https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png'
+							url: 'https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png'
 						},
 						fields: [
 							{
@@ -70,10 +72,8 @@
 							icon_url:
 								'https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png'
 						},
-						timestamp: '2025-10-04T16:34',
 						thumbnail: {
-							url:
-								'https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png'
+							url: 'https://tranglyslivermerketimesmuncrefam-host5605945-967463913af533c99f.gitlab.io/_ipx/f_webp/discord1.png'
 						},
 						url: ''
 					}

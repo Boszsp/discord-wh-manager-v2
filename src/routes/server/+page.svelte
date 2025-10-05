@@ -7,6 +7,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { SearchIcon } from 'lucide-svelte';
 	import DeleteServerDialog from '$lib/components/app/server/delete-server-dialog.svelte';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 
 	let servers = $state<Server[]>([
 		{ id: '1', name: 'Production Server', color: 'red' },
@@ -46,7 +47,7 @@
 		}
 	}
 </script>
-
+<PageTransition/>
 <DashboardContainer class="bg-background">
 	<ServerPageHeader on:createServer={createServer} />
 	<div class="py-4">
