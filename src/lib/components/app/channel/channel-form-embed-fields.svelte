@@ -42,15 +42,15 @@
 	</div>
 	{#if $formData.embeds?.[embedIndex]?.fields}
 		{#each $formData.embeds[embedIndex].fields as field, i (`embed-${embedIndex}-field-${i}`)}
-			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+			<div class="rounded-lg border bg-secondary p-4 text-card-foreground shadow-sm">
 				<div class="flex items-center justify-between">
 					<p class="font-semibold">Field {i + 1}</p>
 					<Button onclick={() => removeField(i)} type="button" variant="destructive" size="sm"
 						>Remove</Button
 					>
 				</div>
-				<div>
-					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`}>
+				<div class="inline-flex w-full gap-4">
+					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`} class="grow">
 						<Form.Control>
 							{#snippet children({ props })}
 								<Form.Label
@@ -64,32 +64,32 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
-					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].value`}>
+					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].inline`} class="mt-12">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label><span class="grow">Value</span><span
-										class="text-sm font-light text-muted-foreground"
-										>{$formData.embeds?.[embedIndex]?.fields?.[i]?.name?.length}/1024</span
-									></Form.Label>
-								<Textarea class="h-12" {...props} bind:value={field.value} />
+								<div class="flex items-center gap-2">
+									<Checkbox {...props} bind:checked={field.inline} class="size-4" />
+									<Form.Label>Inline</Form.Label>
+								</div>
 							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
-					<div class="col-span-2">
-						<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].inline`}>
-							<Form.Control>
-								{#snippet children({ props })}
-									<div class="flex items-center gap-2">
-										<Checkbox {...props} bind:checked={field.inline} class="size-4" />
-										<Form.Label>Inline</Form.Label>
-									</div>
-								{/snippet}
-							</Form.Control>
-							<Form.FieldErrors />
-						</Form.Field>
-					</div>
 				</div>
+				<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].value`}>
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label
+								><span class="grow">Value</span><span
+									class="text-sm font-light text-muted-foreground"
+									>{$formData.embeds?.[embedIndex]?.fields?.[i]?.name?.length}/1024</span
+								></Form.Label
+							>
+							<Textarea class="h-12" {...props} bind:value={field.value} />
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
 			</div>
 		{/each}
 	{/if}

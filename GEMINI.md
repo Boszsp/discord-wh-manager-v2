@@ -41,7 +41,21 @@ discord-wh-manager-v2/
 │   ├── lib/
 │   │   ├── assets/              # Static assets like icons
 │   │   ├── components/
-│   │   │   ├── app/             # Application-specific composite components (layouts, nav) (in this folder use  case)
+│   │   │   ├── app/             # Application-specific composite components (layouts, nav)
+│   │   │   │   ├── channel/     # Components related to webhook channels
+│   │   │   │   │   ├── channel-create-dialog.svelte  # Dialog for creating a new webhook channel
+│   │   │   │   │   ├── channel-form-content.svelte   # Form content for webhook message
+│   │   │   │   │   ├── channel-form-embed-fields.svelte # Form for embed fields
+│   │   │   │   │   ├── channel-form-embeds.svelte    # Form for embeds
+│   │   │   │   │   ├── channel-form-profile-thread.svelte # Form for profile and thread
+│   │   │   │   │   ├── channel-form.svelte           # Main form for webhook message
+│   │   │   │   │   └── channel-preview.svelte        # Preview of the webhook message
+│   │   │   │   ├── container/
+│   │   │   │   ├── form/
+│   │   │   │   ├── layout/
+│   │   │   │   ├── nav/
+│   │   │   │   ├── preview/
+│   │   │   │   └── server/      # Components related to servers (groups of webhooks)
 │   │   │   └── ui/              # Generic, reusable UI components (Button, Card, etc.) (Resistrict to modify,read-only)
 │   │   ├── hooks/               # SvelteKit hooks
 │   │   └── utils.ts             # Utility functions (Resistrict to modify,read-only)

@@ -28,12 +28,9 @@
 </script>
 
 <ChannelContainer class="overflow-hidden bg-background">
-	<Resizable.PaneGroup  direction="horizontal">
-		<Resizable.Pane defaultSize={40} class="w-fit" >
-			<ScrollArea
-				orientation="both"
-				class="h-full w-full overflow-hidden text-wrap  break-all"
-			>
+	<Resizable.PaneGroup direction="horizontal">
+		<Resizable.Pane defaultSize={40} class="w-fit">
+			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
