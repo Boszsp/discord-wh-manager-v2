@@ -54,13 +54,13 @@
 			<ScrollArea class="h-full w-full overflow-hidden">
 				<div class="w-full overflow-hidden p-4">
 					<Card
-						class="mb-4 w-full overflow-hidden bg-gradient-to-br from-indigo-800 to-violet-950 p-2"
+						class="mb-4 w-full overflow-hidden bg-gradient-to-br from-indigo-800 to-violet-950 p-4"
 					>
 						<div class="center inline-flex h-full w-full gap-4">
 							<span class="grow">
 								<h3 class="text-lg font-medium">Sent To</h3>
 								<div
-									class="inline-flex w-full items-center gap-1 rounded-md bg-secondary/60 p-2 text-sm"
+									class="inline-flex w-full items-center gap-1 rounded-md bg-input/40 border-t p-2 text-sm"
 								>
 									<HashIcon class="size-4" />
 									<span>Channel: {data?.channel?.name} </span>
@@ -72,8 +72,8 @@
 							</span>
 						</div>
 						<div>
-							<Label>Template</Label>
-							<Autocomplelte />
+							<Label for="template-select">Template</Label>
+							<Autocomplelte class="border-0 border-t mt-2" id="template-select" />
 						</div>
 					</Card>
 					<ChannelForm {form} />
