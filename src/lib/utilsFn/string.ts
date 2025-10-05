@@ -1,4 +1,5 @@
 import { DEFAULT_COLOR_NUM } from "$lib/default";
+import consola from "consola";
 import {
     createTar,
     createTarGzip,
@@ -13,14 +14,31 @@ export const toHex = (num?: number) => {
     return '#' + num.toString(16).padStart(6, '0');
 };
 
-export const toBase64 =  (str:string)=>{
+export const toBase64 = (str: string) => {
     if (btoa) return btoa(str)
     return Buffer.from(str).toString('base64')
 }
 
-export const toBase64Optimize = async (str:string)=>{
-    return toBase64((await createTarGzip([{ name: "data", data: str }])).toString())
+export const toBase64WithGzip = async (str: string) => {
+    try {
+        return toBase64((await createTarGzip([{ name: "data", data: str }])).toString())
+    } catch (e) {
+        consola.error(e)
+        return ""
+    }
+}
 
+export const toBase64Optimize = async (str: string) => {
+    const b1 = toBase64(str)
+    const b2 = await toBase64WithGzip(str)
+    if(b1?.length > b2?.length){
+        return b2
+    }
+    return b1
+}
+
+export const parseBase64ToJson = async (str: string) => {
+    
 }
 
 export const getInitials = (name: string) => {

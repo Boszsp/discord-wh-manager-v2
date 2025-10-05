@@ -25,6 +25,9 @@
 		CardFooter
 	} from '$lib/components/ui/card';
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
+	import { toBase64, toBase64Optimize } from '$lib/utilsFn/string.js';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	const { data } = $props();
 	const form = superForm(data.form, {
@@ -52,7 +55,6 @@
 
 	async function onSm() {
 		const valid = await whValidate();
-		//toBase64Optimize()
 		if (!valid) {
 			if ($whErrors.url) toast.error($whErrors.url[0]);
 			return;
@@ -64,6 +66,14 @@
 			toast.error('Failed to send message');
 		}
 	}
+	formData.subscribe(async () => {
+		try {
+			page.url.searchParams.set('data', await toBase64Optimize(JSON.stringify($formData)));
+			await goto(page.url.toString(),{replaceState:false,invalidateAll:false,keepFocus:true});
+		} catch (e) {
+			console.error(e);
+		}
+	});
 </script>
 
 <DashboardContainer leftWidth={0} rightWidth={100} class="bg-background">
