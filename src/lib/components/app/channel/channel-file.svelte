@@ -12,9 +12,11 @@
 
 	function addFiles(filelist: FileList | null) {
 		if (filelist === null) return;
+		const newFiles = [...files]
 		for (let f of filelist) {
-			files.push(f);
+			newFiles.push(f);
 		}
+		files = newFiles;
 	}
 
 	function removeFile(index: number) {

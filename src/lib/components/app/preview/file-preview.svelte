@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { FileIcon, Paperclip } from 'lucide-svelte';
+    import { FileIcon } from 'lucide-svelte';
 
     const {
         file
@@ -8,10 +8,10 @@
     } = $props();
 </script>
 
-<div class="mt-2 flex items-center gap-2 rounded-md border p-2">
-    <FileIcon class="h-8 w-8" />
+<div class="mt-2 flex items-center gap-2 rounded-md border p-4 bg-card">
+    <FileIcon class="size-10 text-muted-foreground" strokeWidth={2} />
     <div class="flex flex-col">
-        <span class="font-semibold">{file.name}</span>
-        <span class="text-sm text-gray-500">{Math.round(file.size / 1024)} KB</span>
+        <span class="text-blue-400 truncate font-light">{file.name}</span>
+        <span class="text-xs text-muted-foreground font-light">{Math.round(file.size / 1024)} KB</span>
     </div>
 </div>

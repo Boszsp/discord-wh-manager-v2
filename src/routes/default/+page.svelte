@@ -7,6 +7,7 @@
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as Resizable from '$lib/components/ui/resizable';
+	import * as Form from '$lib/components/ui/form';
 	import { cleanUpBlank, sendToWebhook } from '$lib/utilsFn/webhook.js';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -38,11 +39,12 @@
 		{ url: '' },
 		{
 			validators: zod4(z.object({ url: urlSchema })),
-			dataType: 'json'
+			dataType: 'json',
+			validationMethod: 'oninput'
 		}
 	);
 
-	const { form: whData, enhance: whEnhance, validate: whValidate, errors: whErrors } = whForm;
+	const { form: whData, enhance: whEnhance, validateForm: whValidate, errors: whErrors } = whForm;
 
 	let files: File[] = $state([]);
 
@@ -50,6 +52,7 @@
 
 	async function onSm() {
 		const valid = await whValidate();
+		//toBase64Optimize()
 		if (!valid) {
 			if ($whErrors.url) toast.error($whErrors.url[0]);
 			return;
@@ -91,13 +94,21 @@
 							<CardDescription>Please provide a valid Discord webhook URL.</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<form use:whEnhance method="POST">
-								<Input
-									name="url"
-									bind:value={$whData.url}
-									placeholder="https://discord.com/api/webhooks/..."
-								/>
-							</form>
+							<Form.Field form={whForm} name="url">
+								<Form.Control>
+									{#snippet children({ props })}
+										<Form.Label>Webhook URL</Form.Label>
+										<Input
+											{...props}
+											name="url"
+											bind:value={$whData.url}
+											placeholder="https://..."
+										/>
+									{/snippet}
+								</Form.Control>
+								<Form.Description />
+								<Form.FieldErrors />
+							</Form.Field>
 						</CardContent>
 						<CardFooter>
 							<Button class="ml-auto" onclick={onSm}>Sent</Button>

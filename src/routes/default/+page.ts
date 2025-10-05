@@ -4,7 +4,8 @@ import type { PageLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { hookJsonPartial } from '$lib/schema/webhookContentSchema';
 
-export const load: PageLoad = async () => {
+export const load: PageLoad = async ({url}) => {
+    const data = url.searchParams.get('data')
     return {
         form: await superValidate(zod4(hookJsonPartial),{defaults:{
             content:""

@@ -2,7 +2,7 @@ import { MAX_FILE_SIZE } from "$lib/default";
 import { z } from "zod";
 
 
-export const urlSchema = z.string().url("Hook url invalid");
+export const urlSchema = z.url("Hook url invalid").trim();
 
 export const fileSchema = z.instanceof(File).refine((file) => file.size <= MAX_FILE_SIZE, {
     message: `File size cannot be greater than ${MAX_FILE_SIZE / (1024 * 1024)} MB.`,

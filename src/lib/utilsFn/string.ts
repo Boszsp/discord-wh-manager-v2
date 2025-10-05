@@ -1,4 +1,8 @@
 import { DEFAULT_COLOR_NUM } from "$lib/default";
+import {
+    createTar,
+    createTarGzip,
+} from "nanotar";
 
 export function convertToFallbackString(str: string) {
     return str.split(" ").slice(0, 3).flatMap(v => v.slice(0, 1).toUpperCase()).join("")
@@ -9,6 +13,15 @@ export const toHex = (num?: number) => {
     return '#' + num.toString(16).padStart(6, '0');
 };
 
+export const toBase64 =  (str:string)=>{
+    if (btoa) return btoa(str)
+    return Buffer.from(str).toString('base64')
+}
+
+export const toBase64Optimize = async (str:string)=>{
+    return toBase64((await createTarGzip([{ name: "data", data: str }])).toString())
+
+}
 
 export const getInitials = (name: string) => {
     const [firstName, lastName] = name.split(' ');
