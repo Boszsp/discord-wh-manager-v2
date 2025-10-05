@@ -7,6 +7,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import * as Accordion from '$lib/components/ui/accordion';
+	import { ArrowBigDownIcon, ArrowBigUpIcon, Trash2Icon } from 'lucide-svelte';
 
 	let {
 		form,
@@ -58,40 +59,55 @@
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h4 class="text-md font-medium">Fields</h4>
-		<Button onclick={addField} class="h-fit p-1 text-xs" size="sm" type="button">Add Field</Button>
+		<Button onclick={addField} class="h-fit p-1 px-2 text-xs" size="sm" type="button"
+			>Add Field</Button
+		>
 	</div>
 	<Accordion.Root type="multiple" class="flex w-full flex-col gap-2">
 		{#if $formData.embeds?.[embedIndex]?.fields}
 			{#each $formData.embeds[embedIndex].fields as field, i (`embed-${embedIndex}-field-${i}`)}
-				<div class="rounded-lg border bg-secondary p-4 text-card-foreground shadow-sm">
+				<div class="rounded-md bg-secondary p-0 text-card-foreground shadow-sm">
 					<Accordion.Item value={`field-${i}`}>
-						<Accordion.Trigger>
+						<Accordion.Trigger class="px-4">
 							<div class="flex w-full items-center justify-between">
 								<p class="font-semibold">Field {i + 1}</p>
 								<div class="flex gap-2">
 									<Button
-										onclick={() => moveFieldUp(i)}
+										onclick={(e) => {
+											e.stopPropagation();
+											moveFieldUp(i);
+										}}
 										type="button"
 										size="sm"
-										disabled={i === 0}>Up</Button
+										class="h-fit p-1 text-xs"
+										variant="outline"
+										disabled={i === 0}><ArrowBigUpIcon /></Button
 									>
 									<Button
-										onclick={() => moveFieldDown(i)}
+										onclick={(e) => {
+											e.stopPropagation();
+											moveFieldDown(i);
+										}}
 										type="button"
 										size="sm"
 										disabled={i === ($formData.embeds?.[embedIndex]?.fields?.length || 0) - 1}
-										>Down</Button
+										class="h-fit p-1 text-xs"
+										variant="outline"><ArrowBigDownIcon /></Button
 									>
 									<Button
-										onclick={() => removeField(i)}
+										onclick={(e) => {
+											e.stopPropagation();
+											removeField(i);
+										}}
 										type="button"
 										variant="destructive"
-										size="sm">Remove</Button
+										class="h-fit p-1 text-xs"
+										size="sm"><Trash2Icon /></Button
 									>
 								</div>
 							</div>
 						</Accordion.Trigger>
-						<Accordion.Content>
+						<Accordion.Content class="px-4">
 							<div class="inline-flex w-full gap-4">
 								<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`} class="grow">
 									<Form.Control>
@@ -107,11 +123,7 @@
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
-								<Form.Field
-									{form}
-									name={`embeds[${embedIndex}].fields[${i}].inline`}
-									class="mt-12"
-								>
+								<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].inline`} class="mt-12">
 									<Form.Control>
 										{#snippet children({ props })}
 											<div class="flex items-center gap-2">
