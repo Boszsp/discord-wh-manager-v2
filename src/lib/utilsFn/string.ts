@@ -5,9 +5,10 @@ export function convertToFallbackString(str: string) {
 }
 
 export const toHex = (num?: number) => {
-    if (!num) num = DEFAULT_COLOR_NUM 
+    if (!num) num = DEFAULT_COLOR_NUM
     return '#' + num.toString(16).padStart(6, '0');
 };
+
 
 export const getInitials = (name: string) => {
     const [firstName, lastName] = name.split(' ');
@@ -16,3 +17,64 @@ export const getInitials = (name: string) => {
     }
     return firstName[0]
 }
+
+/**
+ * A comparison function for sorting filenames in natural (human) order.
+ * It correctly interprets numeric sequences within strings as numbers.
+ *
+ * Heuristic: Filenames without any numbers are considered "base" files and
+ * will be sorted before filenames with numbers (e.g., 'f.txt' comes before 'f1.txt').
+ *
+ * @param a - The first filename to compare.
+ * @param b - The second filename to compare.
+ * @returns A negative number if a comes before b, a positive number if a comes after b, or 0 if they are equal.
+ */
+export const naturalSort = (a: string, b: string): number => {
+    // --- Heuristic: Base files first ---
+    // If one filename has numbers and the other doesn't, the one without
+    // numbers is considered "smaller" (comes first).
+    const aHasNumbers = /\d/.test(a);
+    const bHasNumbers = /\d/.test(b);
+
+    if (aHasNumbers && !bHasNumbers) {
+        return 1; // b comes first
+    }
+    if (!aHasNumbers && bHasNumbers) {
+        return -1; // a comes first
+    }
+
+    // --- Standard Natural Sort Logic ---
+    // Helper to split a string into text and number parts.
+    const splitIntoParts = (str: string): (string | number)[] => {
+        return str.split(/(\d+)/).map(part => {
+            return /^\d+$/.test(part) ? parseInt(part, 10) : part;
+        });
+    };
+
+    const partsA = splitIntoParts(a);
+    const partsB = splitIntoParts(b);
+
+    const minLength = Math.min(partsA.length, partsB.length);
+
+    for (let i = 0; i < minLength; i++) {
+        const partA = partsA[i];
+        const partB = partsB[i];
+
+        if (typeof partA === 'number' && typeof partB === 'number') {
+            if (partA !== partB) {
+                return partA - partB;
+            }
+        } else if (typeof partA === 'string' && typeof partB === 'string') {
+            const comparison = partA.localeCompare(partB);
+            if (comparison !== 0) {
+                return comparison;
+            }
+        } else {
+            // If one part is a number and the other is a string, the number is considered "smaller".
+            return typeof partA === 'number' ? -1 : 1;
+        }
+    }
+
+    // If all compared parts are equal, the shorter string comes first.
+    return partsA.length - partsB.length;
+};

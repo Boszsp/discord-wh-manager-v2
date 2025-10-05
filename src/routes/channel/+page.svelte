@@ -13,7 +13,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import ChannelSentCard from '$lib/components/app/channel/channel-sent-card.svelte';
 	import ChannelFile from '$lib/components/app/channel/channel-file.svelte';
-	
+
 	const { data } = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
@@ -29,13 +29,16 @@
 	});
 
 	const { form: formData } = form;
-	let files:File[] = $state([])
+	let files: File[] = $state([]);
 
 	const isMoble = new IsMobile();
 
-	export const snapshot: Snapshot<typeof $formData> = {
-		capture: () => $formData,
-		restore: (value) => ($formData = value)
+	export const snapshot: Snapshot<{ formdata: typeof $formData }> = {
+		capture: () => ({ formdata: $formData }),
+		restore: (value) => {
+			const { formdata: SformdatS } = value;
+			$formData = SformdatS;
+		}
 	};
 
 	function onSm() {
@@ -63,7 +66,7 @@
 					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
 					<ChannelSentCard server={data.server} channel={data.channel} onsent={onSm} />
 					<Separator class="my-4" />
-					<ChannelFile />
+					<ChannelFile {files} />
 					<Separator class="mt-8 mb-4" />
 
 					<ChannelForm {form} />

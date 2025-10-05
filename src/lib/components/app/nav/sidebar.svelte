@@ -25,7 +25,7 @@
 
 <aside>
 	<nav class={cn('flex flex-col gap-2 px-4', className)}>
-		{#each sidebarMenu ? [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: !sidebarMenu?.some((v) => v.isSelected) }].concat(sidebarMenu as any) : [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: true }] as menu, i (menu.title + i)}
+		{#each sidebarMenu ? [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: !sidebarMenu?.some((v) => v.isSelected) }].concat(sidebarMenu as any) : [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: true }] as menu, i ("menu-"+menu.title+"-" + i)}
 			<div class={cn('group relative', menu?.class)}>
 				<div
 					class={cn(

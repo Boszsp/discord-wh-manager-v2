@@ -27,7 +27,7 @@
     <ImagePreview images={images} />
 {/if}
 
-{#each files as file (file)}
+{#each files as file,i ('attachment-preview-'+i)}
     {#if typeof file !== 'string'}
         <FilePreview file={file} />
     {/if}
