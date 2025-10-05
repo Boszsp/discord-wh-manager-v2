@@ -31,3 +31,30 @@ export function cleanUpBlank(obj:any) {
 }
 }
 
+
+export async function sendToWebhook(url: string, data: any, files: File[] = []) {
+    const payload = JSON.stringify(data);
+
+    if (files.length > 0) {
+        const formData = new FormData();
+        formData.append('payload_json', payload);
+        files.forEach((file, i) => {
+            formData.append(`files[${i}]`, file);
+        });
+
+        const res = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
+        return res.ok;
+    } else {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: payload,
+        });
+        return res.ok;
+    }
+}

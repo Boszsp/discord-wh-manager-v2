@@ -46,7 +46,7 @@
 
 <div class={cn('rounded-md border-t bg-card p-4', className)}>
 	<div class="mb-2 inline-flex w-full items-end justify-between">
-		<Label class="">Files</Label>
+		<Label class="">Attachment</Label>
 	</div>
 	<div class="inline-flex w-full gap-2">
 		<Input
