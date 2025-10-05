@@ -125,11 +125,16 @@
 							</div>
 						</Accordion.Trigger>
 						<Accordion.Content>
-							<div >
+							<div>
 								<Form.Field {form} name={`embeds[${i}].title`}>
 									<Form.Control>
 										{#snippet children({ props })}
-											<Form.Label>Title</Form.Label>
+											<Form.Label
+												><span class="grow">Title</span><span
+													class="text-sm font-light text-muted-foreground"
+													>{embed?.title?.length ?? 0}/256</span
+												></Form.Label
+											>
 											<Input {...props} bind:value={embed.title} />
 										{/snippet}
 									</Form.Control>
@@ -138,75 +143,87 @@
 								<Form.Field {form} name={`embeds[${i}].description`}>
 									<Form.Control>
 										{#snippet children({ props })}
-											<Form.Label>Description</Form.Label>
-											<Textarea {...props} bind:value={embed.description} class="h-32"  />
+											<Form.Label
+												><span class="grow">Description</span><span
+													class="text-sm font-light text-muted-foreground"
+													>{embed.description?.length ?? 0}/4096</span
+												></Form.Label
+											>
+											<Textarea {...props} bind:value={embed.description} class="h-32" />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
 								<div class="inline-flex w-full gap-4">
-								<Form.Field {form} name={`embeds[${i}].color`} class="w-16">
-									<Form.Control>
-										{#snippet children({ props })}
-											<Form.Label>Color</Form.Label>
-											<Input
-												{...props}
-												type="color"
-												value={toHex(embed.color)}
-												oninput={(e) =>
-													(embed.color = colorCodeToInteger(e?.currentTarget?.value) || 0)}
-											/>
-										{/snippet}
-									</Form.Control>
-									<Form.FieldErrors />
-								</Form.Field>
-								<Form.Field {form} name={`embeds[${i}].url`} class="grow">
-									<Form.Control>
-										{#snippet children({ props })}
-											<Form.Label>URL</Form.Label>
-											<Input {...props} bind:value={embed.url} />
-										{/snippet}
-									</Form.Control>
-									<Form.FieldErrors />
-								</Form.Field>
+									<Form.Field {form} name={`embeds[${i}].color`} class="w-16">
+										<Form.Control>
+											{#snippet children({ props })}
+												<Form.Label>Color</Form.Label>
+												<Input
+													{...props}
+													type="color"
+													value={toHex(embed.color)}
+													oninput={(e) =>
+														(embed.color = colorCodeToInteger(e?.currentTarget?.value) || 0)}
+												/>
+											{/snippet}
+										</Form.Control>
+										<Form.FieldErrors />
+									</Form.Field>
+									<Form.Field {form} name={`embeds[${i}].url`} class="grow">
+										<Form.Control>
+											{#snippet children({ props })}
+												<Form.Label>URL</Form.Label>
+												<Input {...props} bind:value={embed.url} />
+											{/snippet}
+										</Form.Control>
+										<Form.FieldErrors />
+									</Form.Field>
 								</div>
 							</div>
 							<div class="border-t pt-4">
 								<Accordion.Root type="multiple" class="w-full">
-									<Accordion.Item value="author">
-										<Accordion.Trigger>Author</Accordion.Trigger>
-										<Accordion.Content>
-											<Form.Field {form} name={`embeds[${i}].author.name`}>
-												<Form.Control>
-													{#snippet children({ props })}
-														<Form.Label>Name</Form.Label>
-														<Input {...props} bind:value={embed.author.name} />
-													{/snippet}
-												</Form.Control>
-												<Form.FieldErrors />
-											</Form.Field>
-											<div class="inline-flex gap-4">
-											<Form.Field {form} name={`embeds[${i}].author.url`} class="flex-1">
-												<Form.Control>
-													{#snippet children({ props })}
-														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={embed.author.url} />
-													{/snippet}
-												</Form.Control>
-												<Form.FieldErrors />
-											</Form.Field>
-											<Form.Field {form} name={`embeds[${i}].author.icon_url`} class="flex-1">
-												<Form.Control>
-													{#snippet children({ props })}
-														<Form.Label>Icon URL</Form.Label>
-														<Input {...props} bind:value={embed.author.icon_url} />
-													{/snippet}
-												</Form.Control>
-												<Form.FieldErrors />
-											</Form.Field>
-											</div>
-										</Accordion.Content>
-									</Accordion.Item>
+									{#if embed && embed.author && embed.author != undefined}
+										<Accordion.Item value="author">
+											<Accordion.Trigger>Author</Accordion.Trigger>
+											<Accordion.Content>
+												<Form.Field {form} name={`embeds[${i}].author.name`}>
+													<Form.Control>
+														{#snippet children({ props })}
+															<Form.Label
+																><span class="grow">Name</span><span
+																	class="text-sm font-light text-muted-foreground"
+																	>{embed?.author?.name?.length ?? 0}/256</span
+																></Form.Label
+															>
+															<Input {...props} bind:value={embed.author.name as string} />
+														{/snippet}
+													</Form.Control>
+													<Form.FieldErrors />
+												</Form.Field>
+												<div class="inline-flex gap-4">
+													<Form.Field {form} name={`embeds[${i}].author.url`} class="flex-1">
+														<Form.Control>
+															{#snippet children({ props })}
+																<Form.Label>URL</Form.Label>
+																<Input {...props} bind:value={embed.author.url} />
+															{/snippet}
+														</Form.Control>
+														<Form.FieldErrors />
+													</Form.Field>
+													<Form.Field {form} name={`embeds[${i}].author.icon_url`} class="flex-1">
+														<Form.Control>
+															{#snippet children({ props })}
+																<Form.Label>Icon URL</Form.Label>
+																<Input {...props} bind:value={embed.author.icon_url} />
+															{/snippet}
+														</Form.Control>
+														<Form.FieldErrors />
+													</Form.Field>
+												</div>
+											</Accordion.Content>
+										</Accordion.Item>
+									{/if}
 									<Accordion.Item value="thumbnail">
 										<Accordion.Trigger>Thumbnail</Accordion.Trigger>
 										<Accordion.Content>
@@ -241,14 +258,19 @@
 											</Form.Field>
 										</Accordion.Content>
 									</Accordion.Item>
-									
-								<Accordion.Item value="footer">
+
+									<Accordion.Item value="footer">
 										<Accordion.Trigger>Footer</Accordion.Trigger>
 										<Accordion.Content>
 											<Form.Field {form} name={`embeds[${i}].footer.text`}>
 												<Form.Control>
 													{#snippet children({ props })}
-														<Form.Label>Text</Form.Label>
+														<Form.Label
+															><span class="grow">Text</span><span
+																class="text-sm font-light text-muted-foreground"
+																>{embed?.footer?.text?.length ?? 0}/2048</span
+															></Form.Label
+														>
 														<Input {...props} bind:value={embed.footer.text} />
 													{/snippet}
 												</Form.Control>

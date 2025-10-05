@@ -12,8 +12,8 @@ export const filesSchema = fileSchema.array().max(10, "Files length must be less
 
 export const authorSchema = z.object({
     name: z.string().max(256, "Username length must be less than 256 characters"),
-    url: z.string().url("Please enter a valid  URL for the author url"),
-    icon_url: z.string().url("Please enter a valid image URL for the author embed icon"),
+    url: z.string().trim().url("Please enter a valid  URL for the author url"),
+    icon_url: z.string().trim().url("Please enter a valid image URL for the author embed icon"),
 });
 
 export const fieldsSchema = z.object({
@@ -23,7 +23,7 @@ export const fieldsSchema = z.object({
 });
 
 export const embedsSchema = z.object({
-    avatar_url: z.string().url("Please enter a valid image URL for the avatar"),
+    avatar_url: z.string().trim().url("Please enter a valid image URL for the avatar"),
     color: z.number(),
     author: authorSchema,
     title: z.string().max(256, "Title length must be less than 256 characters"),
@@ -32,7 +32,7 @@ export const embedsSchema = z.object({
     fields: fieldsSchema.array().max(25, "Fields length must be less than 25 fields per embed"),
     footer: z.object({ text: z.string().max(2048, "Footer text length must be less than 2048 characters"), icon_url: z.string().url("Please enter a valid image URL for the footer embed icon") }),
     thumbnail: z.object({ url: z.string().url("Please enter a valid image URL for the embed thumbnail") }),
-    url: z.string().url("Please enter a valid  URL for the embed url"),
+    url: z.string().trim().url("Please enter a valid  URL for the embed url"),
 });
 
 export const hookJsonSchema = z

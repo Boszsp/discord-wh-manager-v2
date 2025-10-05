@@ -19,8 +19,8 @@
 
 	function addField() {
 		const newField = {
-			name: 'New Field',
-			value: 'New Value',
+			name: '',
+			value: '',
 			inline: false
 		};
 		const embeds = $formData.embeds || [];
@@ -38,20 +38,27 @@
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
 		<h4 class="text-md font-medium">Fields</h4>
-		<Button onclick={addField} class="text-xs h-fit p-1" size="sm" type="button">Add Field</Button>
+		<Button onclick={addField} class="h-fit p-1 text-xs" size="sm" type="button">Add Field</Button>
 	</div>
 	{#if $formData.embeds?.[embedIndex]?.fields}
 		{#each $formData.embeds[embedIndex].fields as field, i (`embed-${embedIndex}-field-${i}`)}
 			<div class="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
 				<div class="flex items-center justify-between">
 					<p class="font-semibold">Field {i + 1}</p>
-					<Button onclick={() => removeField(i)} type="button" variant="destructive" size="sm">Remove</Button>
+					<Button onclick={() => removeField(i)} type="button" variant="destructive" size="sm"
+						>Remove</Button
+					>
 				</div>
 				<div>
 					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].name`}>
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label>Name</Form.Label>
+								<Form.Label
+									><span class="grow">Name</span><span
+										class="text-sm font-light text-muted-foreground"
+										>{$formData.embeds?.[embedIndex]?.fields?.[i]?.name?.length}/256</span
+									></Form.Label
+								>
 								<Input {...props} bind:value={field.name} />
 							{/snippet}
 						</Form.Control>
@@ -60,9 +67,12 @@
 					<Form.Field {form} name={`embeds[${embedIndex}].fields[${i}].value`}>
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label>Value</Form.Label>
+								<Form.Label><span class="grow">Value</span><span
+										class="text-sm font-light text-muted-foreground"
+										>{$formData.embeds?.[embedIndex]?.fields?.[i]?.name?.length}/1024</span
+									></Form.Label>
 								<Textarea class="h-12" {...props} bind:value={field.value} />
-						{/snippet}
+							{/snippet}
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
@@ -71,7 +81,7 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<div class="flex items-center gap-2">
-										<Checkbox {...props} bind:checked={field.inline} class="size-4"/>
+										<Checkbox {...props} bind:checked={field.inline} class="size-4" />
 										<Form.Label>Inline</Form.Label>
 									</div>
 								{/snippet}

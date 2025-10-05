@@ -18,7 +18,7 @@
 	<Form.Control>
 		{#snippet children({ props })}
 			<Form.Label class="inline-flex w-full justify-between"
-				><span class="w-full">Content</span><span class="text-sm font-light text-muted-foreground"
+				><span class="grow">Content</span><span class="text-sm font-light text-muted-foreground"
 					>{$formData.content?.length}/2000</span
 				></Form.Label
 			>
