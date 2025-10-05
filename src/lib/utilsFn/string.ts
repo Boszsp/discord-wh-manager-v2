@@ -1,7 +1,8 @@
 import { DEFAULT_COLOR_NUM } from "$lib/default";
+import { jsonSchema } from "$lib/schema/jsonSchema";
 import consola from "consola";
 import {
-    createTar,
+    parseTarGzip,
     createTarGzip,
 } from "nanotar";
 
@@ -31,15 +32,24 @@ export const toBase64WithGzip = async (str: string) => {
 export const toBase64Optimize = async (str: string) => {
     const b1 = toBase64(str)
     const b2 = await toBase64WithGzip(str)
-    if(b1?.length > b2?.length){
+    if (b1?.length > b2?.length) {
         return b2
     }
     return b1
 }
 
 export const parseBase64ToJson = async (str: string) => {
-    
+    const normalParse = atob(str)
+    try {
+        return jsonSchema.safeParse(JSON.parse(normalParse))?.data
+    } catch (e) {
+        consola.error(e)
+        return jsonSchema.safeParse({"content":""})?.data
+    }
+
 }
+
+
 
 export const getInitials = (name: string) => {
     const [firstName, lastName] = name.split(' ');

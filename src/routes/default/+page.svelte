@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
-	import { hookJsonPartial, urlSchema } from '$lib/schema/webhookContentSchema';
+	import { hookJsonPartial, urlSchema, type hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
 	import Preview from '$lib/components/app/preview/preview.svelte';
@@ -25,16 +25,22 @@
 		CardFooter
 	} from '$lib/components/ui/card';
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
-	import { toBase64, toBase64Optimize } from '$lib/utilsFn/string.js';
+	import { parseBase64ToJson, toBase64Optimize } from '$lib/utilsFn/string.js';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import type { PageProps } from './$types';
+	import { onMount } from 'svelte';
 
-	const { data } = $props();
-	const form = superForm(data.form, {
-		dataType: 'json',
-		validators: zod4(hookJsonPartial),
-		validationMethod: 'oninput'
-	});
+	const {data}:PageProps = $props()
+
+	const form = superForm(
+		data.formData as hookJsonPartialSchemaType,
+		{
+			dataType: 'json',
+			validators: zod4(hookJsonPartial),
+			validationMethod: 'oninput'
+		}
+	);
 
 	const { form: formData, enhance } = form;
 
@@ -66,13 +72,23 @@
 			toast.error('Failed to send message');
 		}
 	}
-	formData.subscribe(async () => {
+	async function updateSearchParam() {
 		try {
 			page.url.searchParams.set('data', await toBase64Optimize(JSON.stringify($formData)));
-			await goto(page.url.toString(),{replaceState:false,invalidateAll:false,keepFocus:true});
+			goto(page.url.toString(), {
+				keepFocus: true,
+				replaceState: true,
+				invalidateAll: false
+			});
 		} catch (e) {
 			console.error(e);
 		}
+	}
+
+	onMount(() => {
+		formData.subscribe(() => {
+			updateSearchParam();
+		});
 	});
 </script>
 
