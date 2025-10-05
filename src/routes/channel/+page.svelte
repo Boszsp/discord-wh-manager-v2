@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
 	import { hookJsonPartial } from '$lib/schema/webhookContentSchema';
@@ -13,6 +13,9 @@
 	import { cleanUpBlank } from '$lib/utilsFn/webhook.js';
 	import { Label } from '$lib/components/ui/label';
 	import Autocomplelte from '$lib/components/app/form/autocomplelte.svelte';
+	import type { Snapshot } from './$types';
+	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
+
 	const { data } = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
@@ -32,10 +35,17 @@
 		console.log(cleanUpBlank($formData))
 		
 	}
+
+    const isMoble = new IsMobile()
+
+	export const snapshot: Snapshot<typeof $formData> = {
+        capture: () => $formData,
+        restore: (value) => (console.log(value), $formData = value)
+      };
 </script>
 
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
-	<Resizable.PaneGroup direction="horizontal">
+	<Resizable.PaneGroup direction={isMoble.current ? "vertical" : "horizontal"}>
 		<Resizable.Pane defaultSize={40} class="w-fit">
 			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
 				<div class="p-4">
@@ -50,11 +60,11 @@
 			</ScrollArea>
 		</Resizable.Pane>
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={60} class="w-fit overflow-hidden">
+		<Resizable.Pane defaultSize={60} class="md:w-fit overflow-hidden">
 			<ScrollArea class="h-full w-full overflow-hidden">
 				<div class="w-full overflow-hidden p-4">
 					<Card
-						class="mb-4 w-full overflow-hidden bg-gradient-to-br from-indigo-800 to-violet-950 p-4"
+						class="mb-4 w-full overflow-hidde bg-indigo-800 from-indigo-800 to-violet-950 p-4 bg-gradient-to-br bg-[url('/banner-1.png')] bg-cover"
 					>
 						<div class="center inline-flex h-full w-full gap-4">
 							<span class="grow">

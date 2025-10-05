@@ -7,14 +7,17 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { channelCurId } from '$lib/store/channel.svelte';
 	import ChannelCreateDialog from '../channel/channel-create-dialog.svelte';
-	export interface channelsProps {
+	import { page } from '$app/state';
+	/*export interface channelsProps {
 		title: string;
 		id: number;
-	}
-	const { name = 'Server Name', channels = [] }: { name?: string; channels?: channelsProps[] } =
-		$props();
+	}*/
+	const {
+		name = 'Server Name',
+		channels = ['temp', 'temp2']
+	}: { name?: string; channels?: string[] } = $props();
 	let selectedId = $state(-1);
-	let isOpenCreateChannelDialog:boolean = $state(false);
+	//let isOpenCreateChannelDialog:boolean = $state(false);
 	channelCurId.subscribe((v) => (selectedId = v?.cid ?? -1));
 </script>
 
@@ -23,9 +26,8 @@
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
 	<ScrollArea class="h-full p-2">
-		
-		<ChannelCreateDialog  />
-		
+		<ChannelCreateDialog />
+
 		<Separator class="my-2" />
 		<div>
 			<small class="px-2 text-sm leading-none font-medium text-muted-foreground"
@@ -33,12 +35,19 @@
 			>
 		</div>
 		<div class="flex flex-col gap-1">
-			<Button
-				onclick={() => goto('/server')}
-				size="sm"
-				variant={selectedId === 1 ? 'secondary' : 'ghost'}
-				class="w-full justify-start text-start"><HashIcon />Ch1</Button
-			>
+			{#each channels as channel, i (`${channel}-${i}`)}
+				{#key selectedId}
+					<Button
+						onclick={() => {
+							page.url.searchParams.set('channel', i + 1 + '');
+							goto(page.url.toString(),{invalidate:["channel:get"]});
+						}}
+						size="sm"
+						variant={selectedId === i + 1 ? 'secondary' : 'ghost'}
+						class="w-full justify-start text-start"><HashIcon />{channel}</Button
+					>
+				{/key}
+			{/each}
 		</div>
 	</ScrollArea>
 </nav>

@@ -12,6 +12,7 @@
         rightWidth?:number
     } = $props();
 
+    
 </script>
  
 <Resizable.PaneGroup class="h-full" direction="horizontal">
