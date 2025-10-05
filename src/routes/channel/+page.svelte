@@ -8,13 +8,15 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { cleanUpBlank } from '$lib/utilsFn/webhook.js';
-	import type { Snapshot } from './$types';
+	import type { Snapshot, PageProps } from './$types';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import ChannelSentCard from '$lib/components/app/channel/channel-sent-card.svelte';
 	import ChannelFile from '$lib/components/app/channel/channel-file.svelte';
+	import { fromStore } from '$lib/store/form.svelte';
+	import { Button } from '$lib/components/ui/button';
 
-	const { data } = $props();
+	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
 		dataType: 'json',
 		validators: zod4(hookJsonPartial),
@@ -25,8 +27,7 @@
 			console.log(inp.formData);
 			return false;
 		},
-		clearOnSubmit: 'errors',
-		
+		clearOnSubmit: 'errors'
 	});
 
 	const { form: formData } = form;
@@ -42,9 +43,10 @@
 		}
 	};
 
+	formData.subscribe((v) => fromStore.set(v));
+
 	function onSm() {
 		console.log(cleanUpBlank($formData));
-		
 	}
 </script>
 
@@ -55,7 +57,7 @@
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
-						<Preview content={$formData} files={files} />
+						<Preview content={$formData} {files} />
 						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
 						{files.length}
 					</div>
@@ -66,12 +68,30 @@
 		<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
 			<ScrollArea class="h-full w-full overflow-hidden">
 				<div class="w-full overflow-hidden p-4">
-					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
+					<h3 class="text-lg font-medium">Sent To</h3>
+					<p class="mb-2 text-xs text-muted-foreground">
+						Your content will sent to displayed channel. |
+						ข้อมูลของคุณจะถูกส่งไปยังช่องทางที่แสดงอยู่นี้.
+					</p>
 					<ChannelSentCard server={data.server} channel={data.channel} onsent={onSm} />
 					<Separator class="my-4" />
-					<ChannelFile bind:files={files} />
+					<div class="flex gap-4">
+						<div>
+							<h3 class="text-lg font-medium">Form Data</h3>
+							<p class="mb-2 text-xs text-muted-foreground">
+								Type your content here. | กรอกข้อมูลของคุณที่นี่.
+							</p>
+						</div>
+						<Button
+							class="ml-auto"
+							variant="outline"
+							onclick={() => {
+								$formData = { content: '' };
+							}}>Clear</Button
+						>
+					</div>
+					<ChannelFile bind:files />
 					<Separator class="mt-8 mb-4" />
-
 					<ChannelForm {form} />
 				</div>
 			</ScrollArea>
