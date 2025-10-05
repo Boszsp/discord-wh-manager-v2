@@ -13,11 +13,26 @@
 	import { goto } from '$app/navigation';
 </script>
 
-<DashboardContainer class="bg-background">
+<DashboardContainer class="relative bg-black bg-gradient-to-br from-indigo-950/0 to-indigo-800/60">
+	<img alt="bg" src="/bg-3.jpg" class="absolute h-full w-full object-top brightness-105" />
 	<ScrollArea class="h-full w-full">
-		<div class="flex flex-col gap-4 p-8">
-			<h3 class="scroll-m-20 text-2xl font-semibold text-center tracking-tight">Feature</h3>
-			<Card>
+		<div class="sticky top-0 border-b p-2 backdrop-blur-md">
+			<Button size="sm" variant="ghost" onclick={()=>goto('/')}>
+				<img alt="flat logo" src="/logo-flat.png" class="w-4" />
+				DWH v.2</Button
+			>
+		</div>
+		<div class="flex h-98 flex-col items-center-safe justify-center-safe">
+			<img alt="flat logo" src="/logo-flat.png" class="mb-12 w-32" />
+			<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
+				Welcome to DWH v2.x
+			</h1>
+			<p class="text-xl text-foreground/80">Improve UI and system from v.1</p>
+		</div>
+		<div class="flex flex-col gap-4 bg-gradient-to-b from-black/0 to-black/80 to-20% p-8">
+			<h3 class="scroll-m-20 text-center text-2xl font-semibold tracking-tight">Feature</h3>
+			<div class="inline-flex w-full gap-6">
+			<Card class="border-none flex-1 bg-secondary">
 				<CardHeader>
 					<div class="size-fit rounded-md border p-2">
 						<ServerIcon class="size-8" />
@@ -32,11 +47,8 @@
 						version control, and comprehensive insights into server infrastructure.
 					</CardDescription>
 				</CardHeader>
-				<CardFooter class="justify-end">
-					<Button  onclick={()=>goto('/server')}>Goto Server Setting <ChevronRightIcon /></Button>
-				</CardFooter>
 			</Card>
-			<Card>
+			<Card class="border-none flex-1 bg-secondary">
 				<CardHeader>
 					<div class="size-fit rounded-md border p-2">
 						<LayoutTemplateIcon class="size-8" />
@@ -52,11 +64,8 @@
 						across different platforms and integrations.
 					</CardDescription>
 				</CardHeader>
-				<CardFooter class="justify-end">
-					<Button  onclick={()=>goto('/template')}>Goto Templates Setting <ChevronRightIcon /></Button>
-				</CardFooter>
 			</Card>
-			<Card>
+			<Card class="border-none flex-1 bg-secondary">
 				<CardHeader>
 					<div class="size-fit rounded-md border p-2">
 						<CogIcon class="size-8" />
@@ -71,10 +80,8 @@
 						version control, and comprehensive insights into server infrastructure.
 					</CardDescription>
 				</CardHeader>
-				<CardFooter class="justify-end">
-					<Button  onclick={()=>goto('/setting')}>Goto Server Setting <ChevronRightIcon /></Button>
-				</CardFooter>
 			</Card>
+			</div>
 		</div>
 	</ScrollArea>
 </DashboardContainer>
