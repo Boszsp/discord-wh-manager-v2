@@ -23,6 +23,7 @@
 		CardContent,
 		CardFooter
 	} from '$lib/components/ui/card';
+	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
 
 	const { data } = $props();
 	const form = superForm(data.form, {
@@ -62,48 +63,53 @@
 	}
 </script>
 
-<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'} class="overflow-hidden bg-background">
-	<Resizable.Pane defaultSize={40} class="w-fit">
-		<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
-			<div class="p-4">
-				<h3 class="mb-4 text-lg font-medium">Preview</h3>
-				<div>
-					<Preview content={$formData} {files} />
-					<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
-					{files.length}
+<DashboardContainer leftWidth={0} rightWidth={100} class="bg-background">
+	<Resizable.PaneGroup
+		direction={isMoble.current ? 'vertical' : 'horizontal'}
+		class="overflow-hidden bg-background"
+	>
+		<Resizable.Pane defaultSize={40} class="w-fit">
+			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
+				<div class="p-4">
+					<h3 class="mb-4 text-lg font-medium">Preview</h3>
+					<div>
+						<Preview content={$formData} {files} />
+						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
+						{files.length}
+					</div>
 				</div>
-			</div>
-		</ScrollArea>
-	</Resizable.Pane>
-	<Resizable.Handle withHandle />
-	<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
-		<ScrollArea class="h-full w-full overflow-hidden">
-			<div class="w-full overflow-hidden p-4">
-				<h3 class="mb-2 text-lg font-medium">Sent To</h3>
-				<Card class="bg-indigo-600  bg-[url('/banner-1.png')]">
-					<CardHeader>
-						<CardTitle>Webhook URL</CardTitle>
-						<CardDescription>Please provide a valid Discord webhook URL.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<form use:whEnhance method="POST">
-							<Input
-								name="url"
-								bind:value={$whData.url}
-								placeholder="https://discord.com/api/webhooks/..."
-							/>
-						</form>
-					</CardContent>
-					<CardFooter>
-						<Button class="ml-auto" onclick={onSm}>Sent</Button>
-					</CardFooter>
-				</Card>
-				<Separator class="my-4" />
-				<ChannelFile bind:files />
-				<Separator class="mt-8 mb-4" />
+			</ScrollArea>
+		</Resizable.Pane>
+		<Resizable.Handle withHandle />
+		<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
+			<ScrollArea class="h-full w-full overflow-hidden">
+				<div class="w-full overflow-hidden p-4">
+					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
+					<Card class="bg-indigo-600  bg-[url('/banner-1.png')]">
+						<CardHeader>
+							<CardTitle>Webhook URL</CardTitle>
+							<CardDescription>Please provide a valid Discord webhook URL.</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<form use:whEnhance method="POST">
+								<Input
+									name="url"
+									bind:value={$whData.url}
+									placeholder="https://discord.com/api/webhooks/..."
+								/>
+							</form>
+						</CardContent>
+						<CardFooter>
+							<Button class="ml-auto" onclick={onSm}>Sent</Button>
+						</CardFooter>
+					</Card>
+					<Separator class="my-4" />
+					<ChannelFile bind:files />
+					<Separator class="mt-8 mb-4" />
 
-				<ChannelForm {form} />
-			</div>
-		</ScrollArea>
-	</Resizable.Pane>
-</Resizable.PaneGroup>
+					<ChannelForm {form} />
+				</div>
+			</ScrollArea>
+		</Resizable.Pane>
+	</Resizable.PaneGroup>
+</DashboardContainer>
