@@ -24,7 +24,7 @@
 		<img
 			src="/bg-1.png"
 			alt="placeholder"
-			class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.6]"
+			class="absolute inset-0 h-full w-full object-cover"
 		/>
 	</div>
 	<div class="flex flex-col gap-4 p-6 md:p-10">

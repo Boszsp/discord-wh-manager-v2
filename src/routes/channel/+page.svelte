@@ -25,7 +25,8 @@
 			console.log(inp.formData);
 			return false;
 		},
-		clearOnSubmit: 'errors'
+		clearOnSubmit: 'errors',
+		
 	});
 
 	const { form: formData } = form;
@@ -43,6 +44,7 @@
 
 	function onSm() {
 		console.log(cleanUpBlank($formData));
+		
 	}
 </script>
 
@@ -53,8 +55,9 @@
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
-						<Preview content={$formData} />
+						<Preview content={$formData} files={files} />
 						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
+						{files.length}
 					</div>
 				</div>
 			</ScrollArea>
@@ -66,7 +69,7 @@
 					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
 					<ChannelSentCard server={data.server} channel={data.channel} onsent={onSm} />
 					<Separator class="my-4" />
-					<ChannelFile {files} />
+					<ChannelFile bind:files={files} />
 					<Separator class="mt-8 mb-4" />
 
 					<ChannelForm {form} />
