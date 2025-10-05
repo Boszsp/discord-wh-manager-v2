@@ -32,7 +32,7 @@
 </script>
 
 <Card
-	class="overflow-hidde mb-4 w-full bg-indigo-800 bg-gradient-to-br bg-[url('/banner-1.png')] from-indigo-800 to-violet-950 bg-cover p-4"
+	class="overflow-hidden mb-4 w-full bg-indigo-800 bg-gradient-to-br bg-[url('/banner-1.png')] from-indigo-800 to-violet-950 bg-cover p-4"
 >
 	<div class="center inline-flex h-full w-full gap-4">
 		<span class="grow">
