@@ -15,6 +15,8 @@
 	import Autocomplelte from '$lib/components/app/form/autocomplelte.svelte';
 	import type { Snapshot } from './$types';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
+	import { Separator } from '$lib/components/ui/separator';
+	import { channelCurId } from '$lib/store/channel.svelte';
 
 	const { data } = $props();
 	const form = superForm(data.form, {
@@ -31,21 +33,20 @@
 	});
 
 	const { form: formData } = form;
-	function onSm(){
-		console.log(cleanUpBlank($formData))
-		
+	function onSm() {
+		console.log(cleanUpBlank($formData));
 	}
 
-    const isMoble = new IsMobile()
+	const isMoble = new IsMobile();
 
 	export const snapshot: Snapshot<typeof $formData> = {
-        capture: () => $formData,
-        restore: (value) => (console.log(value), $formData = value)
-      };
+		capture: () => $formData,
+		restore: (value) => ($formData = value)
+	};
 </script>
 
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
-	<Resizable.PaneGroup direction={isMoble.current ? "vertical" : "horizontal"}>
+	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 		<Resizable.Pane defaultSize={40} class="w-fit">
 			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
 				<div class="p-4">
@@ -60,32 +61,34 @@
 			</ScrollArea>
 		</Resizable.Pane>
 		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={60} class="md:w-fit overflow-hidden">
+		<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
 			<ScrollArea class="h-full w-full overflow-hidden">
 				<div class="w-full overflow-hidden p-4">
+					<h3 class="mb-2 text-lg font-medium">Sent To</h3>
+
 					<Card
-						class="mb-4 w-full overflow-hidde bg-indigo-800 from-indigo-800 to-violet-950 p-4 bg-gradient-to-br bg-[url('/banner-1.png')] bg-cover"
+						class="overflow-hidde mb-4 w-full bg-indigo-800 bg-gradient-to-br bg-[url('/banner-1.png')] from-indigo-800 to-violet-950 bg-cover p-4"
 					>
 						<div class="center inline-flex h-full w-full gap-4">
 							<span class="grow">
-								<h3 class="text-lg font-medium">Sent To</h3>
 								<div
-									class="inline-flex w-full items-center gap-1 rounded-md bg-input/40 border-t p-2 text-sm"
+									class="inline-flex w-full items-center gap-1 rounded-md border-t bg-input/40 p-2 text-sm"
 								>
 									<HashIcon class="size-4" />
 									<span>Channel: {data?.channel?.name} </span>
 									<span>(Server: {data?.server?.name} ) </span>
 								</div>
 							</span>
-							<span class="h-16">
+							<span>
 								<Button onclick={onSm} class="h-full"><SendIcon /></Button>
 							</span>
 						</div>
 						<div>
 							<Label for="template-select">Template</Label>
-							<Autocomplelte class="border-0 border-t mt-2" id="template-select" />
+							<Autocomplelte class="mt-2 border-0 border-t" id="template-select" />
 						</div>
 					</Card>
+					<Separator class="my-4" />
 					<ChannelForm {form} />
 				</div>
 			</ScrollArea>
