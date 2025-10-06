@@ -64,17 +64,17 @@
 <DashboardContainer>
 	<ScrollArea class="h-full w-full overflow-hidden bg-background">
 		<div class=" ">
-			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2">
+			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2 sticky top-0 bg-background">
 				<span class="inline-flex gap-2">
 					<LayoutTemplateIcon class="size-4" />
 					<CardTitle>Manage Templates</CardTitle>
 				</span>
 				<Button variant="outline" size="sm" onclick={openCreateDialog} >New With Json</Button>
 			</div>
-			<h3 class="mb-4 px-4 text-lg font-medium">Available Templates</h3>
+			<h3 class="mb-4 mt-4 px-4 text-lg font-medium">Available Templates</h3>
 
 			{#if $templateStore.length > 0}
-				<div class="mt-8 px-4">
+				<div class="px-4 mb-8">
 					<div class="flex flex-col gap-4">
 						{#each $templateStore as template (template.name)}
 							<TemplatePreview {template} />
