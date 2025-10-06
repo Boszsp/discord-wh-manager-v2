@@ -2,6 +2,9 @@
 
 @import 'tw-animate-css';
 
+@import '@fontsource-variable/noto-sans-thai-looped';
+@import '@fontsource-variable/source-code-pro';
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -111,12 +114,31 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-theme-accent: var(--theme-accent);
+
+	--font-sans: 'Noto Sans Thai Looped Variable',
+		ui-sans-serif,
+		system-ui,
+		sans-serif,
+		"Apple Color Emoji",
+		"Segoe UI Emoji",
+		"Segoe UI Symbol",
+		"Noto Color Emoji";
+
+	--font-mono: 'Source Code Pro Variable', ui-monospace,
+		SFMono-Regular,
+		Menlo,
+		Monaco,
+		Consolas,
+		"Liberation Mono",
+		"Courier New",
+		monospace;
 }
 
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
 	}
+
 	body {
 		@apply bg-background text-foreground;
 	}
