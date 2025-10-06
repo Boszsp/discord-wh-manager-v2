@@ -90,6 +90,7 @@
 							variant="outline"
 							onclick={() => {
 								$formData = { content: '' };
+								files = [];
 							}}>Clear</Button
 						>
 					</div>
