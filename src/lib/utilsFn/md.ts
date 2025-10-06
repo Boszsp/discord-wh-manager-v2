@@ -4,7 +4,6 @@ import markedShiki from 'marked-shiki'
 import { codeToHtml } from 'shiki'
 export async function convertMdToHTML(str: string) {
     function processAllTokens(tokens: TokensList | Token[]): TokensList | Token[] {
-        console.log(tokens)
         return tokens.map((v) => {
             if (v.type === "heading" && v.raw.startsWith("####")) {
                 v.type = "paragraph"
@@ -12,7 +11,6 @@ export async function convertMdToHTML(str: string) {
                 if (v.tokens?.[0] && v.tokens?.[0])
                     (v.tokens[0] as any).text = v.text
             }
-            console.log(v)
             return v
         })
     }
@@ -21,9 +19,15 @@ export async function convertMdToHTML(str: string) {
         markedShiki({
             async highlight(code, lang) {
                 return await codeToHtml(code, {
-                    lang, theme: 'github-dark-default' })
+                    lang, theme: 'github-dark-dimmed'
+                })?.catch(
+                    async () => await codeToHtml(code, {
+                        lang: "", theme: 'github-dark-dimmed'
+                    })
+                )
             },
-            container: `<figure class="highlighted-code">%s</figure>`}
+            container: `<figure class="highlighted-code">%s</figure>`
+        }
         )
     )
 
