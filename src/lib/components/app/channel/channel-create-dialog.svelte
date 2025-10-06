@@ -2,7 +2,6 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as d from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { createEventDispatcher } from 'svelte';
 	import { Hash, CirclePlusIcon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 	import { webhookSchema } from '$lib/schema/webhookSchema';
@@ -22,11 +21,13 @@
 
 	let open = $state(false);
 
-	const dispatch = createEventDispatcher();
+	let {
+		onCreateChannel = () => {}
+	}: { onCreateChannel: (detail: { name: string; url: string }) => void } = $props();
 
 	function createChannel() {
 		if (!$formData.name || !$formData.url || $errors.name || $errors.url) return;
-		dispatch('createChannel', { name: $formData.name, url: $formData.url });
+		onCreateChannel({ name: $formData.name, url: $formData.url });
 		$formData.name = '';
 		$formData.url = '';
 		open = false;

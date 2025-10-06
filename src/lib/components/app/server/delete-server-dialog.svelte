@@ -3,17 +3,14 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import type { Server } from '../types';
-	import { createEventDispatcher } from 'svelte';
 
-	const dispatch = createEventDispatcher();
-
-	let { open = $bindable(false), serverToDelete = $bindable<Server | null>(null) } = $props();
+	let { open = $bindable(false), serverToDelete = $bindable<Server | null>(null), onConfirm = () => {} } = $props();
 
 	let deleteConfirmName = $state('');
 
 	function confirmDelete() {
 		if (serverToDelete && deleteConfirmName === serverToDelete.name) {
-			dispatch('confirm');
+			onConfirm();
 			closeDeleteDialog();
 		} else {
 			alert('Server name does not match.');

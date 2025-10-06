@@ -23,12 +23,11 @@
 		servers.filter((server) => server.name.toLowerCase().includes(searchTerm.toLowerCase()))
 	);
 
-	function createServer(event: CustomEvent<{ name: string }>) {
-		servers.unshift({ id: crypto.randomUUID(), name: event.detail.name });
+	function createServer({ name }: { name: string }) {
+		servers.unshift({ id: crypto.randomUUID(), name: name });
 	}
 
-	function saveServer(event: CustomEvent<{ id: string; name: string; color: string }>) {
-		const { id, name, color } = event.detail;
+	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
 		const index = servers.findIndex((s) => s.id === id);
 		if (index !== -1) {
 			servers[index].name = name;
@@ -36,8 +35,7 @@
 		}
 	}
 
-	function deleteServer(event: CustomEvent<{ id: string }>) {
-		const { id } = event.detail;
+	function deleteServer({ id }: { id: string }) {
 		serverToDelete = servers.find((s) => s.id === id) ?? null;
 		isDeleteDialogOpen = true;
 	}
@@ -51,7 +49,7 @@
 
 <PageTransition />
 <DashboardContainer class="bg-background">
-	<ServerPageHeader on:createServer={createServer} />
+	<ServerPageHeader onCreateServer={createServer} />
 	<div class="py-4">
 		<Card.Content class="flex max-w-full flex-col gap-4">
 			<div class="flex justify-between gap-2">
@@ -65,9 +63,9 @@
 				All Server | เซิร์ฟเวอร์ทั้งหมด - {filteredServers?.length}
 			</small>
 
-			<ServerList servers={filteredServers} on:save={saveServer} on:delete={deleteServer} />
+			<ServerList servers={filteredServers} onSave={saveServer} onDelete={deleteServer} />
 		</Card.Content>
 	</div>
 </DashboardContainer>
 
-<DeleteServerDialog bind:open={isDeleteDialogOpen} bind:serverToDelete on:confirm={confirmDelete} />
+<DeleteServerDialog bind:open={isDeleteDialogOpen} bind:serverToDelete onConfirm={confirmDelete} />

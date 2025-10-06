@@ -30,7 +30,12 @@
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
 	<ScrollArea class="h-full p-2">
-		<ChannelCreateDialog />
+		<ChannelCreateDialog
+			onCreateChannel={(e) => {
+				// TODO: Implement create channel logic
+				console.log(e);
+			}}
+		/>
 
 		<Separator class="my-2" />
 		<div>

@@ -6,13 +6,10 @@
 	import { fly } from 'svelte/transition';
 	import { cn } from '$lib/utils';
 	import type { Server } from '../types';
-	import { createEventDispatcher } from 'svelte';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import { colorNameToHex } from '$lib/utilsFn/color';
 
-	const dispatch = createEventDispatcher();
-
-	let { server }: { server: Server } = $props();
+	let { server, onSave = () => {}, onDelete = () => {} }: { server: Server, onSave?: (detail: { id: string; name: string; color: string }) => void, onDelete?: (detail: { id: string }) => void } = $props();
 
 	let editingName = $state('');
 	let editingColor = $state('');
@@ -28,7 +25,7 @@
 
 	function saveEdit() {
 		if (!editingName) return;
-		dispatch('save', { id: server.id, name: editingName , color: editingColor});
+		onSave({ id: server.id, name: editingName , color: editingColor});
 		cancelEdit();
 	}
 
@@ -43,7 +40,7 @@
 	}
 
 	function deleteServer() {
-		dispatch('delete', { id: server.id });
+		onDelete({ id: server.id });
 	}
 </script>
 

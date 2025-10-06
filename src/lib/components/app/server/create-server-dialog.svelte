@@ -2,7 +2,6 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { createEventDispatcher } from 'svelte';
 	import { PlusIcon, ServerIcon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 	import { serverSchema } from '$lib/schema/serverSchema';
@@ -11,11 +10,15 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 
+	let {
+		onCreateServer = (detail: { name: string ,color:string}) => {}
+	}: { onCreateServer:(detail: { name: string ,color:string}) => void} = $props();
+
 	const form = superForm(
 		{ name: '', color: '#2d2829' },
 		{
 			validators: zod4(serverSchema),
-			validationMethod:"oninput"
+			validationMethod: 'oninput'
 		}
 	);
 
@@ -23,11 +26,9 @@
 
 	let open = $state(false);
 
-	const dispatch = createEventDispatcher();
-
 	function createServer() {
 		if (!$formData.name || $errors.name) return;
-		dispatch('createServer', { name: $formData.name });
+		onCreateServer({name:$formData.name, color:$formData.color});
 		$formData.name = '';
 		open = false;
 	}
@@ -81,7 +82,7 @@
 				</Form.Control>
 				<Form.Description>
 					<code
-						class="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-sans text-sm font-semibold mr-1"
+						class="relative mr-1 rounded bg-muted px-[0.3rem] py-[0.2rem] font-sans text-sm font-semibold"
 					>
 						{convertToFallbackString($formData.name)}
 					</code>will be displayed as the server icon.

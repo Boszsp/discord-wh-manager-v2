@@ -69,11 +69,12 @@ discord-wh-manager-v2/
 └── README.md
 ```
 
-## 3. Additional Docs You Must Read
+## 3. Additional Docs You Must Read!!
 - https://svelte.dev/docs/kit/introduction
 - https://svelte.dev/docs/svelte/overview
 - https://shadcn-svelte.com/docs #For component in /ui
 - https://tailwindcss.com/
+- https://svelte.dev/docs/svelte/v5-migration-guide
 
 ## 4. Rule 
 - respect old code , code base , tech stack
