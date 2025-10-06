@@ -68,6 +68,14 @@ export const parseBase64ToJson = async (str: string) => {
 
 }
 
+export function extractVariables(content: string): string[] {
+    const regex = /{{\s*(\w+)\s*}}/g;
+    const matches = content.match(regex);
+    if (!matches) {
+        return [];
+    }
+    return [...new Set(matches.map(match => match.replace(/{|}/g, "").trim()))];
+}
 
 
 export const getInitials = (name: string) => {
