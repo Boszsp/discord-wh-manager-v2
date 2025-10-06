@@ -27,11 +27,12 @@
 		servers.unshift({ id: crypto.randomUUID(), name: event.detail.name });
 	}
 
-	function saveServer(event: CustomEvent<{ id: string; name: string }>) {
-		const { id, name } = event.detail;
+	function saveServer(event: CustomEvent<{ id: string; name: string; color: string }>) {
+		const { id, name, color } = event.detail;
 		const index = servers.findIndex((s) => s.id === id);
 		if (index !== -1) {
 			servers[index].name = name;
+			servers[index].color = color;
 		}
 	}
 
@@ -47,7 +48,8 @@
 		}
 	}
 </script>
-<PageTransition/>
+
+<PageTransition />
 <DashboardContainer class="bg-background">
 	<ServerPageHeader on:createServer={createServer} />
 	<div class="py-4">

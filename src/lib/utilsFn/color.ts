@@ -39,6 +39,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 export function colorNameToHex(name: string): string | null {
+    if (name.startsWith("#")) return name.toLowerCase()
     return COLOR_MAP[name.toLowerCase()] ?? null;
 }
 

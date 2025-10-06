@@ -15,16 +15,20 @@
 	let { server }: { server: Server } = $props();
 
 	let editingName = $state('');
+	let editingColor = $state('');
+
 	let isEditing = $state(false);
 
 	function startEditing() {
 		isEditing = true;
 		editingName = server.name;
+		editingColor = colorNameToHex( server.color ?? 'black') ?? '#5865F2' ;
+
 	}
 
 	function saveEdit() {
 		if (!editingName) return;
-		dispatch('save', { id: server.id, name: editingName });
+		dispatch('save', { id: server.id, name: editingName , color: editingColor});
 		cancelEdit();
 	}
 
@@ -48,7 +52,7 @@
 		<div class="relative size-10 overflow-hidden rounded-xl border border-dashed">
 			<Input
 				type="color"
-				value={colorNameToHex(server.color ?? 'black')}
+				bind:value={editingColor}
 				class="size-10 scale-200 bg-transparent p-0"
 			/>
 		</div>
