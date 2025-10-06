@@ -16,7 +16,8 @@
 ## h2
 ### h3
 > qoute
-		`
+
+`+"```js\nconsole.log('hee')\n```"
 	}: {
 		children: Snippet;
 		image?: string;
@@ -38,9 +39,9 @@
 	</span>
 	<span>
         <CardTitle class="font-semibold"></CardTitle>
-        <div class="font-semibold inline-flex items-start gap-1">
-            {name} <span class="text-xs font-bold bg-primary p-0.25 mt-0.5 px-1 rounded-sm">App</span>
-            <span class="text-xs font-normal mt-1.5">{dateTime}</span>
+        <div class="font-semibold inline-flex items-start gap-1 truncate">
+            {name} <span class="text-xs font-bold bg-primary p-0.25 mt-0.5 px-1 rounded-sm truncate">App</span>
+            <span class="text-xs font-normal mt-1.5 truncate">{dateTime}</span>
         </div>
         <div>
             {#await convertMdToHTML(content)}

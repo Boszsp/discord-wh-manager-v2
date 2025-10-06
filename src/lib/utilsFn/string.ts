@@ -1,10 +1,13 @@
-import { DEFAULT_COLOR_NUM } from "$lib/default";
+import { DEFAULT_CODE_HIGHLIGHT_THEME, DEFAULT_COLOR_NUM } from "$lib/default";
 import { jsonRegexSchema, jsonSchema } from "$lib/schema/jsonSchema";
 import consola from "consola";
 import {
     parseTarGzip,
     createTarGzip,
 } from "nanotar";
+import { codeToHtml } from 'shiki'
+import DOMPurify from 'isomorphic-dompurify';
+
 
 export function convertToFallbackString(str: string) {
     return str.split(" ").slice(0, 3).flatMap(v => v.slice(0, 1).toUpperCase()).join("")
@@ -146,3 +149,8 @@ export const naturalSort = (a: string, b: string): number => {
     // If all compared parts are equal, the shorter string comes first.
     return partsA.length - partsB.length;
 };
+
+
+export async function highlightCode(text: string, lang: string): Promise<string> {
+    return DOMPurify.sanitize(await codeToHtml(text, { lang , theme:DEFAULT_CODE_HIGHLIGHT_THEME }));
+}

@@ -10,6 +10,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import type { templateShemaType } from '$lib/schema/templateShema';
 	import { RefreshCcw } from 'lucide-svelte';
+	import { highlightCode } from '$lib/utilsFn/string';
+	import { onMount } from 'svelte';
+	import Preview from '$lib/components/app/preview/preview.svelte';
+	import {
+		hookJsonPartial,
+		type hookJsonPartialSchemaType
+	} from '$lib/schema/webhookContentSchema';
 
 	let {
 		template
@@ -19,25 +26,17 @@
 
 	let variables = $state<Record<string, string>>({});
 	let preview = $state(template.content);
+	let previewHTML = $state('');
+	let previewObj = $state<hookJsonPartialSchemaType>({});
 
-	// Extract variables from template content
-	$effect(() => {
-		const matches = template.content.match(/\{([^}]+)\}/g) || [];
-		const varNames = matches.map((match) => match.slice(1, -1));
-		const newVars: Record<string, string> = {};
-		varNames.forEach((name) => {
-			newVars[name] = variables[name] || '';
-		});
-		variables = newVars;
-	});
-
-	// Update preview when template or variables change
-	$effect(() => {
-		let result = template.content;
-		Object.entries(variables).forEach(([key, value]) => {
-			result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
-		});
-		preview = result;
+	onMount(async () => {
+		previewHTML = await highlightCode(preview, 'json');
+		try {
+			previewObj = hookJsonPartial.parse(JSON.parse(template.content));
+		} catch (e) {
+			console.error(e);
+			previewObj = { content: 'Invalid JSON' };
+		}
 	});
 </script>
 
@@ -60,26 +59,24 @@
 		</div>
 	</CardHeader>
 	<CardContent>
-		<div class="flex flex-col gap-6">
-			{#if Object.keys(variables).length > 0}
-				<div class="grid gap-4 sm:grid-cols-2">
-					{#each Object.entries(variables) as [name, value]}
-						<div class="flex flex-col gap-2">
-							<label for={name} class="text-sm font-medium">{name}</label>
-							<Input id={name} bind:value={variables[name]} placeholder="Enter value..." />
-						</div>
-					{/each}
-				</div>
-			{:else}
-				<p class="text-sm text-muted-foreground">This template has no variables to fill.</p>
-			{/if}
+		<div class="inline-flex w-full overflow-hidden">
+			<span class="flex-1 rounded-md px-4">
+				{#if previewObj && previewObj?.content}
+					<Preview content={previewObj} />
+				{/if}
+			</span>
+			<span class="relative flex-1 rounded-md bg-[#22272e] p-4">
+				{#await highlightCode(preview, 'json')}
+					<p class="text-transparent">Processing...</p>
+				{:then res}
+					{@html res}
+				{/await}
 
-			<div class="flex flex-col gap-2">
-				<h4 class="text-sm font-medium">Preview</h4>
-				<div class="rounded-md border p-4">
-					<pre class="text-sm whitespace-pre-wrap">{preview}</pre>
-				</div>
-			</div>
+				<textarea
+					class="absolute inset-0 h-full w-full resize-none border-none bg-transparent focus:outline-none text-foreground/20 p-4 font-mono"
+					bind:value={preview}
+				></textarea>
+			</span>
 		</div>
 	</CardContent>
 </Card>
