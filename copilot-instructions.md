@@ -83,3 +83,8 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 
 ## 7. Contact
 For questions about conventions or architecture, refer to GEMINI.md or contact the project owner.
+
+---
+
+## 8. MCP Server
+- https://mcp.svelte.dev/mcp

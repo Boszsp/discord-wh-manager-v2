@@ -7,7 +7,7 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import TemplateForm from '$lib/components/app/template/template-form.svelte';
-	import templateStore from '$lib/store/template.svelte';
+	import {templateStore} from '$lib/store/template.svelte';
 	import TemplatePreview from '$lib/components/app/template/template-preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { CardTitle } from '$lib/components/ui/card';
@@ -64,7 +64,7 @@
 <DashboardContainer>
 	<ScrollArea class="h-full w-full overflow-hidden bg-background">
 		<div class=" ">
-			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2 sticky top-0 bg-background">
+			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2 sticky top-0 bg-background z-60">
 				<span class="inline-flex gap-2">
 					<LayoutTemplateIcon class="size-4" />
 					<CardTitle>Manage Templates</CardTitle>

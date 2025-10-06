@@ -9,7 +9,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import type { templateShemaType } from '$lib/schema/templateShema';
-	import { RefreshCcw, Save, Pencil, Check } from 'lucide-svelte';
+	import { RefreshCcw, Save, Pencil, Check, TrashIcon } from 'lucide-svelte';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import { onMount } from 'svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
@@ -63,8 +63,9 @@
 					<div class="flex items-center gap-2">
 						<CardTitle>{template.name}</CardTitle>
 						<Button
-							variant="outline"
-							size="icon"
+							variant="ghost"
+							size="sm"
+							class="p-1 h-fit"
 							onclick={() => {
 								isEditingName = true;
 							}}
@@ -93,6 +94,14 @@
 					}}
 				>
 					<RefreshCcw class="size-4" />
+				</Button>
+				<Button
+					variant="destructive"
+					size="icon"
+					onclick={() => {
+					}}
+				>
+					<TrashIcon class="size-4" />
 				</Button>
 			</div>
 		</div>

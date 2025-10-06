@@ -85,3 +85,6 @@ discord-wh-manager-v2/
 - if have anything may improve your understand you can update data into GEMINI.md
 - in 1 file should have morethan 200 lines
 - in svelte no `on:click` or other event just write only `onclick`
+
+## 5. MCP Server
+- https://mcp.svelte.dev/mcp
