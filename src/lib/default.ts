@@ -19,7 +19,7 @@ export const PAGE_TRANSITON_BACKLIST = ["/defalut"]
 export const DEFAULT_CODE_HIGHLIGHT_THEME = "github-dark-dimmed" ;
 
 export const DEFAULT_WEBHOOK_CONTENT = {
-    content: " ",
+    content: "",
 }
 
 export const DEFAULT_WEBHOOK_CONTENT_AS_STRING =  JSON.stringify(DEFAULT_WEBHOOK_CONTENT)

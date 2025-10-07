@@ -108,8 +108,6 @@
 					<div>
 						<Preview content={$formData} {files} />
 						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
-
-						{files.length}
 					</div>
 				</div>
 			</ScrollArea>

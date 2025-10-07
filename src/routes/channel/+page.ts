@@ -7,6 +7,7 @@ import { channelCurId } from '$lib/store/channel.svelte';
 import { fromStore } from '$lib/store/form.svelte';
 import { get } from 'svelte/store';
 import { consola } from "consola";
+import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
 
 
 export const load: PageLoad = async ({ url, depends }) => {
@@ -29,7 +30,7 @@ export const load: PageLoad = async ({ url, depends }) => {
     return {
         form: await superValidate(zod4(hookJsonPartial), {
             defaults: {
-                content: "",
+                content: DEFAULT_WEBHOOK_CONTENT.content,
                 ...restoreData
             }
         }),

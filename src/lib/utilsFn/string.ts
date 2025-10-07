@@ -1,4 +1,4 @@
-import { DEFAULT_CODE_HIGHLIGHT_THEME, DEFAULT_COLOR_NUM } from "$lib/default";
+import { DEFAULT_CODE_HIGHLIGHT_THEME, DEFAULT_COLOR_NUM, DEFAULT_WEBHOOK_CONTENT } from "$lib/default";
 import { jsonRegexSchema, jsonSchema } from "$lib/schema/jsonSchema";
 import consola from "consola";
 import {
@@ -66,7 +66,7 @@ export const parseBase64ToJson = async (str: string) => {
         }
     } catch (e) {
         consola.error(e)
-        return jsonSchema.safeParse({ "content": "" })?.data
+        return jsonSchema.safeParse(DEFAULT_WEBHOOK_CONTENT)?.data
     }
 
 }
