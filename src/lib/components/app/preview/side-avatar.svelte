@@ -6,29 +6,30 @@
 	import { convertMdToHTML } from '$lib/utilsFn/md';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import type { Snippet } from 'svelte';
-	import "./side-avatar.css"
+	import './side-avatar.css';
 
 	let {
 		children,
 		image = '/webhook/dwh-sm.png',
 		name = 'Webhook Name',
-        content = `# h1
+		content = `# h1
 ## h2
 ### h3
 > qoute
 
-`+"```js\nconsole.log('hee')\n```"
+` + "```js\nconsole.log('hee')\n```"
 	}: {
 		children: Snippet;
 		image?: string;
 		name?: string;
-        content?:string;
+		content?: string;
 	} = $props();
 
-    let dateTime = $state(new Date().toLocaleString())
+	let dateTime = $state(new Date().toLocaleString());
+	let oldMdContent = '';
 </script>
 
-<div class="inline-flex gap-4 items-start">
+<div class="inline-flex items-start gap-4">
 	<span class="mt-1">
 		<Avatar.Root class={cn('text-primary-secondary size-10 rounded-full bg-secondary/60')}>
 			<Avatar.Image src={image} alt="wh logo" class="object-cover" />
@@ -38,21 +39,33 @@
 		</Avatar.Root>
 	</span>
 	<span>
-        <CardTitle class="font-semibold"></CardTitle>
-        <div class="font-semibold inline-flex items-start gap-1 truncate">
-            {name} <span class="text-xs font-bold bg-primary p-0.25 mt-0.5 px-1 rounded-sm truncate">App</span>
-            <span class="text-xs font-normal mt-1.5 truncate">{dateTime}</span>
-        </div>
-        <div>
-            {#await convertMdToHTML(content)}
-                <div></div>
-            {:then res} 
-                <div class="md-content">{@html res}</div>
-            {/await}
-        </div>
-        <div>
-        {@render children?.()}
-        </div>
-    </span>
+		<CardTitle class="font-semibold"></CardTitle>
+		<div class="inline-flex items-start gap-1 truncate font-semibold">
+			{name}
+			<span class="mt-0.5 truncate rounded-sm bg-primary p-0.25 px-1 text-xs font-bold">App</span>
+			<span class="mt-1.5 truncate text-xs font-normal">{dateTime}</span>
+		</div>
+		<div>
+			{#await convertMdToHTML(content)}
+				<div class="md-content">
+					{@html oldMdContent}
+				</div>
+			{:then res}
+				<div class="md-content">
+					<p hidden class="hidden">
+						{oldMdContent = res && ""}
+					</p>
+					{@html res}
+				</div>
+			{:catch e}
+				{@debug e}
+				<div class="md-content">
+					{@html oldMdContent}
+				</div>
+			{/await}
+		</div>
+		<div>
+			{@render children?.()}
+		</div>
+	</span>
 </div>
-

@@ -3,6 +3,7 @@
 	import { cn } from '$lib/utils';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import type { ClassValue } from 'svelte/elements';
+	import "./textarea-json.css";
 
 	let {
 		value = $bindable(DEFAULT_WEBHOOK_CONTENT_AS_STRING),
@@ -14,17 +15,18 @@
     
 </script>
 
-<div class={cn('relative flex-1 rounded-md bg-[rgb(34,39,46)] p-4 h-fit min-h-16 ', className)}>
+<div class={cn('relative flex-1 rounded-md bg-[rgb(34,39,46)] p-4 h-fit w-full overflow-hidden text-wrap break-all min-h-16 textarea-json ', className)}>
 	<div >
 		{#await highlightCode(value, 'json')}
 			{@html oldVal}
 		{:then res}
-            <p hidden class="hidden">{oldVal = res}</p>
+            <p hidden class="hidden">{oldVal = res && ""}</p>
 			{@html res}
 			{#if value.endsWith('\n')}
 				<br />
 			{/if}
         {:catch e}
+			{@debug e}
             {@html oldVal}
 		{/await}
 	</div>
@@ -34,3 +36,4 @@
 		bind:value
 	></textarea>
 </div>
+

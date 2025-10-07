@@ -1,0 +1,4 @@
+.textarea-json .shiki .line *{
+    font-style: normal !important;
+    text-wrap:stable ;
+}
