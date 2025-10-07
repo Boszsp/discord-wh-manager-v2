@@ -2,6 +2,7 @@ import { marked, type Token, type TokensList } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 import markedShiki from 'marked-shiki'
 import { codeToHtml } from 'shiki'
+import { DEFAULT_CODE_HIGHLIGHT_THEME } from '$lib/default';
 export async function convertMdToHTML(str: string) {
     function processAllTokens(tokens: TokensList | Token[]): TokensList | Token[] {
         return tokens.map((v) => {
@@ -19,10 +20,10 @@ export async function convertMdToHTML(str: string) {
         markedShiki({
             async highlight(code, lang) {
                 return await codeToHtml(code, {
-                    lang, theme: 'github-dark-dimmed'
+                    lang, theme:DEFAULT_CODE_HIGHLIGHT_THEME
                 })?.catch(
                     async () => await codeToHtml(code, {
-                        lang: "", theme: 'github-dark-dimmed'
+                        lang: "", theme: DEFAULT_CODE_HIGHLIGHT_THEME
                     })
                 )
             },

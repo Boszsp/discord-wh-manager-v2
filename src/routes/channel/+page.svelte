@@ -16,6 +16,8 @@
 	import { fromStore } from '$lib/store/form.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
+	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
+	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -51,6 +53,7 @@
 	}
 </script>
 <PageTransition/>
+<ImagePopupShow />
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
 	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 		<Resizable.Pane defaultSize={40} class="w-fit">
@@ -59,8 +62,8 @@
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
 						<Preview content={$formData} {files} />
-						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
-						{files.length}
+						<Separator class="my-8" />
+						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>
 				</div>
 			</ScrollArea>
@@ -88,6 +91,7 @@
 							variant="outline"
 							onclick={() => {
 								$formData = { content: '' };
+								files = [];
 							}}>Clear</Button
 						>
 					</div>

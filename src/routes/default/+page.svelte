@@ -1,7 +1,11 @@
 <script lang="ts">
 	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
-	import { hookJsonPartial, urlSchema, type hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
+	import {
+		hookJsonPartial,
+		urlSchema,
+		type hookJsonPartialSchemaType
+	} from '$lib/schema/webhookContentSchema';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
 	import Preview from '$lib/components/app/preview/preview.svelte';
@@ -30,17 +34,16 @@
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
+	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
+	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 
-	const {data}:PageProps = $props()
+	const { data }: PageProps = $props();
 
-	const form = superForm(
-		data.formData as hookJsonPartialSchemaType,
-		{
-			dataType: 'json',
-			validators: zod4(hookJsonPartial),
-			validationMethod: 'oninput'
-		}
-	);
+	const form = superForm(data.formData as hookJsonPartialSchemaType, {
+		dataType: 'json',
+		validators: zod4(hookJsonPartial),
+		validationMethod: 'oninput'
+	});
 
 	const { form: formData, enhance } = form;
 
@@ -92,6 +95,7 @@
 	});
 </script>
 
+<ImagePopupShow />
 <DashboardContainer leftWidth={0} rightWidth={100} class="bg-background">
 	<Resizable.PaneGroup
 		direction={isMoble.current ? 'vertical' : 'horizontal'}
@@ -103,8 +107,8 @@
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
 						<Preview content={$formData} {files} />
-						<pre class="text-wrap break-all">{JSON.stringify($formData, null, 2)}</pre>
-						{files.length}
+						<Separator class="my-8" />
+						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>
 				</div>
 			</ScrollArea>
@@ -143,7 +147,6 @@
 					<Separator class="my-4" />
 					<ChannelFile bind:files />
 					<Separator class="mt-8 mb-4" />
-
 					<ChannelForm {form} />
 				</div>
 			</ScrollArea>

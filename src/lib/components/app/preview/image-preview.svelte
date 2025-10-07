@@ -23,7 +23,7 @@
 			<img
 				src={getUrl(images[0])}
 				alt="preview 0"
-				class="h-full w-full rounded-md bg-black/20 object-cover"
+				class="image-preview image-showable h-full w-full rounded-md bg-black/20 object-cover"
 			/>
 		</div>
 	{:else if images.length === 3}
@@ -32,21 +32,21 @@
 				<img
 					src={getUrl(images[0])}
 					alt="preview 0"
-					class="h-full w-full bg-black/20 object-cover"
+					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 			</div>
 			<div class="relative col-start-2 aspect-square h-full w-full">
 				<img
 					src={getUrl(images[1])}
 					alt="preview 1"
-					class="h-full w-full bg-black/20 object-cover"
+					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 			</div>
 			<div class="relative col-start-2 row-start-2 aspect-square h-full w-full">
 				<img
 					src={getUrl(images[2])}
 					alt="preview 2"
-					class="h-full w-full bg-black/20 object-cover"
+					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 			</div>
 		</div>
@@ -57,7 +57,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -69,7 +69,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -81,7 +81,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -92,7 +92,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -109,7 +109,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -120,7 +120,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 				</div>
 			{/each}
@@ -131,7 +131,7 @@
 				<img
 					src={getUrl(images[0])}
 					alt={`preview 0`}
-					class="h-full w-full bg-black/20 object-cover"
+					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 			</div>
 			{#each images.slice(1, 10) as image, i (i)}
@@ -139,7 +139,7 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if i == 8}
 						<div class="absolute inset-0 top-0 left-0 flex items-center justify-center bg-black/80">
@@ -147,6 +147,13 @@
 								+{remainingImages}
 							</p>
 						</div>
+						{#each images.slice(10) as image, i (i)}
+							<img
+								src={getUrl(image)}
+								alt={`preview ${i + 10}`}
+								class="image-preview image-showable hidden"
+							/>
+						{/each}
 					{/if}
 				</div>
 			{/each}

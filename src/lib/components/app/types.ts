@@ -1,5 +1,6 @@
-export type Server = {
+import type { sidebarMenuProps } from "./nav/sidebar.svelte";
+
+
+export interface ServerType extends sidebarMenuProps {
 	id: string;
-	name: string;
-	color?: string;
-};
+}

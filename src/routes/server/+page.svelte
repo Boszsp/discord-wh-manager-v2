@@ -2,35 +2,34 @@
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
 	import ServerPageHeader from '$lib/components/app/server/server-page-header.svelte';
 	import ServerList from '$lib/components/app/server/server-list.svelte';
-	import type { Server } from '$lib/components/app/types';
+	import type { ServerType } from '$lib/components/app/types';
 	import * as Card from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { SearchIcon } from 'lucide-svelte';
 	import DeleteServerDialog from '$lib/components/app/server/delete-server-dialog.svelte';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
+	import type { PageProps } from './$types';
+	
+	const { data }: PageProps = $props();
 
-	let servers = $state<Server[]>([
-		{ id: '1', name: 'Production Server', color: 'red' },
-		{ id: '2', name: 'Staging Server', color: 'green' },
-		{ id: '3', name: 'Development Server' }
-	]);
+	let servers = $state(data?.servers);
 
 	let searchTerm = $state('');
 	let isDeleteDialogOpen = $state(false);
-	let serverToDelete = $state<Server | null>(null);
+	let serverToDelete = $state<ServerType | null>(null);
 
 	let filteredServers = $derived(
-		servers.filter((server) => server.name.toLowerCase().includes(searchTerm.toLowerCase()))
+		servers.filter((server) => server.title.toLowerCase().includes(searchTerm.toLowerCase()))
 	);
 
 	function createServer({ name }: { name: string }) {
-		servers.unshift({ id: crypto.randomUUID(), name: name });
+		servers.unshift({ id: crypto.randomUUID(), title: name });
 	}
 
 	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
 		const index = servers.findIndex((s) => s.id === id);
 		if (index !== -1) {
-			servers[index].name = name;
+			servers[index].title = name;
 			servers[index].color = color;
 		}
 	}

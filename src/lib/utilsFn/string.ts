@@ -1,10 +1,13 @@
-import { DEFAULT_COLOR_NUM } from "$lib/default";
+import { DEFAULT_CODE_HIGHLIGHT_THEME, DEFAULT_COLOR_NUM, DEFAULT_WEBHOOK_CONTENT } from "$lib/default";
 import { jsonRegexSchema, jsonSchema } from "$lib/schema/jsonSchema";
 import consola from "consola";
 import {
     parseTarGzip,
     createTarGzip,
 } from "nanotar";
+import { codeToHtml } from 'shiki'
+import DOMPurify from 'isomorphic-dompurify';
+
 
 export function convertToFallbackString(str: string) {
     return str.split(" ").slice(0, 3).flatMap(v => v.slice(0, 1).toUpperCase()).join("")
@@ -63,11 +66,19 @@ export const parseBase64ToJson = async (str: string) => {
         }
     } catch (e) {
         consola.error(e)
-        return jsonSchema.safeParse({ "content": "" })?.data
+        return jsonSchema.safeParse(DEFAULT_WEBHOOK_CONTENT)?.data
     }
 
 }
 
+export function extractVariables(content: string): string[] {
+    const regex = /{{\s*(\w+)\s*}}/g;
+    const matches = content.match(regex);
+    if (!matches) {
+        return [];
+    }
+    return [...new Set(matches.map(match => match.replace(/{|}/g, "").trim()))];
+}
 
 
 export const getInitials = (name: string) => {
@@ -138,3 +149,8 @@ export const naturalSort = (a: string, b: string): number => {
     // If all compared parts are equal, the shorter string comes first.
     return partsA.length - partsB.length;
 };
+
+
+export async function highlightCode(text: string, lang: string): Promise<string> {
+    return DOMPurify.sanitize(await codeToHtml(text, { lang , theme:DEFAULT_CODE_HIGHLIGHT_THEME }));
+}

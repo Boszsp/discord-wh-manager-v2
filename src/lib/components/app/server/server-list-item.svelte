@@ -5,11 +5,11 @@
 	import { PencilIcon, SaveIcon, Trash2Icon, XIcon } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import { cn } from '$lib/utils';
-	import type { Server } from '../types';
+	import type { ServerType } from '../types';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import { colorNameToHex } from '$lib/utilsFn/color';
 
-	let { server, onSave = () => {}, onDelete = () => {} }: { server: Server, onSave?: (detail: { id: string; name: string; color: string }) => void, onDelete?: (detail: { id: string }) => void } = $props();
+	let { server, onSave = () => {}, onDelete = () => {} }: { server: ServerType, onSave?: (detail: { id: string; name: string; color: string }) => void, onDelete?: (detail: { id: string }) => void } = $props();
 
 	let editingName = $state('');
 	let editingColor = $state('');
@@ -18,14 +18,14 @@
 
 	function startEditing() {
 		isEditing = true;
-		editingName = server.name;
+		editingName = server.title;
 		editingColor = colorNameToHex( server.color ?? 'black') ?? '#5865F2' ;
 
 	}
 
 	function saveEdit() {
 		if (!editingName) return;
-		onSave({ id: server.id, name: editingName , color: editingColor});
+		onSave({ id: Math.floor(Math.random()*1000000)+"", name: editingName , color: editingColor});
 		cancelEdit();
 	}
 
@@ -67,10 +67,10 @@
 		>
 			<Avatar.Image src={undefined} alt="server logo" />
 			<Avatar.Fallback class="scale-75 bg-transparent">
-				{convertToFallbackString(server.name)}
+				{convertToFallbackString(server.title)}
 			</Avatar.Fallback>
 		</Avatar.Root>
-		<p class="flex-1 font-medium">{server.name}</p>
+		<p class="flex-1 font-medium">{server.title}</p>
 		<Button onclick={startEditing} size="icon" variant="secondary">
 			<PencilIcon class="h-4 w-4" />
 		</Button>

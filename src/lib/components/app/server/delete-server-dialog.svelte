@@ -2,9 +2,9 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import type { Server } from '../types';
+	import type { ServerType } from '../types';
 
-	let { open = $bindable(false), serverToDelete = $bindable<Server | null>(null), onConfirm = () => {} } = $props();
+	let { open = $bindable(false), serverToDelete = $bindable<ServerType | null>(null), onConfirm = () => {} } = $props();
 
 	let deleteConfirmName = $state('');
 
