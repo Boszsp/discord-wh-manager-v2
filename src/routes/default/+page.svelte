@@ -107,6 +107,7 @@
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
 						<Preview content={$formData} {files} />
+						<Separator class="my-8" />
 						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>
 				</div>
@@ -146,7 +147,6 @@
 					<Separator class="my-4" />
 					<ChannelFile bind:files />
 					<Separator class="mt-8 mb-4" />
-
 					<ChannelForm {form} />
 				</div>
 			</ScrollArea>

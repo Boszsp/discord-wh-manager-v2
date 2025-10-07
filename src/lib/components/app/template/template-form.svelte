@@ -7,6 +7,7 @@
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import type { templateShemaType } from '$lib/schema/templateShema';
+	import PreviewJson from '$lib/components/app/preview/preview-json.svelte';
 
 	let {
 		ref = $bindable(null),
@@ -42,11 +43,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Template Content</Form.Label>
+				<PreviewJson value={$formData.content} class="p-4 h-36 overflow-y-auto w-98" />
 				<Textarea
 					{...props}
 					bind:value={$formData.content}
 					placeholder="# Hello {name}!&#10;&#10;This is a template with variable placeholders.&#10;You can use any variable names."
 					rows={10}
+					class="h-36"
 				/>
 			{/snippet}
 		</Form.Control>

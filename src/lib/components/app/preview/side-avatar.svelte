@@ -1,12 +1,11 @@
 <script lang="ts">
 	import * as Avatar from '$lib/components/ui/avatar';
-	import { Badge } from '$lib/components/ui/badge';
 	import { CardTitle } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
-	import { convertMdToHTML } from '$lib/utilsFn/md';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import type { Snippet } from 'svelte';
 	import './side-avatar.css';
+	import PreviewMd from './preview-md.svelte';
 
 	let {
 		children,
@@ -26,7 +25,6 @@
 	} = $props();
 
 	let dateTime = $state(new Date().toLocaleString());
-	let oldMdContent = '';
 </script>
 
 <div class="inline-flex items-start gap-4">
@@ -45,25 +43,7 @@
 			<span class="mt-0.5 truncate rounded-sm bg-primary p-0.25 px-1 text-xs font-bold">App</span>
 			<span class="mt-1.5 truncate text-xs font-normal">{dateTime}</span>
 		</div>
-		<div>
-			{#await convertMdToHTML(content)}
-				<div class="md-content">
-					{@html oldMdContent}
-				</div>
-			{:then res}
-				<div class="md-content">
-					<p hidden class="hidden">
-						{oldMdContent = res && ""}
-					</p>
-					{@html res}
-				</div>
-			{:catch e}
-				{@debug e}
-				<div class="md-content">
-					{@html oldMdContent}
-				</div>
-			{/await}
-		</div>
+		<PreviewMd {content} />
 		<div>
 			{@render children?.()}
 		</div>

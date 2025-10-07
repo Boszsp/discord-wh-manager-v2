@@ -66,7 +66,7 @@
 <DashboardContainer>
 	<ScrollArea class="h-full w-full overflow-hidden bg-background">
 		<div class=" ">
-			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2 sticky top-0 bg-background z-60">
+			<div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2 sticky top-0 bg-background z-10 ">
 				<span class="inline-flex gap-2">
 					<LayoutTemplateIcon class="size-4" />
 					<CardTitle>Manage Templates</CardTitle>

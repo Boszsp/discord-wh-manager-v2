@@ -20,12 +20,16 @@
 	import { templateStore } from '$lib/store/template.svelte';
 	import {consola} from "consola";
 	import TextareaJson from '../form/textarea-json.svelte';
+	import type { ClassValue } from 'svelte/elements';
+	import { cn } from '$lib/utils';
 
 
 	let {
-		template
+		template,
+		class: className
 	}: {
 		template: templateShemaType;
+		class?:ClassValue
 	} = $props();
 
 	let isEditingName = $state(false);
@@ -51,7 +55,7 @@
 	}
 </script>
 
-<Card>
+<Card class={cn("border-0",className)}>
 	<CardHeader>
 		<div class="flex items-center justify-between">
 			<div>
