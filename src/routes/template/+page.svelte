@@ -11,7 +11,9 @@
 	import TemplatePreview from '$lib/components/app/template/template-preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { CardTitle } from '$lib/components/ui/card';
+	import type { PageProps } from './$types';
 
+	const {data}: PageProps = $props()
 	let open = $state(false);
 	let isEditing = $state(false);
 	let selectedTemplate: templateShemaType | null = $state(null);
@@ -73,10 +75,10 @@
 			</div>
 			<h3 class="mb-4 mt-4 px-4 text-lg font-medium">Available Templates</h3>
 
-			{#if $templateStore.length > 0}
+			{#if data?.templates.length > 0}
 				<div class="px-4 mb-8">
 					<div class="flex flex-col gap-4">
-						{#each $templateStore as template (template.name)}
+						{#each data?.templates as template (template.name)}
 							<TemplatePreview {template} />
 						{/each}
 					</div>

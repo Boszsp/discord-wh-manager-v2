@@ -30,6 +30,7 @@
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
+	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 
 	const {data}:PageProps = $props()
 
@@ -92,6 +93,7 @@
 	});
 </script>
 
+<ImagePopupShow />
 <DashboardContainer leftWidth={0} rightWidth={100} class="bg-background">
 	<Resizable.PaneGroup
 		direction={isMoble.current ? 'vertical' : 'horizontal'}

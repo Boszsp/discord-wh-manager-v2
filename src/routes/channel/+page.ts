@@ -6,31 +6,42 @@ import { parseNumber } from '$lib/schema/numberSchema';
 import { channelCurId } from '$lib/store/channel.svelte';
 import { fromStore } from '$lib/store/form.svelte';
 import { get } from 'svelte/store';
+import { consola } from "consola";
 
 
 export const load: PageLoad = async ({ url, depends }) => {
+    depends("template:get")
+    consola.info("Loading templates...")
+
     depends("server:get")
+    consola.info("Loading server...")
+    
     const serverId = parseNumber(url.searchParams.get('id') ?? '-1');
-    console.log(serverId, url.searchParams.get('id'))
 
     depends("channel:get")
+    consola.info("Loading channel...")
     const channelId = parseNumber(url.searchParams.get('channel') ?? '1');
     const restoreData = get(fromStore)
+    
 
+    consola.info(`In serverId: ${serverId}, At ChannelId: ${channelId}`)
     channelCurId.set({ id: serverId ?? -1, cid: channelId ?? -1 });
     return {
-        form: await superValidate(zod4(hookJsonPartial),{defaults:{
-            content:"",
-            ...restoreData
-        }}),
-        server:{
-            id:serverId,
+        form: await superValidate(zod4(hookJsonPartial), {
+            defaults: {
+                content: "",
+                ...restoreData
+            }
+        }),
+        server: {
+            id: serverId,
             name: serverId
         },
-        channel:{
-            id:channelId,
-            name:channelId
-        }
+        channel: {
+            id: channelId,
+            name: channelId
+        },
+        templates: []
     };
 
 };

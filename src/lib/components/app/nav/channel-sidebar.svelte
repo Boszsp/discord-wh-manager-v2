@@ -54,7 +54,7 @@
 					<Button
 						onclick={() => {
 							page.url.searchParams.set('channel', i + 1 + '');
-							goto(page.url.toString(), { invalidate: ['channel:get'] });
+							goto(page.url.toString(), { invalidate: ['channel:get'] ,replaceState: false});
 						}}
 						size="sm"
 						variant={selectedId === i + 1 ? 'secondary' : 'ghost'}

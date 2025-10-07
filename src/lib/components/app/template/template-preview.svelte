@@ -18,6 +18,9 @@
 		type hookJsonPartialSchemaType
 	} from '$lib/schema/webhookContentSchema';
 	import { templateStore } from '$lib/store/template.svelte';
+	import {consola} from "consola";
+	import TextareaJson from '../form/textarea-json.svelte';
+
 
 	let {
 		template
@@ -37,7 +40,7 @@
 		try {
 			previewObj = hookJsonPartial.parse(JSON.parse(template.content));
 		} catch (e) {
-			console.error(e);
+			consola.error(e);
 			previewObj = { content: 'Invalid JSON' };
 		}
 	});
@@ -114,16 +117,7 @@
 				{/if}
 			</span>
 			<span class="relative flex-1 rounded-md bg-[#22272e] p-4">
-				{#await highlightCode(preview, 'json')}
-					<p class="text-transparent">Processing...</p>
-				{:then res}
-					{@html res}
-				{/await}
-
-				<textarea
-					class="absolute inset-0 h-full w-full resize-none border-none bg-transparent p-4 font-mono text-foreground/20 focus:outline-none"
-					bind:value={preview}
-				></textarea>
+				<TextareaJson bind:value={preview}  />
 			</span>
 		</div>
 	</CardContent>

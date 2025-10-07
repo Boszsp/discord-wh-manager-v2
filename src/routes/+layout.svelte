@@ -4,9 +4,11 @@
 	import LayoutDefault from '$lib/components/app/layout/layout-default.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { page } from '$app/state';
+	import type { LayoutProps } from './$types';
 	
 
-	let { children } = $props();
+	let { data, children }: LayoutProps = $props();
+	
 	
 </script>
 
@@ -15,6 +17,6 @@
 </svelte:head>
 
 <Toaster />
-<LayoutDefault>
+<LayoutDefault servers={data?.servers} >
 	{@render children?.()}
 </LayoutDefault>

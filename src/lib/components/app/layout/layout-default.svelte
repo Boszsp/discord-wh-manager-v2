@@ -2,25 +2,17 @@
 	import { HouseIcon, LogInIcon, ServerIcon } from 'lucide-svelte';
 	import Sidebar, { type sidebarMenuProps } from '$lib/components/app/nav/sidebar.svelte';
 	import { page } from '$app/state';
-	import { Badge } from '$lib/components/ui/badge';
 	import { APP_NAME } from '$lib/default';
+	import type { Snippet } from 'svelte';
 
-	let { children } = $props();
-	const datas: sidebarMenuProps[] = $derived([
-		{
-			fallback: 'xx',
-			title: 'bg',
-			link: '/channel?id=1',
-			color: 'red',
-			isSelected: page.url.searchParams.get('id') === '1'
-		},
-		{
-			fallback: 'xx22',
-			title: 'bg22',
-			link: '/channel?id=2',
-			isSelected: page.url.searchParams.get('id') === '2'
-		}
-	]);
+	let { children,servers=[] }:{children:Snippet,servers?:sidebarMenuProps[]} = $props();
+	const datas: sidebarMenuProps[] = $derived(servers?.map((v,id) => ({
+		fallback: v.fallback ?? "$",
+		title: v.title,
+		href: v.link,
+		color: v.color ,
+		isSelected: page.url.pathname === `/server/${id}`
+	})) ?? []);
 	const selected = $derived(datas.filter((v) => v.isSelected).pop());
 </script>
 
