@@ -116,7 +116,7 @@
 					<Preview content={previewObj} />
 				{/if}
 			</span>
-			<span class="relative flex-1 rounded-md bg-[#22272e] p-4">
+			<span class="relative flex-1">
 				<TextareaJson bind:value={preview}  />
 			</span>
 		</div>
