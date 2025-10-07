@@ -9,9 +9,9 @@
 	const datas: sidebarMenuProps[] = $derived(servers?.map((v,id) => ({
 		fallback: v.fallback ?? "$",
 		title: v.title,
-		href: v.link,
+		link: v.link,
 		color: v.color ,
-		isSelected: page.url.pathname === `/server/${id}`
+		isSelected: page.url.searchParams.get('id')=== `${id+1}`
 	})) ?? []);
 	const selected = $derived(datas.filter((v) => v.isSelected).pop());
 </script>
