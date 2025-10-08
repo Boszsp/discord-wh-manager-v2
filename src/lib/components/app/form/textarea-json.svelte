@@ -12,7 +12,7 @@
 		...restProps
 	}: WithoutChildren<WithElementRef<HTMLTextareaAttributes>> & {value:string} = $props();
 
-	let oldVal = '';
+	let oldVal = $state('');
 </script>
 
 <div

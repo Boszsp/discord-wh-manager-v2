@@ -90,7 +90,7 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="overflow-hidden max-w-full min-w-fit">
-		<Dialog.Header>
+		<Dialog.Header class="!w-2xl">
 			<Dialog.Title>{isEditing ? 'Edit' : 'Create'} Template</Dialog.Title>
 		</Dialog.Header>
 		<TemplateForm {form} onsubmit={handleSubmit} />

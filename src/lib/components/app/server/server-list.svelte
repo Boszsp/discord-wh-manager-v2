@@ -5,7 +5,7 @@
     let { servers, onSave, onDelete }: { servers: ServerType[], onSave: (detail: { id: string; name: string; color: string }) => void, onDelete: (detail: { id: string }) => void } = $props();
 </script>
 
-<div class="rounded-md border overflow-hidden bg-theme-accent">
+<div class="rounded-md border overflow-hidden bg-card">
     <div class="flex flex-col">
         {#each servers as server , i(server.title+"-"+i)}
             <ServerListItem {server} {onSave} {onDelete} />

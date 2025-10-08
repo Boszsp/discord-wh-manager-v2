@@ -2,7 +2,7 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as d from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { Hash, CirclePlusIcon } from 'lucide-svelte';
+	import { Hash, CirclePlusIcon, Link2Icon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 	import { webhookSchema } from '$lib/schema/webhookSchema';
 	import { superForm } from 'sveltekit-superforms/client';
@@ -67,12 +67,17 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>Webhook URL</Form.Label>
-						<Input
-							{...props}
-							bind:value={$formData.url}
-							onkeydown={(e) => e.key === 'Enter' && createChannel()}
-							placeholder="https://discord.com/api/webhooks/..."
-						/>
+
+						<div class="relative">
+							<Link2Icon class="absolute top-2.5 left-2.5 size-4" />
+							<Input
+								{...props}
+								bind:value={$formData.url}
+								onkeydown={(e) => e.key === 'Enter' && createChannel()}
+								placeholder="https://discord.com/api/webhooks/..."
+								class="pl-8"
+							/>
+						</div>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />

@@ -9,6 +9,8 @@
 	import type { templateShemaType } from '$lib/schema/templateShema';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
+	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
+	import { LayoutTemplateIcon } from 'lucide-svelte';
 
 	let {
 		ref = $bindable(null),
@@ -29,24 +31,29 @@
 	method="POST"
 	use:enhance
 >
-	<Form.Field {form} name="name">
+	<Form.Field {form} name="name" class="px-2">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Template Name</Form.Label>
-				<Input {...props} bind:value={$formData.name} placeholder="My Template" />
+				<div class="relative">
+					<LayoutTemplateIcon class="absolute top-2.5 left-2.5 size-4" />
+					<Input {...props} bind:value={$formData.name} placeholder="My Template" class="pl-8" />
+				</div>
 			{/snippet}
 		</Form.Control>
 		<Form.Description>A name to identify your template</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Field {form} name="content">
+	<Form.Field {form} name="content" class="px-2">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Template Content</Form.Label>
-				<div class="h-36 w-full overflow-y-auto p-4 bg-theme-accent rounded-md">
+				<div class="h-36 w-full overflow-y-auto rounded-md bg-theme-accent p-4">
 					{#key $formData.content}
-						<Preview  content={safePareseTemplateString($formData.content)} />
+						<Preview
+							content={safePareseTemplateString($formData.content) as hookJsonPartialSchemaType}
+						/>
 					{/key}
 				</div>
 				<Textarea

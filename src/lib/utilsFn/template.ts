@@ -2,7 +2,7 @@ import { DEFAULT_WEBHOOK_CONTENT } from "$lib/default";
 import { hookJsonFullyPartialSchema,type hookJsonPartialSchemaType } from "$lib/schema/webhookContentSchema";
 import consola from "consola";
 
-export function safePareseTemplateString(str: string,retureOnErrorValue:hookJsonPartialSchemaType) {
+export function safePareseTemplateString(str: string,retureOnErrorValue?:hookJsonPartialSchemaType) {
     try {
         const {data,success,error} = hookJsonFullyPartialSchema.safeParse(JSON.parse(str));
         if(success)

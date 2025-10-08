@@ -43,7 +43,7 @@
 	onMount(async () => {
 		previewHTML = await highlightCode(preview, 'json');
 		try {
-			previewObj = safePareseTemplateString(template.content);
+			previewObj = safePareseTemplateString(template.content) as hookJsonPartialSchemaType;
 		} catch (e) {
 			consola.error(e);
 			previewObj = { content: 'Invalid JSON' };
