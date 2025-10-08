@@ -7,7 +7,8 @@
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import type { templateShemaType } from '$lib/schema/templateShema';
-	import PreviewJson from '$lib/components/app/preview/preview-json.svelte';
+	import Preview from '$lib/components/app/preview/preview.svelte';
+	import { safePareseTemplateString } from '$lib/utilsFn/template';
 
 	let {
 		ref = $bindable(null),
@@ -22,7 +23,7 @@
 </script>
 
 <form
-	class={cn('flex flex-col gap-6', className)}
+	class={cn('flex w-full flex-col gap-6 overflow-hidden', className)}
 	bind:this={ref}
 	{...restProps}
 	method="POST"
@@ -43,7 +44,11 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Template Content</Form.Label>
-				<PreviewJson value={$formData.content} class="p-4 h-36 overflow-y-auto w-98" />
+				<div class="h-36 w-full overflow-y-auto p-4 bg-theme-accent rounded-md">
+					{#key $formData.content}
+						<Preview  content={safePareseTemplateString($formData.content)} />
+					{/key}
+				</div>
 				<Textarea
 					{...props}
 					bind:value={$formData.content}

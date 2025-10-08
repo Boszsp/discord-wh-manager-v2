@@ -8,7 +8,7 @@
 </script>
 
 <SideAvatar name={content?.username} image={content?.avatar_url} content={content?.content}>
-	<div class="pt-4">
+	<div class="pt-4 flex flex-col gap-2">
 		{#if content?.embeds}
 			{#each content.embeds as embed, i (`preview-embed-${i}`)}
 				<PreviewEmbed {embed} />

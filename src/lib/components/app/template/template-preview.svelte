@@ -14,7 +14,6 @@
 	import { onMount } from 'svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import {
-		hookJsonPartial,
 		type hookJsonPartialSchemaType
 	} from '$lib/schema/webhookContentSchema';
 	import { templateStore } from '$lib/store/template.svelte';
@@ -22,6 +21,8 @@
 	import TextareaJson from '../form/textarea-json.svelte';
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
+	import { safePareseTemplateString } from '$lib/utilsFn/template';
+
 
 
 	let {
@@ -42,7 +43,7 @@
 	onMount(async () => {
 		previewHTML = await highlightCode(preview, 'json');
 		try {
-			previewObj = hookJsonPartial.parse(JSON.parse(template.content));
+			previewObj = safePareseTemplateString(template.content);
 		} catch (e) {
 			consola.error(e);
 			previewObj = { content: 'Invalid JSON' };

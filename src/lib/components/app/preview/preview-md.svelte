@@ -4,12 +4,7 @@
 	
 
 	let {
-		content = `# h1
-## h2
-### h3
-> qoute
-
-` + "```js\nconsole.log('hee')\n```"
+		content = ""
 	}: {
 		content?: string;
 	} = $props();

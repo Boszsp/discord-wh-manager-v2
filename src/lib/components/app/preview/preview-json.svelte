@@ -3,13 +3,14 @@
 	import { cn } from '$lib/utils';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import type { ClassValue } from 'svelte/elements';
+	import './preview-json.css';
 	
 	let { value = $bindable(DEFAULT_WEBHOOK_CONTENT_AS_STRING),class:className }: { value: string,class?:ClassValue } = $props();
 
 	let oldVal = '';
 </script>
 
-<div class={cn("bg-[rgb(34,39,46)] rounded-md",className)}>
+<div class={cn("bg-[rgb(34,39,46)] rounded-md text-wrap preview-json",className)}>
 	{#await highlightCode(value, 'json')}
 		{@html oldVal}
 	{:then res}

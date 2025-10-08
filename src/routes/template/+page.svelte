@@ -89,7 +89,7 @@
 </DashboardContainer>
 
 <Dialog.Root bind:open>
-	<Dialog.Content>
+	<Dialog.Content class="overflow-hidden max-w-full min-w-fit">
 		<Dialog.Header>
 			<Dialog.Title>{isEditing ? 'Edit' : 'Create'} Template</Dialog.Title>
 		</Dialog.Header>

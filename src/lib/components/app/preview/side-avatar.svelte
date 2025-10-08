@@ -11,12 +11,7 @@
 		children,
 		image = '/webhook/dwh-sm.png',
 		name = 'Webhook Name',
-		content = `# h1
-## h2
-### h3
-> qoute
-
-` + "```js\nconsole.log('hee')\n```"
+		content = ""
 	}: {
 		children: Snippet;
 		image?: string;
