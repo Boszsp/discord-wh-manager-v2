@@ -18,6 +18,7 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
+	import { safePareseTemplateString } from '$lib/utilsFn/template';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -52,7 +53,8 @@
 		console.log(cleanUpBlank($formData));
 	}
 </script>
-<PageTransition/>
+
+<PageTransition />
 <ImagePopupShow />
 <ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
 	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
@@ -63,7 +65,17 @@
 					<div>
 						<Preview content={$formData} {files} />
 						<Separator class="my-8" />
-						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
+						<TextareaJson
+							value={JSON.stringify($formData, null, 2)}
+							oninput={(e) => {
+								try{
+								$formData = safePareseTemplateString(e.currentTarget.value,$formData);
+								}catch (err){
+									console.error(err);
+								}
+							}}
+							class="mt-4"
+						/>
 					</div>
 				</div>
 			</ScrollArea>

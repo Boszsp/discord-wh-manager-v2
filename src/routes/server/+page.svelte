@@ -3,12 +3,12 @@
 	import ServerPageHeader from '$lib/components/app/server/server-page-header.svelte';
 	import ServerList from '$lib/components/app/server/server-list.svelte';
 	import type { ServerType } from '$lib/components/app/types';
-	import * as Card from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { SearchIcon } from 'lucide-svelte';
 	import DeleteServerDialog from '$lib/components/app/server/delete-server-dialog.svelte';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import type { PageProps } from './$types';
+	import { CardContent } from '$lib/components/ui/card';
 	
 	const { data }: PageProps = $props();
 
@@ -50,7 +50,7 @@
 <DashboardContainer class="bg-background">
 	<ServerPageHeader onCreateServer={createServer} />
 	<div class="py-4">
-		<Card.Content class="flex max-w-full flex-col gap-4">
+		<CardContent class="flex max-w-full flex-col gap-4">
 			<div class="flex justify-between gap-2">
 				<div class="relative w-full">
 					<SearchIcon class="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
@@ -63,7 +63,7 @@
 			</small>
 
 			<ServerList servers={filteredServers} onSave={saveServer} onDelete={deleteServer} />
-		</Card.Content>
+		</CardContent>
 	</div>
 </DashboardContainer>
 
