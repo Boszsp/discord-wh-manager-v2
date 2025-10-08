@@ -8,17 +8,28 @@
 	import { cn } from '$lib/utils.js';
 	import type { ClassValue } from 'tailwind-variants';
 
-
-	const { class: className, id,templates = [] }: { class?: ClassValue; id?: string,templates?:{value:string,label:string}[] } = $props();
-
+	let {
+		class: className,
+		id,
+		values = [],
+		value = $bindable(''),
+		inputValue = $bindable('')
+	}: {
+		class?: ClassValue;
+		id?: string;
+		values?: { value: string; label: string }[];
+		value?: string;
+		inputValue?: string;
+	} = $props();
 	let open = $state(false);
-	let value = $state('');
 	let triggerRef = $state<HTMLButtonElement>(null!);
 	let width = $derived(
-		(open && triggerRef?.clientWidth) || (triggerRef && triggerRef?.clientWidth) ? triggerRef?.clientWidth + 'px' : undefined
+		(open && triggerRef?.clientWidth) || (triggerRef && triggerRef?.clientWidth)
+			? triggerRef?.clientWidth + 'px'
+			: undefined
 	);
 
-	const selectedValue = $derived(templates.find((f) => f.value === value)?.label);
+	const selectedValue = $derived(values.find((f) => f.value === value)?.label);
 
 	function closeAndFocusTrigger() {
 		open = false;
@@ -29,14 +40,14 @@
 </script>
 
 <div class="relative w-full">
-	<Popover.Root bind:open >
-		<Popover.Trigger bind:ref={triggerRef} class="w-full" >
+	<Popover.Root bind:open>
+		<Popover.Trigger bind:ref={triggerRef} class="w-full">
 			{#snippet child({ props })}
 				<Button
 					variant="outline"
 					{...props}
 					role="combobox"
-					class={cn('w-full justify-between text-star', className)}
+					class={cn('text-star w-full justify-between', className)}
 					aria-expanded={open}
 					{id}
 				>
@@ -44,25 +55,31 @@
 					<ChevronsUpDownIcon class="ml-2 size-4 shrink-0 opacity-50" />
 				</Button>
 			{/snippet}
-		</Popover.Trigger> 
-		<Popover.Content class={cn("h-fit w-auto p-0",width&&`w-[${width}]`)} style={{ width:width }}>
-			<Command.Root style={{ width:width }} >
-				<Command.Input placeholder="Search template..." />
-				<Command.List >
+		</Popover.Trigger>
+		<Popover.Content
+			class={cn('h-fit w-auto p-0', width && `w-[${width}]`)}
+			style={{ width: width }}
+		>
+			<Command.Root style={{ width: width }}>
+				<Command.Input
+					oninput={(e) => {
+						inputValue = e.currentTarget.value ?? '';
+					}}
+					placeholder="Search template..."
+				/>
+				<Command.List>
 					<Command.Empty>No template found.</Command.Empty>
 					<Command.Group>
-						{#each templates as template,i (`${template.value}-${i}`)}
+						{#each values as val, i (`${val.value}-${i}`)}
 							<Command.Item
-								value={template.value}
+								value={val.value}
 								onSelect={() => {
-									value = template.value;
+									value = val.value;
 									closeAndFocusTrigger();
 								}}
 							>
-								<CheckIcon
-									class={cn('mr-2 size-4', value !== template.value && 'text-transparent')}
-								/>
-								{template.label}
+								<CheckIcon class={cn('mr-2 size-4', value !== val.value && 'text-transparent')} />
+								{val.label}
 							</Command.Item>
 						{/each}
 					</Command.Group>

@@ -42,7 +42,9 @@ export const load: PageLoad = async ({ url, depends }) => {
             id: channelId,
             name: channelId
         },
-        templates: []
+        templates: [
+            { name: 'Default' ,content: JSON.stringify(DEFAULT_WEBHOOK_CONTENT)},
+        ]
     };
 
 };

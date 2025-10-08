@@ -19,6 +19,7 @@
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
+	import { fade } from 'svelte/transition';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -36,6 +37,8 @@
 
 	const { form: formData } = form;
 	let files: File[] = $state([]);
+	let selectedTemplate: string = $state('');
+	let newTemplateValue: string = $state('');
 
 	const isMoble = new IsMobile();
 
@@ -68,9 +71,11 @@
 						<TextareaJson
 							value={JSON.stringify($formData, null, 2)}
 							oninput={(e) => {
-								try{
-								$formData = safePareseTemplateString(e.currentTarget.value,$formData);
-								}catch (err){
+								try {
+									formData.set(
+										safePareseTemplateString(e.currentTarget.value, $formData) as typeof $formData
+									);
+								} catch (err) {
 									console.error(err);
 								}
 							}}
@@ -89,27 +94,38 @@
 						Your content will sent to displayed channel. |
 						ข้อมูลของคุณจะถูกส่งไปยังช่องทางที่แสดงอยู่นี้.
 					</p>
-					<ChannelSentCard server={data.server} channel={data.channel} onsent={onSm} />
+					<ChannelSentCard
+						server={data?.server}
+						channel={data?.channel}
+						templates={data?.templates}
+						bind:newTemplateValue
+						bind:selectedValue={selectedTemplate}
+						onsent={onSm}
+					/>
 					<Separator class="my-4" />
-					<div class="flex gap-4">
-						<div>
-							<h3 class="text-lg font-medium">Form Data</h3>
-							<p class="mb-2 text-xs text-muted-foreground">
-								Type your content here. | กรอกข้อมูลของคุณที่นี่.
-							</p>
+					{#if !selectedTemplate || selectedTemplate === ""}
+					<div transition:fade>
+						<div class="flex gap-4">
+							<div>
+								<h3 class="text-lg font-medium">Form Data</h3>
+								<p class="mb-2 text-xs text-muted-foreground">
+									Type your content here. | กรอกข้อมูลของคุณที่นี่.
+								</p>
+							</div>
+							<Button
+								class="ml-auto"
+								variant="outline"
+								onclick={() => {
+									$formData = { content: '' };
+									files = [];
+								}}>Clear</Button
+							>
 						</div>
-						<Button
-							class="ml-auto"
-							variant="outline"
-							onclick={() => {
-								$formData = { content: '' };
-								files = [];
-							}}>Clear</Button
-						>
+						<ChannelFile bind:files />
+						<Separator class="mt-8 mb-4" />
+						<ChannelForm {form} />
 					</div>
-					<ChannelFile bind:files />
-					<Separator class="mt-8 mb-4" />
-					<ChannelForm {form} />
+					{/if}
 				</div>
 			</ScrollArea>
 		</Resizable.Pane>

@@ -1,23 +1,28 @@
 <script lang="ts">
 	import { Card } from '$lib/components/ui/card';
-	import { HashIcon, SaveIcon, SendIcon } from 'lucide-svelte';
+	import { HashIcon, SaveIcon, SendIcon, SquareXIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import Autocomplelte from '$lib/components/app/form/autocomplete.svelte';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import type { templateShemaType } from '$lib/schema/templateShema';
 
 	interface serverProps {
 		id?: string | number;
 		name?: string | number;
 	}
-	const {
+	let {
 		server,
 		channel,
-		onsent
+		onsent,
+		templates = [],
+		selectedValue = $bindable(''),
+		newTemplateValue = $bindable('')
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
+		templates?:Pick<templateShemaType,"name">[];
 		onsent: (
 			e?:
 				| (MouseEvent & {
@@ -27,9 +32,17 @@
 						currentTarget: EventTarget & HTMLAnchorElement;
 				  })
 		) => void;
+		selectedValue?: string;
+		newTemplateValue?:string
 	} = $props();
 
 	const isMoble = new IsMobile();
+	const templatesFormat = $derived(
+		templates.map((t) => ({
+			value: t.name,
+			label: t.name
+		}))
+	);
 </script>
 
 <Card
@@ -52,7 +65,7 @@
 	<div>
 		<Label for="template-select">Template</Label>
 		<div class="inline-flex w-full gap-2">
-			<Autocomplelte class="mt-2 border-0 border-t" id="template-select" />
+			<Autocomplelte values={templatesFormat} bind:inputValue={newTemplateValue} bind:value={selectedValue} class="mt-2 border-0 border-t" id="template-select" />
 			<Tooltip.Provider>
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
@@ -64,7 +77,22 @@
 						side="top"
 						class="border bg-secondary text-secondary-foreground"
 						arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
-						>Save Template/Create New Template</Tooltip.Content
+						>Save Template/Create New Template | บันทึกข้อมูลปัจจุบันเป็นเป็นเทมเพลต</Tooltip.Content
+					>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+			<Tooltip.Provider>
+				<Tooltip.Root delayDuration={0}>
+					<Tooltip.Trigger>
+						<Button onclick={() => selectedValue = ""} class="mt-2 border-0 border-t" variant="outline">
+							<SquareXIcon />
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content
+						side="top"
+						class="border bg-secondary text-secondary-foreground"
+						arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
+						>Clear Selected Template | ล้างข้อมูลเทมเพลตที่เลือกอยู่</Tooltip.Content
 					>
 				</Tooltip.Root>
 			</Tooltip.Provider>
