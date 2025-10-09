@@ -7,7 +7,7 @@
 	
 	let { value = $bindable(DEFAULT_WEBHOOK_CONTENT_AS_STRING),class:className }: { value: string,class?:ClassValue } = $props();
 
-	let oldVal = '';
+	let oldVal = $state("");
 </script>
 
 <div class={cn("bg-[rgb(34,39,46)] rounded-md text-wrap preview-json",className)}>

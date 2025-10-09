@@ -9,7 +9,7 @@
 		content?: string;
 	} = $props();
 
-	let oldMdContent = '';
+	let oldMdContent = $state('');
 </script>
 
 <div>
