@@ -3,7 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { CardTitle } from '$lib/components/ui/card';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import { HashIcon, CirclePlusIcon, SearchIcon } from 'lucide-svelte';
+	import { HashIcon, CirclePlusIcon, SearchIcon, TrashIcon, PenBoxIcon } from 'lucide-svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { channelCurId } from '$lib/store/channel.svelte';
 	import ChannelCreateDialog from '../channel/channel-create-dialog.svelte';
@@ -63,9 +63,20 @@
 								goto(page.url.toString(), { invalidate: ['channel:get'], replaceState: false });
 							}}
 							size="sm"
-							variant={(selectedId === channel?.id )? 'secondary' : 'ghost'}
-							class="w-full justify-start text-start"><HashIcon />{channel?.name}</Button
+							variant={selectedId === channel?.id ? 'secondary' : 'ghost'}
+							class="w-full justify-start truncate text-start"
 						>
+							<HashIcon />{channel?.name}<span class="ml-auto">
+								{#if selectedId === channel?.id}
+								<Button size="icon" variant="link" class="text-destructive p-0 w-fit">
+									<TrashIcon class="size-4" />
+								</Button>
+								<Button size="icon" variant="link" class="text-muted-foreground p-0 w-fit ml-0.5">
+									<PenBoxIcon class="size-4" />
+								</Button>
+								{/if}
+							</span>
+						</Button>
 					{/key}
 				{/if}
 			{/each}
