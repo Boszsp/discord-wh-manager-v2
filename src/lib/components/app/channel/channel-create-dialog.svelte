@@ -8,7 +8,6 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
-	import type { createChannelActionType } from '$lib/curdFn/channel';
 	import { channelCurId } from '$lib/store/channel.svelte';
 
 	const form = superForm(
@@ -44,7 +43,7 @@
 	<d.Trigger
 		class={cn(buttonVariants({ size: 'sm', variant: 'ghost' }), 'w-full justify-start p-0')}
 	>
-		<CirclePlusIcon />Add New
+		<CirclePlusIcon />Add Channel
 	</d.Trigger>
 	<d.Content class="w-md">
 		<d.Header>

@@ -2,7 +2,6 @@ import { superValidate } from 'sveltekit-superforms/client';
 import type { PageLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { hookJsonPartial } from '$lib/schema/webhookContentSchema';
-import { parseNumber } from '$lib/schema/numberSchema';
 import { channelCurId } from '$lib/store/channel.svelte';
 import { fromStore } from '$lib/store/form.svelte';
 import { get } from 'svelte/store';
@@ -46,7 +45,7 @@ export const load: PageLoad = async ({ url, depends }) => {
             name: channelId
         },
         templates: [
-            { name: 'Default', content: JSON.stringify(DEFAULT_WEBHOOK_CONTENT) },
+            { name: 'Default', content: JSON.stringify({content:"# Hello {{name}}"}) },
         ]
     };
 

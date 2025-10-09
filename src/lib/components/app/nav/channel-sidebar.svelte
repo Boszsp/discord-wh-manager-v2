@@ -3,14 +3,15 @@
 	import { Button } from '$lib/components/ui/button';
 	import { CardTitle } from '$lib/components/ui/card';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import { HashIcon, CirclePlusIcon, SearchIcon, TrashIcon, PenBoxIcon } from 'lucide-svelte';
+	import { HashIcon, SearchIcon, TrashIcon, PenBoxIcon } from 'lucide-svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { channelCurId } from '$lib/store/channel.svelte';
 	import ChannelCreateDialog from '../channel/channel-create-dialog.svelte';
 	import { page } from '$app/state';
 	import { Input } from '$lib/components/ui/input';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
-	import type { createChannelActionType } from '$lib/curdFn/channel';
+	import ChannelEditDialog from '$lib/components/app/channel/channel-edit-dialog.svelte';
+	import ChannelRemoveDialog from '$lib/components/app/channel/channel-remove-dialog.svelte';
 	/*export interface channelsProps {
 		title: string;
 		id: number;
@@ -29,6 +30,21 @@
 	channelCurId.subscribe((v) => (selectedId = String(v?.cid ?? -1)));
 	let searchChannelKey = $state('');
 	channelCurId.subscribe(() => (searchChannelKey = ''));
+
+	let openEdit = $state(false);
+	let openRemove = $state(false);
+
+	let channelInfo = $state({ name: '', url: '', id: '' });
+	function openEditDialog(name: string, url: string, id: string) {
+		channelInfo = { name, url, id };
+		console.log(name, url, id);
+		openEdit = true;
+	}
+	function openRemoveDialog(name: string, url: string, id: string) {
+		channelInfo = { name, url, id };
+		console.log(name, url, id);
+		openRemove = true;
+	}
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
 
@@ -68,18 +84,35 @@
 						>
 							<HashIcon />{channel?.name}<span class="ml-auto">
 								{#if selectedId === channel?.id}
-								<Button size="icon" variant="link" class="text-destructive p-0 w-fit">
-									<TrashIcon class="size-4" />
-								</Button>
-								<Button size="icon" variant="link" class="text-muted-foreground p-0 w-fit ml-0.5">
-									<PenBoxIcon class="size-4" />
-								</Button>
+									<Button
+									onclick={
+										()=>{
+											openRemoveDialog(channel?.name, channel?.url, String(channel?.id));
+										}
+									}
+									size="icon" variant="link" class="w-fit p-0 text-destructive">
+										<TrashIcon class="size-4" />
+									</Button>
+									<Button
+										onclick={() => {
+											openEditDialog(channel?.name, channel?.url, String(channel?.id));
+										}}
+										size="icon"
+										variant="link"
+										class="ml-0.5 w-fit p-0 text-muted-foreground"
+									>
+										<PenBoxIcon class="size-4" />
+									</Button>
 								{/if}
 							</span>
 						</Button>
 					{/key}
 				{/if}
 			{/each}
+			{#key channelInfo}
+				<ChannelEditDialog onSaveChannel={() => {}} channel={channelInfo} bind:open={openEdit} />
+				<ChannelRemoveDialog onRemoveChannel={()=>{}} channel={channelInfo} bind:open={openRemove} />
+			{/key}
 		</div>
 	</ScrollArea>
 </nav>
