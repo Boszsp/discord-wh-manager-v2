@@ -8,7 +8,7 @@ export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     class:"mt-0.25"
 }
 
-export const APP_NAME = "Discord Webhook Manager"
+export const APP_NAME = "This Webhook Manager"
 
 export const MAX_FILE_SIZE = 24 * 1024 * 1024; // 25 MB in bytes
 
@@ -26,3 +26,5 @@ export const DEFAULT_WEBHOOK_CONTENT_AS_STRING =  JSON.stringify(DEFAULT_WEBHOOK
 
 
 export const DEFAULT_ID_LENGTH = 21
+
+export const DEFAULT_SERVER_BG_COLOR = "#222226"

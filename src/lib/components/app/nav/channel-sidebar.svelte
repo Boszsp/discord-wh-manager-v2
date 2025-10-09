@@ -9,19 +9,18 @@
 	import ChannelCreateDialog from '../channel/channel-create-dialog.svelte';
 	import { page } from '$app/state';
 	import { Input } from '$lib/components/ui/input';
+	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	/*export interface channelsProps {
 		title: string;
 		id: number;
 	}*/
-	const {
-		name = 'Server Name',
-		channels = ['temp', 'temp2']
-	}: { name?: string; channels?: string[] } = $props();
-	let selectedId = $state(-1);
+	const { name = 'Server Name', channels = [] }: { name?: string; channels?: webhookSchemaType[] } =
+		$props();
+	let selectedId = $state('');
 	//let isOpenCreateChannelDialog:boolean = $state(false);
-	channelCurId.subscribe((v) => (selectedId = v?.cid ?? -1));
+	channelCurId.subscribe((v) => (selectedId = String(v?.cid ?? -1)));
 	let searchChannelKey = $state('');
-	channelCurId.subscribe(()=>searchChannelKey='')
+	channelCurId.subscribe(() => (searchChannelKey = ''));
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
 
@@ -45,23 +44,27 @@
 		</div>
 		<div class="flex flex-col gap-1">
 			<div class="relative mb-1">
-				<SearchIcon class="absolute top-1.5 left-1.5 text-muted-foreground size-4" />
-				<Input bind:value={searchChannelKey} class="p-1 h-fit pl-6 text-sm focus-visible:ring-0" placeholder="webhook name" />
+				<SearchIcon class="absolute top-1.5 left-1.5 size-4 text-muted-foreground" />
+				<Input
+					bind:value={searchChannelKey}
+					class="h-fit p-1 pl-6 text-sm focus-visible:ring-0"
+					placeholder="webhook name"
+				/>
 			</div>
 			{#each channels as channel, i (`${channel}-${i}`)}
-			{#if searchChannelKey.length <= 0 || channel.includes(searchChannelKey)}
-				{#key selectedId}
-					<Button
-						onclick={() => {
-							page.url.searchParams.set('channel', i + 1 + '');
-							goto(page.url.toString(), { invalidate: ['channel:get'] ,replaceState: false});
-						}}
-						size="sm"
-						variant={selectedId === i + 1 ? 'secondary' : 'ghost'}
-						class="w-full justify-start text-start"><HashIcon />{channel}</Button
-					>
-				{/key}
-			{/if}
+				{#if searchChannelKey.length <= 0 || channel?.name.includes(searchChannelKey)}
+					{#key selectedId}
+						<Button
+							onclick={() => {
+								page.url.searchParams.set('channel', i + 1 + '');
+								goto(page.url.toString(), { invalidate: ['channel:get'], replaceState: false });
+							}}
+							size="sm"
+							variant={selectedId === String(i + 1) ? 'secondary' : 'ghost'}
+							class="w-full justify-start text-start"><HashIcon />{channel}</Button
+						>
+					{/key}
+				{/if}
 			{/each}
 		</div>
 	</ScrollArea>

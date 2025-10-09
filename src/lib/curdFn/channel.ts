@@ -1,6 +1,6 @@
 import type { webhookSchemaType } from "$lib/schema/webhookSchema";
 
-export async function createChannel(serverId: string, channel: webhookSchemaType) {
+export async function createChannelAction(serverId: string, channel: webhookSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
     if (!channel) throw new Error("Channel Not Define")
 
@@ -12,7 +12,7 @@ export async function createChannel(serverId: string, channel: webhookSchemaType
     }
 }
 
-export async function editChannel(serverId: string, channelId: string, channel: webhookSchemaType) {
+export async function editChannelAction(serverId: string, channelId: string, channel: webhookSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
     if (!channelId) throw new Error("Channel Id Not Define")
     if (!channel) throw new Error("Channel Not Define")

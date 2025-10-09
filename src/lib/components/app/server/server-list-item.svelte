@@ -8,24 +8,33 @@
 	import type { ServerType } from '../types';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import { colorNameToHex } from '$lib/utilsFn/color';
+	import { Badge } from '$lib/components/ui/badge';
+	import { DEFAULT_SERVER_BG_COLOR } from '$lib/default';
 
-	let { server, onSave = () => {}, onDelete = () => {} }: { server: ServerType, onSave?: (detail: { id: string; name: string; color: string }) => void, onDelete?: (detail: { id: string }) => void } = $props();
+	let {
+		server,
+		onSave = () => {},
+		onDelete = () => {}
+	}: {
+		server: ServerType;
+		onSave?: (detail: { id: string; name: string; color: string }) => void;
+		onDelete?: (detail: { id: string }) => void;
+	} = $props();
 
 	let editingName = $state('');
-	let editingColor = $state('');
+	let editingColor = $state(DEFAULT_SERVER_BG_COLOR || '');
 
 	let isEditing = $state(false);
 
 	function startEditing() {
 		isEditing = true;
 		editingName = server.title;
-		editingColor = colorNameToHex( server.color ?? 'black') ?? '#5865F2' ;
-
+		editingColor = colorNameToHex(server.color+"") ?? DEFAULT_SERVER_BG_COLOR;
 	}
 
 	function saveEdit() {
 		if (!editingName) return;
-		onSave({ id: Math.floor(Math.random()*1000000)+"", name: editingName , color: editingColor});
+		onSave({ id: server?.id + '', name: editingName, color: editingColor });
 		cancelEdit();
 	}
 
@@ -47,11 +56,7 @@
 <div class="flex items-center gap-4 border-b p-4 last:border-b-0" in:fly={{ y: 20, duration: 300 }}>
 	{#if isEditing}
 		<div class="relative size-10 overflow-hidden rounded-xl border border-dashed">
-			<Input
-				type="color"
-				bind:value={editingColor}
-				class="size-10 scale-200 bg-transparent p-0"
-			/>
+			<Input type="color" bind:value={editingColor} class="size-10 scale-200 bg-transparent p-0" />
 		</div>
 		<Input bind:value={editingName} onkeydown={handleEditKeydown} class="flex-1" autofocus />
 		<Button onclick={() => (isEditing = false)} size="icon" variant="secondary">
@@ -71,6 +76,7 @@
 			</Avatar.Fallback>
 		</Avatar.Root>
 		<p class="flex-1 font-medium">{server.title}</p>
+		<Badge variant="outline">{server.id}</Badge>
 		<Button onclick={startEditing} size="icon" variant="secondary">
 			<PencilIcon class="h-4 w-4" />
 		</Button>

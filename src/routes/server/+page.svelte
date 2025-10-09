@@ -9,7 +9,10 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import type { PageProps } from './$types';
 	import { CardContent } from '$lib/components/ui/card';
-	
+	import { toast } from 'svelte-sonner';
+	import { createServerAction, editServerAction, removeServerAction } from '$lib/curdFn/server';
+	import { channelCurId } from '$lib/store/channel.svelte';
+
 	const { data }: PageProps = $props();
 
 	let servers = $state(data?.servers);
@@ -22,21 +25,34 @@
 		servers.filter((server) => server.title.toLowerCase().includes(searchTerm.toLowerCase()))
 	);
 
-	function createServer({ name }: { name: string }) {
-		servers.unshift({ id: crypto.randomUUID(), title: name });
+	function createServer({ name, color }: { name: string; color: string }) {
+		createServerAction({ name, color }).then((v) => {
+			if (v.server) {
+				servers.unshift({
+					id: v.serverId + '',
+					title: v.server?.name + '',
+					color: v.server?.color
+				});
+			}
+		});
 	}
 
 	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
 		const index = servers.findIndex((s) => s.id === id);
-		if (index !== -1) {
-			servers[index].title = name;
-			servers[index].color = color;
-		}
+		editServerAction(id, { name, color }).then((r) => {
+			if (index !== -1 && r.affectedServer) {
+				servers[index].title = r.affectedServer?.name;
+				servers[index].color = r.affectedServer?.color;
+			}
+		});
 	}
 
 	function deleteServer({ id }: { id: string }) {
-		serverToDelete = servers.find((s) => s.id === id) ?? null;
-		isDeleteDialogOpen = true;
+		removeServerAction(id)
+			.then(() => {
+				serverToDelete = servers.find((s) => s.id === id) ?? null;
+			})
+			.finally(() => (isDeleteDialogOpen = true));
 	}
 
 	function confirmDelete() {

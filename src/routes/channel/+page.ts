@@ -38,10 +38,10 @@ export const load: PageLoad = async ({ url, depends }) => {
             id: serverId,
             name: serverId
         },
-        channel: {
+        channels: [{
             id: channelId,
             name: channelId
-        },
+        }],
         templates: [
             { name: 'Default' ,content: JSON.stringify(DEFAULT_WEBHOOK_CONTENT)},
         ]

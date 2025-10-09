@@ -1,6 +1,6 @@
 import type { TemplateSchemaType } from "$lib/schema/templateSchema";
 
-export async function createTemplate(templateId: string, template: TemplateSchemaType) {
+export async function createTemplateAction(templateId: string, template: TemplateSchemaType) {
     if (!templateId) throw new Error("Template Id Not Define")
     if (!template) throw new Error("Template Not Define")
 
@@ -12,7 +12,7 @@ export async function createTemplate(templateId: string, template: TemplateSchem
     }
 }
 
-export async function editTemplate(templateId: string, template: TemplateSchemaType) {
+export async function editTemplateAction(templateId: string, template: TemplateSchemaType) {
     if (!templateId) throw new Error("Template Id Not Define")
     if (!template) throw new Error("Template Not Define")
 
@@ -24,7 +24,7 @@ export async function editTemplate(templateId: string, template: TemplateSchemaT
     }
 }
 
-export async function getTemplate(templateId: string): Promise<TemplateSchemaType> {
+export async function getTemplateAction(templateId: string): Promise<TemplateSchemaType> {
     return {
         id: "xxx",
         name: "x",
@@ -32,7 +32,7 @@ export async function getTemplate(templateId: string): Promise<TemplateSchemaTyp
     }
 }
 
-export async function getTemplates(templateId: string, offset?: number, limit?: number): Promise<TemplateSchemaType[]> {
+export async function getTemplatesAction(templateId: string, offset?: number, limit?: number): Promise<TemplateSchemaType[]> {
     return [{
         id: "xxx",
         name: "x",
@@ -40,7 +40,7 @@ export async function getTemplates(templateId: string, offset?: number, limit?: 
     }]
 }
 
-export async function removeTemplate(templateId: string) {
+export async function removeTemplateAction(templateId: string) {
     return {
         status: 200,
         message: "success",

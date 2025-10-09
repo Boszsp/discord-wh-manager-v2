@@ -9,33 +9,35 @@
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
+	import { DEFAULT_SERVER_BG_COLOR } from '$lib/default';
 
 	let {
 		onCreateServer = (detail: { name: string ,color:string}) => {}
 	}: { onCreateServer:(detail: { name: string ,color:string}) => void} = $props();
 
 	const form = superForm(
-		{ name: '', color: '#2d2829' },
+		{ name: '', color: DEFAULT_SERVER_BG_COLOR },
 		{
 			validators: zod4(serverSchema),
 			validationMethod: 'oninput'
 		}
 	);
 
-	const { form: formData, errors, enhance } = form;
+	const { form: formData, errors, enhance,validateForm } = form;
 
 	let open = $state(false);
 
-	function createServer() {
-		if (!$formData.name || $errors.name) return;
-		onCreateServer({name:$formData.name, color:$formData.color});
+	async function createServer() {
+		const {data} = await validateForm()
+		if (!data?.name || $errors.name) return;
+		onCreateServer({name:data.name, color:data.color});
 		$formData.name = '';
 		open = false;
 	}
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger class={cn(buttonVariants({ size: 'sm' }), 'p-0')}>
+	<Dialog.Trigger class={cn(buttonVariants({ size: 'sm',variant:"outline" }), 'p-0')}>
 		<PlusIcon />
 		Create Server
 	</Dialog.Trigger>

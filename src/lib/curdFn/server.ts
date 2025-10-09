@@ -1,18 +1,17 @@
 import type { ServerSchemaType } from "$lib/schema/serverSchema";
 
-export async function createServer(serverId: string, server: ServerSchemaType) {
-    if (!serverId) throw new Error("Server Id Not Define")
+export async function createServerAction( server: ServerSchemaType) {
     if (!server) throw new Error("Server Not Define")
 
     return {
         status: 200,
         message: "success",
-        serverId,
+        serverId:"cyx",
         server: server
     }
 }
 
-export async function editServer(serverId: string,server: ServerSchemaType) {
+export async function editServerAction(serverId: string,server: ServerSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
     if (!server) throw new Error("Server Not Define")
 
@@ -24,21 +23,21 @@ export async function editServer(serverId: string,server: ServerSchemaType) {
     }
 }
 
-export async function getServer(serverId: string): Promise<ServerSchemaType> {
+export async function getServerAction(serverId: string): Promise<ServerSchemaType> {
     return {
         id: "xxx",
         name: "x"
     }
 }
 
-export async function getServers(offset?:number,limit?:number): Promise<ServerSchemaType[]> {
+export async function getServersAction(offset?:number,limit?:number): Promise<ServerSchemaType[]> {
     return [{
         id: "xxx",
-        name: "x",
+        name: "xxx",
     }]
 }
 
-export async function removeServer(serverId: string) {
+export async function removeServerAction(serverId: string) {
     return {
         status: 200,
         message: "success",
