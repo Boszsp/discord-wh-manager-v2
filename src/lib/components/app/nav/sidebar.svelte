@@ -16,6 +16,7 @@
 		isSelected?: boolean;
 		class?: ClassValue;
 		color?: string;
+		id?:string
 	}
 	const {
 		sidebarMenu,

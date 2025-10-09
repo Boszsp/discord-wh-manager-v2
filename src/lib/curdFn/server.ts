@@ -31,7 +31,7 @@ export async function getServer(serverId: string): Promise<ServerSchemaType> {
     }
 }
 
-export async function getServers(serverId: string,offset?:number,limit?:number): Promise<ServerSchemaType[]> {
+export async function getServers(offset?:number,limit?:number): Promise<ServerSchemaType[]> {
     return [{
         id: "xxx",
         name: "x",

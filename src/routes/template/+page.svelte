@@ -2,7 +2,7 @@
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { LayoutTemplateIcon, PlusIcon } from 'lucide-svelte';
-	import { templateSchema, type TemplateSchemaType } from '$lib/schema/templateShema';
+	import { templateSchema, type TemplateSchemaType } from '$lib/schema/templateSchema';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import * as Dialog from '$lib/components/ui/dialog';

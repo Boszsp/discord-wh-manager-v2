@@ -17,16 +17,16 @@ export const load: PageLoad = async ({ url, depends }) => {
     depends("server:get")
     consola.info("Loading server...")
     
-    const serverId = parseNumber(url.searchParams.get('id') ?? '-1');
+    const serverId = url.searchParams.get('id') ?? '';
 
     depends("channel:get")
     consola.info("Loading channel...")
-    const channelId = parseNumber(url.searchParams.get('channel') ?? '1');
+    const channelId = url.searchParams.get('channel') ?? '';
     const restoreData = get(fromStore)
     
 
     consola.info(`In serverId: ${serverId}, At ChannelId: ${channelId}`)
-    channelCurId.set({ id: serverId ?? -1, cid: channelId ?? -1 });
+    channelCurId.set({ id: serverId , cid: channelId });
     return {
         form: await superValidate(zod4(hookJsonPartial), {
             defaults: {

@@ -7,11 +7,12 @@
 
 	let { children,servers=[] }:{children:Snippet,servers?:sidebarMenuProps[]} = $props();
 	const datas: sidebarMenuProps[] = $derived(servers?.map((v,id) => ({
-		fallback: v.fallback ?? "$",
+		//fallback: v.fallback ?? "$",
+		id:v?.id ?? id+"",
 		title: v.title,
 		link: v.link,
 		color: v.color ,
-		isSelected: page.url.searchParams.get('id')=== `${id+1}`
+		isSelected: page.url.searchParams.get("id") === `${v?.id}`
 	})) ?? []);
 	const selected = $derived(datas.filter((v) => v.isSelected).pop());
 </script>
