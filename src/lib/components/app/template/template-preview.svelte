@@ -8,29 +8,25 @@
 	} from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import type { templateShemaType } from '$lib/schema/templateShema';
+	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 	import { RefreshCcw, Save, Pencil, Check, TrashIcon } from 'lucide-svelte';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import { onMount } from 'svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
-	import {
-		type hookJsonPartialSchemaType
-	} from '$lib/schema/webhookContentSchema';
+	import { type hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import { templateStore } from '$lib/store/template.svelte';
-	import {consola} from "consola";
+	import { consola } from 'consola';
 	import TextareaJson from '../form/textarea-json.svelte';
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 
-
-
 	let {
 		template,
 		class: className
 	}: {
-		template: templateShemaType;
-		class?:ClassValue
+		template: TemplateSchemaType;
+		class?: ClassValue;
 	} = $props();
 
 	let isEditingName = $state(false);
@@ -56,7 +52,7 @@
 	}
 </script>
 
-<Card class={cn("border-0",className)}>
+<Card class={cn('border-0', className)}>
 	<CardHeader>
 		<div class="flex items-center justify-between">
 			<div>
@@ -73,7 +69,7 @@
 						<Button
 							variant="ghost"
 							size="sm"
-							class="p-1 h-fit"
+							class="h-fit p-1"
 							onclick={() => {
 								isEditingName = true;
 							}}
@@ -103,12 +99,7 @@
 				>
 					<RefreshCcw class="size-4" />
 				</Button>
-				<Button
-					variant="destructive"
-					size="icon"
-					onclick={() => {
-					}}
-				>
+				<Button variant="destructive" size="icon" onclick={() => {}}>
 					<TrashIcon class="size-4" />
 				</Button>
 			</div>
@@ -122,7 +113,7 @@
 				{/if}
 			</span>
 			<span class="relative flex-1">
-				<TextareaJson bind:value={preview}  />
+				<TextareaJson bind:value={preview} />
 			</span>
 		</div>
 	</CardContent>

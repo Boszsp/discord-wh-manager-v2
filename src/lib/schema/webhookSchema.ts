@@ -1,6 +1,8 @@
+import { DEFAULT_ID_LENGTH } from '$lib/default';
 import { z } from 'zod';
 
 export const webhookSchema = z.object({
+    id:z.string().length(DEFAULT_ID_LENGTH).optional(),
     name: z.string().min(6),
     url: z.url(),
 });

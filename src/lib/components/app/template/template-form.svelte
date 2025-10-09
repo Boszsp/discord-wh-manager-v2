@@ -6,7 +6,7 @@
 	import { cn, type WithElementRef } from '$lib/utils';
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { SuperForm } from 'sveltekit-superforms';
-	import type { templateShemaType } from '$lib/schema/templateShema';
+	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
@@ -18,7 +18,7 @@
 		form,
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & {
-		form: SuperForm<templateShemaType, any>;
+		form: SuperForm<TemplateSchemaType, any>;
 	} = $props();
 
 	const { form: formData, errors, enhance } = form;

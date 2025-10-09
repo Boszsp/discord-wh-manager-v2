@@ -23,3 +23,6 @@ export const DEFAULT_WEBHOOK_CONTENT = {
 }
 
 export const DEFAULT_WEBHOOK_CONTENT_AS_STRING =  JSON.stringify(DEFAULT_WEBHOOK_CONTENT)
+
+
+export const DEFAULT_ID_LENGTH = 21
