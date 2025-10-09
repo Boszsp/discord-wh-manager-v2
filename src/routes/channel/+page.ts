@@ -16,17 +16,17 @@ export const load: PageLoad = async ({ url, depends }) => {
 
     depends("server:get")
     consola.info("Loading server...")
-    
+
     const serverId = url.searchParams.get('id') ?? '';
 
     depends("channel:get")
     consola.info("Loading channel...")
     const channelId = url.searchParams.get('channel') ?? '';
     const restoreData = get(fromStore)
-    
+
 
     consola.info(`In serverId: ${serverId}, At ChannelId: ${channelId}`)
-    channelCurId.set({ id: serverId , cid: channelId });
+    channelCurId.set({ id: serverId, cid: channelId });
     return {
         form: await superValidate(zod4(hookJsonPartial), {
             defaults: {
@@ -42,8 +42,12 @@ export const load: PageLoad = async ({ url, depends }) => {
             id: channelId,
             name: channelId
         }],
+        channel: {
+            id: channelId,
+            name: channelId
+        },
         templates: [
-            { name: 'Default' ,content: JSON.stringify(DEFAULT_WEBHOOK_CONTENT)},
+            { name: 'Default', content: JSON.stringify(DEFAULT_WEBHOOK_CONTENT) },
         ]
     };
 
