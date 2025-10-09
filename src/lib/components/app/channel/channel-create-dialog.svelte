@@ -4,10 +4,12 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Hash, CirclePlusIcon, Link2Icon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
-	import { webhookSchema } from '$lib/schema/webhookSchema';
+	import { webhookSchema, type webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import type { createChannelActionType } from '$lib/curdFn/channel';
+	import { channelCurId } from '$lib/store/channel.svelte';
 
 	const form = superForm(
 		{ name: '', url: '' },
@@ -17,20 +19,24 @@
 		}
 	);
 
-	const { form: formData, errors, enhance } = form;
+	const { form: formData, errors, enhance, validateForm } = form;
 
 	let open = $state(false);
 
 	let {
-		onCreateChannel = () => {}
-	}: { onCreateChannel: (detail: { name: string; url: string }) => void } = $props();
+		onCreateChannel = async () => {
+		
+		}
+	}: { onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void> } = $props();
 
-	function createChannel() {
-		if (!$formData.name || !$formData.url || $errors.name || $errors.url) return;
-		onCreateChannel({ name: $formData.name, url: $formData.url });
-		$formData.name = '';
-		$formData.url = '';
-		open = false;
+	async function createChannel() {
+		const { data } = await validateForm();
+		if (!data.name || !data.url || $errors.name || $errors.url) return;
+		onCreateChannel(String($channelCurId?.id), { name: data.name, url: data.url }).then(() => {
+			$formData.name = '';
+			$formData.url = '';
+			open = false;
+		});
 	}
 </script>
 

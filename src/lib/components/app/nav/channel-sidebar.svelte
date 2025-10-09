@@ -10,12 +10,20 @@
 	import { page } from '$app/state';
 	import { Input } from '$lib/components/ui/input';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
+	import type { createChannelActionType } from '$lib/curdFn/channel';
 	/*export interface channelsProps {
 		title: string;
 		id: number;
 	}*/
-	const { name = 'Server Name', channels = [] }: { name?: string; channels?: webhookSchemaType[] } =
-		$props();
+	const {
+		name = 'Server Name',
+		channels = [],
+		onCreateChannel
+	}: {
+		name?: string;
+		channels?: webhookSchemaType[];
+		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
+	} = $props();
 	let selectedId = $state('');
 	//let isOpenCreateChannelDialog:boolean = $state(false);
 	channelCurId.subscribe((v) => (selectedId = String(v?.cid ?? -1)));
@@ -29,12 +37,7 @@
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
 	<ScrollArea class="h-full p-2">
-		<ChannelCreateDialog
-			onCreateChannel={(e) => {
-				// TODO: Implement create channel logic
-				console.log(e);
-			}}
-		/>
+		<ChannelCreateDialog {onCreateChannel} />
 
 		<Separator class="my-2" />
 		<div>
@@ -56,12 +59,12 @@
 					{#key selectedId}
 						<Button
 							onclick={() => {
-								page.url.searchParams.set('channel', i + 1 + '');
+								page.url.searchParams.set('channel', channel?.id ?? i + 1 + '');
 								goto(page.url.toString(), { invalidate: ['channel:get'], replaceState: false });
 							}}
 							size="sm"
-							variant={selectedId === String(i + 1) ? 'secondary' : 'ghost'}
-							class="w-full justify-start text-start"><HashIcon />{channel}</Button
+							variant={(selectedId === channel?.id )? 'secondary' : 'ghost'}
+							class="w-full justify-start text-start"><HashIcon />{channel?.name}</Button
 						>
 					{/key}
 				{/if}

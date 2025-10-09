@@ -8,9 +8,11 @@ export async function createChannelAction(serverId: string, channel: webhookSche
         status: 200,
         message: "success",
         serverId,
-        channel: channel
+        affectedChannel: Object.assign(channel,{id:"xyz"})
     }
 }
+
+export type createChannelActionType = typeof createChannelAction
 
 export async function editChannelAction(serverId: string, channelId: string, channel: webhookSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
@@ -26,7 +28,7 @@ export async function editChannelAction(serverId: string, channelId: string, cha
     }
 }
 
-export async function getChannel(serverId: string, channelId: string): Promise<webhookSchemaType> {
+export async function getChannelAction(serverId: string, channelId: string): Promise<webhookSchemaType> {
     return {
         id: "xxx",
         name: "x",
@@ -34,7 +36,7 @@ export async function getChannel(serverId: string, channelId: string): Promise<w
     }
 }
 
-export async function getChannels(serverId: string,offset?:number,limit?:number): Promise<webhookSchemaType[]> {
+export async function getChannelsAction(serverId: string,offset?:number,limit?:number): Promise<webhookSchemaType[]> {
     return [{
         id: "xxx",
         name: "x",
@@ -42,7 +44,7 @@ export async function getChannels(serverId: string,offset?:number,limit?:number)
     }]
 }
 
-export async function removeChannel(serverId: string, channelId: string) {
+export async function removeChannelAction(serverId: string, channelId: string) {
     return {
         status: 200,
         message: "success",

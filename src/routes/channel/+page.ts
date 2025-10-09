@@ -8,6 +8,7 @@ import { fromStore } from '$lib/store/form.svelte';
 import { get } from 'svelte/store';
 import { consola } from "consola";
 import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
+import { getChannelsAction } from '$lib/curdFn/channel';
 
 
 export const load: PageLoad = async ({ url, depends }) => {
@@ -21,7 +22,8 @@ export const load: PageLoad = async ({ url, depends }) => {
 
     depends("channel:get")
     consola.info("Loading channel...")
-    const channelId = url.searchParams.get('channel') ?? '';
+    const channels = await getChannelsAction(serverId)
+    const channelId = url.searchParams.get('channel') ?? channels?.[0]?.id ?? '';
     const restoreData = get(fromStore)
 
 
@@ -38,10 +40,7 @@ export const load: PageLoad = async ({ url, depends }) => {
             id: serverId,
             name: serverId
         },
-        channels: [{
-            id: channelId,
-            name: channelId
-        }],
+        channels: channels,
         channel: {
             id: channelId,
             name: channelId

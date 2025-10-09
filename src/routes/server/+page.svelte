@@ -27,11 +27,11 @@
 
 	function createServer({ name, color }: { name: string; color: string }) {
 		createServerAction({ name, color }).then((v) => {
-			if (v.server) {
+			if (v.affectedServer) {
 				servers.unshift({
 					id: v.serverId + '',
-					title: v.server?.name + '',
-					color: v.server?.color
+					title: v.affectedServer?.name + '',
+					color: v.affectedServer?.color
 				});
 			}
 		});

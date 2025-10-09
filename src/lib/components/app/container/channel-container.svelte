@@ -12,19 +12,21 @@
 		class: className,
 		leftWidth = 20,
 		rightWidth = 80,
-		channels
+		channels,
+		onCreateChannel
 	}: {
 		children: Snippet;
 		class?: ClassValue;
 		leftWidth?: number;
 		rightWidth?: number;
 		channels?: webhookSchemaType[];
+		onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void>
 	} = $props();
 </script>
 
 <Resizable.PaneGroup class="h-full" direction="horizontal">
 	<Resizable.Pane defaultSize={leftWidth} class="h-full">
-		<ChannelSidebar {channels} />
+		<ChannelSidebar onCreateChannel={onCreateChannel} {channels} />
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane class={cn('relative w-fit', className)} defaultSize={rightWidth}>

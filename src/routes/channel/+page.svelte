@@ -20,7 +20,8 @@
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
-	import { channelCurId } from '$lib/store/channel.svelte';
+	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
+	import { createChannelAction } from '$lib/curdFn/channel';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -40,6 +41,7 @@
 	let files: File[] = $state([]);
 	let selectedTemplate: string = $state('');
 	let newTemplateValue: string = $state('');
+	let channels = $state(data?.channels || [])
 
 	const isMoble = new IsMobile();
 
@@ -56,11 +58,24 @@
 	function onSm() {
 		console.log(cleanUpBlank($formData));
 	}
+
+	async function onCreateChannel(serverId:string,channel:webhookSchemaType){
+		
+		createChannelAction(
+			serverId,channel
+		).then(
+			(r)=>{
+				if(r?.affectedChannel?.id)
+				channels.push(r.affectedChannel)
+			}
+		)
+
+	}
 </script>
 
 <PageTransition />
 <ImagePopupShow />
-<ChannelContainer leftWidth={16} class="overflow-hidden bg-background">
+<ChannelContainer onCreateChannel={onCreateChannel} channels={channels} leftWidth={16} class="overflow-hidden bg-background">
 	{#if data?.channels && data?.channels?.length > 0}
 	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 		<Resizable.Pane defaultSize={40} class="w-fit">
