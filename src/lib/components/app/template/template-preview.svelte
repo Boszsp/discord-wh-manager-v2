@@ -9,7 +9,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
-	import { Save, SquarePenIcon, TrashIcon } from 'lucide-svelte';
+	import { LayoutTemplateIcon, Save, SquarePenIcon, TrashIcon } from 'lucide-svelte';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import { onMount } from 'svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
@@ -67,7 +67,10 @@
 			<div class="h-fit w-full">
 				{#if isEditing}
 					<div class="flex items-center gap-2">
-						<Input class="w-full" bind:value={newName} />
+						<div class="relative w-full">
+							<LayoutTemplateIcon class="absolute top-2.5 left-2.5 size-4" />
+							<Input class="w-full pl-8" bind:value={newName} />
+						</div>
 						<Button variant="outline" size="icon" onclick={save}>
 							<Save class="size-4" />
 						</Button>
