@@ -12,11 +12,14 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { CardTitle } from '$lib/components/ui/card';
 	import type { PageProps } from './$types';
-	import { editTemplateAction } from '$lib/curdFn/template';
+	import { editTemplateAction, removeTemplateAction } from '$lib/curdFn/template';
+	import ConfirmDialog from '$lib/components/app/dialog/confirm-dialog.svelte';
 
 	const { data }: PageProps = $props();
-	let open = $state(false);
+	let isOpenEditDialog = $state(false);
+	let isOpenRemoveDialog = $state(false);
 	let isEditing = $state(false);
+	let templates = $state<TemplateSchemaType[]>(data?.templates);
 	let selectedTemplate: TemplateSchemaType | null = $state(null);
 
 	const form = superForm(
@@ -25,7 +28,7 @@
 			validators: zod4(templateSchema),
 			validationMethod: 'oninput',
 			onSubmit: (inp) => {
-				handleSubmit()
+				handleSubmit();
 				inp.cancel();
 				return false;
 			},
@@ -40,12 +43,11 @@
 		selectedTemplate = null;
 		$formData.name = '';
 		$formData.content = '{"content":""}';
-		open = true;
+		isOpenEditDialog = true;
 	}
 
-	function onEdit(id:string,template: TemplateSchemaType) {
-		editTemplateAction(id,template).then(
-		)
+	function onEdit(id: string, template: TemplateSchemaType) {
+		editTemplateAction(id, template).then();
 	}
 
 	function handleSubmit() {
@@ -60,11 +62,18 @@
 		} else {
 			templateStore.update((templates) => [...templates, { ...$formData }]);
 		}
-		open = false;
+		isOpenEditDialog = false;
 	}
 
-	function deleteTemplate(template: TemplateSchemaType) {
-		templateStore.update((templates) => templates.filter((t) => t.name !== template.name));
+	function openRemoveDialog(templateId: string) {
+		//selectedTemplate = templateId;
+		selectedTemplate = templates.find((t) => t.id === templateId) || null;
+		isOpenRemoveDialog = true;
+	}
+
+	function deleteTemplate() {
+		removeTemplateAction(selectedTemplate?.id + "")
+		templateStore.update((templates) => templates.filter((t) => t.name !== selectedTemplate?.name));
 	}
 </script>
 
@@ -85,8 +94,12 @@
 			{#if data?.templates.length > 0}
 				<div class="mb-8 px-4">
 					<div class="flex flex-col gap-4">
-						{#each data?.templates as template (template.name)}
-							<TemplatePreview {template} onEditTemplate={onEdit} />
+						{#each templates as template (template.name)}
+							<TemplatePreview
+								{template}
+								onEditTemplate={onEdit}
+								onRemoveTemplate={openRemoveDialog}
+							/>
 						{/each}
 					</div>
 				</div>
@@ -95,11 +108,19 @@
 	</ScrollArea>
 </DashboardContainer>
 
-<Dialog.Root bind:open>
+<Dialog.Root bind:open={isOpenEditDialog}>
 	<Dialog.Content class="max-w-full min-w-fit overflow-hidden">
 		<Dialog.Header class="!w-2xl">
-			<Dialog.Title>{isEditing ? 'Edit' : 'Create'} Template</Dialog.Title>
+			<Dialog.Title>Create Template</Dialog.Title>
 		</Dialog.Header>
-		<TemplateForm {form}/>
+		<TemplateForm {form} />
 	</Dialog.Content>
 </Dialog.Root>
+<ConfirmDialog
+	bind:open={isOpenRemoveDialog}
+	title="Remove Template"
+	description="Are you sure you want to remove this template?"
+	confirmText="Remove"
+	itemName={selectedTemplate?.name}
+	onConfirm={deleteTemplate}
+/>

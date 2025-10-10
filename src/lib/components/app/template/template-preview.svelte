@@ -24,17 +24,18 @@
 	let {
 		template,
 		class: className,
-		onEditTemplate
+		onEditTemplate,
+		onRemoveTemplate
 	}: {
 		template: TemplateSchemaType;
 		class?: ClassValue;
-		onEditTemplate?:(templateId: string, template: TemplateSchemaType) => void;
-		
+		onEditTemplate?: (templateId: string, template: TemplateSchemaType) => void;
+		onRemoveTemplate?: (templateId: string) => void;
 	} = $props();
 	let isEditing = $state(false);
 	let newName = $state('');
 	let preview = $state(template.content);
-	let previewHTML = $state(template.name || "");
+	let previewHTML = $state(template.name || '');
 	let previewObj = $state<hookJsonPartialSchemaType>({});
 
 	onMount(async () => {
@@ -47,14 +48,14 @@
 		}
 	});
 
-	function onEdit(){
+	function onEdit() {
 		newName = template.name;
 		isEditing = true;
 	}
 	function save() {
 		//console.log(template.id)
-		if(template.id && onEditTemplate)
-		onEditTemplate(template.id,{ name: newName, content: template.content })
+		if (template.id && onEditTemplate)
+			onEditTemplate(template.id, { name: newName, content: template.content });
 		templateStore.updateTemplate({ ...template, name: newName });
 		isEditing = false;
 	}
@@ -80,15 +81,17 @@
 			</div>
 			<div class="flex items-center gap-2">
 				{#if !isEditing}
-				<Button
-					variant="outline"
-					size="icon"
-					onclick={onEdit}
-				>
-					<SquarePenIcon class="size-4" />
-				</Button>
+					<Button variant="outline" size="icon" onclick={onEdit}>
+						<SquarePenIcon class="size-4" />
+					</Button>
 				{/if}
-				<Button variant="destructive" size="icon" onclick={() => {}}>
+				<Button
+					variant="destructive"
+					size="icon"
+					onclick={() => {
+						if (onRemoveTemplate && template.id) onRemoveTemplate(template.id);
+					}}
+				>
 					<TrashIcon class="size-4" />
 				</Button>
 			</div>
@@ -102,7 +105,11 @@
 				{/if}
 			</span>
 			<span class="relative flex-1">
-				<TextareaJson class={isEditing ? "border" : ""} bind:value={preview} readonly={!isEditing} />
+				<TextareaJson
+					class={isEditing ? 'border' : ''}
+					bind:value={preview}
+					readonly={!isEditing}
+				/>
 			</span>
 		</div>
 	</CardContent>
