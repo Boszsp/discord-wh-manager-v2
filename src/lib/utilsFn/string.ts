@@ -58,7 +58,7 @@ export const parseBase64ToJson = async (str: string) => {
             consola.info(error)
             //return jsonSchema.safeParse({ "content": "" })?.data
             //console.log(fromBase64(str))
-            console.log(normalParse?.split(",").map(v => parseInt(v)))
+            //console.log(normalParse?.split(",").map(v => parseInt(v)))
             return parseTarGzip(new Uint8Array(normalParse?.split(",").map(v => parseInt(v))))
         }
         else {

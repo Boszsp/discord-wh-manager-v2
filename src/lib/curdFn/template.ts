@@ -1,9 +1,9 @@
 import type { TemplateSchemaType } from "$lib/schema/templateSchema";
 import { consola } from "consola";
 
-export async function createTemplateAction(templateId: string, template: TemplateSchemaType) {
-    if (!templateId) throw new Error("Template Id Not Define")
+export async function createTemplateAction(template: TemplateSchemaType) {
     if (!template) throw new Error("Template Not Define")
+    const templateId = "xxx"
     consola.success("CreateTemplateAction")
 
     return {
@@ -17,7 +17,7 @@ export async function createTemplateAction(templateId: string, template: Templat
 export async function editTemplateAction(templateId: string, template: TemplateSchemaType) {
     if (!templateId) throw new Error("Template Id Not Define")
     if (!template) throw new Error("Template Not Define")
-    consola.success("EditTemplateAction")
+    consola.success("EditTemplateAction",template)
 
     return {
         status: 200,
@@ -37,13 +37,13 @@ export async function getTemplateAction(templateId: string): Promise<TemplateSch
     }
 }
 
-export async function getTemplatesAction( offset?: number, limit?: number): Promise<TemplateSchemaType[]> {
+export async function getTemplatesAction(offset?: number, limit?: number): Promise<TemplateSchemaType[]> {
     consola.success("GetTemplate(s)Action")
 
     return [{
         id: "xxx",
         name: "x",
-        content: "",
+        content: "{\"content\":\"xyz\"}",
     }]
 }
 

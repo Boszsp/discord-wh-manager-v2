@@ -49,10 +49,10 @@
 	}
 
 	function deleteServer({ id }: { id: string }) {
-		console.log(id)
+		//console.log(id)
 		serverToDelete = servers.find((s) => s.id === id) ?? null;
 		isDeleteDialogOpen = true;
-		console.log(serverToDelete)
+		//console.log(serverToDelete)
 		deleteTarget = id
 	}
 

@@ -12,6 +12,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { CardTitle } from '$lib/components/ui/card';
 	import type { PageProps } from './$types';
+	import { editTemplateAction } from '$lib/curdFn/template';
 
 	const { data }: PageProps = $props();
 	let open = $state(false);
@@ -42,12 +43,9 @@
 		open = true;
 	}
 
-	function openEditDialog(template: TemplateSchemaType) {
-		isEditing = true;
-		selectedTemplate = template;
-		$formData.name = template.name;
-		$formData.content = template.content;
-		open = true;
+	function onEdit(id:string,template: TemplateSchemaType) {
+		editTemplateAction(id,template).then(
+		)
 	}
 
 	function handleSubmit() {
@@ -80,7 +78,7 @@
 					<LayoutTemplateIcon class="size-4" />
 					<CardTitle>Manage Templates</CardTitle>
 				</span>
-				<Button variant="outline" size="sm" onclick={openCreateDialog}>New With Json</Button>
+				<Button variant="outline" size="sm" onclick={openCreateDialog}>Add Template</Button>
 			</div>
 			<h3 class="mt-4 mb-4 px-4 text-lg font-medium">Available Templates</h3>
 
@@ -88,7 +86,7 @@
 				<div class="mb-8 px-4">
 					<div class="flex flex-col gap-4">
 						{#each data?.templates as template (template.name)}
-							<TemplatePreview {template} />
+							<TemplatePreview {template} onEditTemplate={onEdit} />
 						{/each}
 					</div>
 				</div>
