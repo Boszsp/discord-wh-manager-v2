@@ -39,11 +39,15 @@ export async function getChannelAction(serverId: string, channelId: string): Pro
 }
 
 export async function getChannelsAction(serverId: string,offset?:number,limit?:number): Promise<webhookSchemaType[]> {
-    return [{
-        id: "xxx",
-        name: "x",
+    return new Array(2).fill({
+        id: "xxx" ,
+        name: "xxx" ,
         url: "xx"
-    }]
+}).map((_,i)=>({
+        id: "xxx"+i,
+        name: "xxx"+i,
+        url: "xx"
+    }))
 }
 
 export async function removeChannelAction(serverId: string, channelId: string) {

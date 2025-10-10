@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { DEFAULT_SIDEBAR_FIRST_MENU } from '$lib/default';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 
 	export interface sidebarMenuProps {
 		image?: string;
@@ -16,7 +17,7 @@
 		isSelected?: boolean;
 		class?: ClassValue;
 		color?: string;
-		id?:string
+		id?: string;
 	}
 	const {
 		sidebarMenu,
@@ -24,45 +25,86 @@
 	}: { sidebarMenu?: sidebarMenuProps[]; class?: ClassValue } = $props();
 </script>
 
-<aside>
-	<nav class={cn('flex flex-col gap-2 px-4', className)}>
-		{#each sidebarMenu ? [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: !sidebarMenu?.some((v) => v.isSelected) }].concat(sidebarMenu as any) : [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: true }] as menu, i ("menu-"+menu.title+"-" + i)}
-			<div class={cn('group relative', menu?.class)}>
-				<div
-					class={cn(
-						'absolute top-0 -left-4 h-10 w-0 scale-y-50 rounded-r-2xl bg-foreground/60 transition-all group-hover:w-1',
-						menu?.isSelected ? 'w-1 scale-y-100' : ''
-					)}
-				></div>
-				<div class="item-center flex">
-					<Tooltip.Provider>
-						<Tooltip.Root delayDuration={0}>
-							<Tooltip.Trigger
-								onclick={() => {
-									if (menu?.link) goto(menu?.link,{invalidate:["server:get","channel:get"]});
-								}}
-							>
-								<Avatar.Root
-									style={{ backgroundColor: menu?.color }}
-									class={cn('text-primary-secondary size-10 rounded-xl bg-secondary/60')}
+<aside class="h-full overflow-hidden">
+	<ScrollArea class="h-full">
+		<nav class={cn('flex h-full flex-col gap-2 px-4', className)}>
+			{#each [{ ...DEFAULT_SIDEBAR_FIRST_MENU, isSelected: !sidebarMenu?.some((v) => v.isSelected) }] as menu, i ('menu-frist-' + menu.title + '-' + i)}
+				<div class={cn('group relative', menu?.class)}>
+					<div
+						class={cn(
+							'absolute top-0 -left-4 h-10 w-0 scale-y-50 rounded-r-2xl bg-foreground/60 transition-all group-hover:w-1',
+							menu?.isSelected ? 'w-1 scale-y-100' : ''
+						)}
+					></div>
+					<div class="item-center flex">
+						<Tooltip.Provider>
+							<Tooltip.Root delayDuration={0}>
+								<Tooltip.Trigger
+									onclick={() => {
+										if (menu?.link) goto(menu?.link, { invalidate: ['server:get', 'channel:get'] });
+									}}
 								>
-									<Avatar.Image src={menu?.image} alt="server logo" />
-									<Avatar.Fallback class="scale-75 bg-transparent">{convertToFallbackString(menu.title)}</Avatar.Fallback>
-								</Avatar.Root>
-							</Tooltip.Trigger>
-							<Tooltip.Content
-								side="right"
-								class="border bg-secondary text-secondary-foreground"
-								arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
-								>{menu.title}</Tooltip.Content
-							>
-						</Tooltip.Root>
-					</Tooltip.Provider>
+									<Avatar.Root
+										style={{ backgroundColor: menu?.color }}
+										class={cn('text-primary-secondary size-10 rounded-xl bg-secondary/60')}
+									>
+										<Avatar.Image src={menu?.image} alt="server logo" />
+										<Avatar.Fallback class="scale-75 bg-transparent"
+											>{convertToFallbackString(menu.title)}</Avatar.Fallback
+										>
+									</Avatar.Root>
+								</Tooltip.Trigger>
+								<Tooltip.Content
+									side="right"
+									class="border bg-secondary text-secondary-foreground"
+									arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
+									>{menu.title}</Tooltip.Content
+								>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					</div>
 				</div>
-				{#if i == 0}
-					<Separator class="mt-2"></Separator>
-				{/if}
-			</div>
-		{/each}
-	</nav>
+			{/each}
+			<Separator class="mt-2"></Separator>
+			{#each sidebarMenu ? sidebarMenu : [] as menu, i ('menu-' + menu.title + '-' + i)}
+				<div class={cn('group relative', menu?.class)}>
+					<div
+						class={cn(
+							'absolute top-0 -left-4 h-10 w-0 scale-y-50 rounded-r-2xl bg-foreground/60 transition-all group-hover:w-1',
+							menu?.isSelected ? 'w-1 scale-y-100' : ''
+						)}
+					></div>
+					<div class="item-center flex">
+						<Tooltip.Provider>
+							<Tooltip.Root delayDuration={0}>
+								<Tooltip.Trigger
+									onclick={() => {
+										if (menu?.link) goto(menu?.link, { invalidate: ['server:get', 'channel:get'] });
+									}}
+								>
+									<Avatar.Root
+										style={{ backgroundColor: menu?.color }}
+										class={cn('text-primary-secondary size-10 rounded-xl bg-secondary/60')}
+									>
+										<Avatar.Image src={menu?.image} alt="server logo" />
+										<Avatar.Fallback class="scale-75 bg-transparent"
+											>{convertToFallbackString(menu.title)}</Avatar.Fallback
+										>
+									</Avatar.Root>
+								</Tooltip.Trigger>
+								<Tooltip.Content
+									side="right"
+									class="border bg-secondary text-secondary-foreground"
+									arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
+									>{menu.title}</Tooltip.Content
+								>
+							</Tooltip.Root>
+						</Tooltip.Provider>
+					</div>
+				</div>
+			{/each}
+			<div class="h-10"></div>
+
+		</nav>
+	</ScrollArea>
 </aside>

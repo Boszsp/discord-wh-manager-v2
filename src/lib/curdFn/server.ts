@@ -36,10 +36,13 @@ export async function getServerAction(serverId: string): Promise<ServerSchemaTyp
 export async function getServersAction(offset?: number, limit?: number): Promise<ServerSchemaType[]> {
     consola.success("GetServer(s)Action")
 
-    return [{
+    return new Array(5).fill({
         id: "xxx",
         name: "xxx",
-    }]
+    }).map((_, i) => ({
+        id: "xxx"+i,
+        name: "xxx"+i,
+    }))
 }
 
 export async function removeServerAction(serverId: string) {

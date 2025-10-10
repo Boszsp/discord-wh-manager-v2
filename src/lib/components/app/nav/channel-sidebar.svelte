@@ -46,28 +46,28 @@
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
 
-<nav>
+<nav class="h-full">
 	<div class="border-b p-2">
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
-	<ScrollArea class="h-full p-2">
-		<ChannelCreateDialog {onCreateChannel} />
+	<ChannelCreateDialog {onCreateChannel} />
 
-		<Separator class="my-2" />
-		<div>
-			<small class="text-sm leading-none font-medium text-muted-foreground"
-				>Webhooks | เว็บฮุก</small
-			>
-		</div>
+	<Separator class="my-2" />
+	<div>
+		<small class="px-2 text-sm leading-none font-medium text-muted-foreground"
+			>Webhooks | เว็บฮุก</small
+		>
+	</div>
+	<div class="relative mt-1 mx-2">
+		<SearchIcon class="absolute top-1.5 left-1.5 size-4 text-muted-foreground" />
+		<Input
+			bind:value={searchChannelKey}
+			class="h-fit p-1 pl-6 text-sm focus-visible:ring-0"
+			placeholder="webhook name"
+		/>
+	</div>
+	<ScrollArea class="h-full p-2">
 		<div class="flex flex-col gap-1">
-			<div class="relative mb-1">
-				<SearchIcon class="absolute top-1.5 left-1.5 size-4 text-muted-foreground" />
-				<Input
-					bind:value={searchChannelKey}
-					class="h-fit p-1 pl-6 text-sm focus-visible:ring-0"
-					placeholder="webhook name"
-				/>
-			</div>
 			{#each channels as channel, i (`${channel}-${i}`)}
 				{#if searchChannelKey.length <= 0 || channel?.name.includes(searchChannelKey)}
 					{#key selectedId}
@@ -83,12 +83,13 @@
 							<HashIcon />{channel?.name}<span class="ml-auto">
 								{#if selectedId === channel?.id}
 									<Button
-									onclick={
-										()=>{
+										onclick={() => {
 											openRemoveDialog(channel?.name, channel?.url, String(channel?.id));
-										}
-									}
-									size="icon" variant="link" class="w-fit p-0 text-destructive">
+										}}
+										size="icon"
+										variant="link"
+										class="w-fit p-0 text-destructive"
+									>
 										<TrashIcon class="size-4" />
 									</Button>
 									<Button
@@ -107,9 +108,14 @@
 					{/key}
 				{/if}
 			{/each}
+			<div class="h-40"></div>
 			{#key channelInfo}
 				<ChannelEditDialog onSaveChannel={() => {}} channel={channelInfo} bind:open={openEdit} />
-				<ChannelRemoveDialog onRemoveChannel={()=>{}} channel={channelInfo} bind:open={openRemove} />
+				<ChannelRemoveDialog
+					onRemoveChannel={() => {}}
+					channel={channelInfo}
+					bind:open={openRemove}
+				/>
 			{/key}
 		</div>
 	</ScrollArea>

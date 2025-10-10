@@ -39,7 +39,7 @@
 			</a>
 		</span>
 	</header>
-	<div class="flex">
+	<div class="flex h-full w-full">
 		<Sidebar sidebarMenu={datas} />
 		<main class="h-[96dvh] w-full rounded-tl-2xl border-t border-l overflow-hidden">
 			{@render children?.()}
