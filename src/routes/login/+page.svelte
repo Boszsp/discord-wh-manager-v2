@@ -10,9 +10,7 @@
 		validators: zod4(loginSchema),
 		validationMethod:"onblur",
 		onSubmit:(inp)=>{
-			console.log(inp);
 			inp.cancel()
-			console.log(inp.formData);
 			return false
 		},
 		clearOnSubmit:"errors"

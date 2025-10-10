@@ -31,7 +31,7 @@
 	method="POST"
 	use:enhance
 >
-	<Form.Field {form} name="name" class="px-2">
+	<Form.Field {form} name="name" class="px-2" >
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Template Name</Form.Label>

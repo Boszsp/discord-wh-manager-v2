@@ -1,8 +1,10 @@
 import type { webhookSchemaType } from "$lib/schema/webhookSchema";
+import { consola } from "consola";
 
 export async function createChannelAction(serverId: string, channel: webhookSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
     if (!channel) throw new Error("Channel Not Define")
+    consola.success("createChannelAction")
 
     return {
         status: 200,

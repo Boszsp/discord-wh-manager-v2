@@ -20,6 +20,7 @@
 	let searchTerm = $state('');
 	let isDeleteDialogOpen = $state(false);
 	let serverToDelete = $state<ServerType | null>(null);
+	let deleteTarget = $state("")
 
 	let filteredServers = $derived(
 		servers.filter((server) => server.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -48,16 +49,20 @@
 	}
 
 	function deleteServer({ id }: { id: string }) {
-		removeServerAction(id)
-			.then(() => {
-				serverToDelete = servers.find((s) => s.id === id) ?? null;
-			})
-			.finally(() => (isDeleteDialogOpen = true));
+		console.log(id)
+		serverToDelete = servers.find((s) => s.id === id) ?? null;
+		isDeleteDialogOpen = true;
+		console.log(serverToDelete)
+		deleteTarget = id
 	}
 
 	function confirmDelete() {
 		if (serverToDelete) {
-			servers = servers.filter((s) => s.id !== serverToDelete!.id);
+			removeServerAction(deleteTarget)
+				.then(() => {
+					serverToDelete = servers.find((s) => s.id === deleteTarget) ?? null;
+				})
+				.finally(() => (isDeleteDialogOpen = false));
 		}
 	}
 </script>

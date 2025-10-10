@@ -37,12 +37,10 @@
 	let channelInfo = $state({ name: '', url: '', id: '' });
 	function openEditDialog(name: string, url: string, id: string) {
 		channelInfo = { name, url, id };
-		console.log(name, url, id);
 		openEdit = true;
 	}
 	function openRemoveDialog(name: string, url: string, id: string) {
 		channelInfo = { name, url, id };
-		console.log(name, url, id);
 		openRemove = true;
 	}
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))

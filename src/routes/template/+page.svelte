@@ -21,11 +21,18 @@
 	const form = superForm(
 		{ name: '', content: '' },
 		{
-			validators: zod4(templateSchema)
+			validators: zod4(templateSchema),
+			validationMethod: 'oninput',
+			onSubmit: (inp) => {
+				handleSubmit()
+				inp.cancel();
+				return false;
+			},
+			clearOnSubmit: 'errors'
 		}
 	);
 
-	const { form: formData, enhance, message } = form;
+	const { form: formData } = form;
 
 	function openCreateDialog() {
 		isEditing = false;
@@ -95,6 +102,6 @@
 		<Dialog.Header class="!w-2xl">
 			<Dialog.Title>{isEditing ? 'Edit' : 'Create'} Template</Dialog.Title>
 		</Dialog.Header>
-		<TemplateForm {form} onsubmit={handleSubmit} />
+		<TemplateForm {form}/>
 	</Dialog.Content>
 </Dialog.Root>

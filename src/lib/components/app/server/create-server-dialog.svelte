@@ -19,7 +19,12 @@
 		{ name: '', color: DEFAULT_SERVER_BG_COLOR },
 		{
 			validators: zod4(serverSchema),
-			validationMethod: 'oninput'
+			validationMethod: 'oninput',
+			onSubmit: (inp) => {
+				inp.cancel();
+				return false;
+			},
+
 		}
 	);
 

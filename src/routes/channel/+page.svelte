@@ -29,9 +29,7 @@
 		validators: zod4(hookJsonPartial),
 		validationMethod: 'oninput',
 		onSubmit: (inp) => {
-			console.log(inp);
 			inp.cancel();
-			console.log(inp.formData);
 			return false;
 		},
 		clearOnSubmit: 'errors'
@@ -41,7 +39,7 @@
 	let files: File[] = $state([]);
 	let selectedTemplate: string = $state('');
 	let newTemplateValue: string = $state('');
-	let channels = $state(data?.channels || [])
+	let channels:webhookSchemaType[] = $state(data?.channels || [])
 
 	const isMoble = new IsMobile();
 

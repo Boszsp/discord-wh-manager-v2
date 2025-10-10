@@ -6,7 +6,7 @@ import {consola} from 'consola';
 
 export const load: PageLoad = async ({ url, depends }) => {
     depends("template:get")
-    consola.verbose("Loading templates...")
+    consola.info("Loading templates...")
     const restoreData = get(templateStore)
     return {
         templates: restoreData

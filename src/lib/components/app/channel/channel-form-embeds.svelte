@@ -54,7 +54,7 @@
 		}
 
 		newEmbeds.push(newEmbed);
-		console.log(newEmbeds, newEmbed);
+		//console.log(newEmbeds, newEmbed);
 		$formData.embeds = newEmbeds;
 	}
 

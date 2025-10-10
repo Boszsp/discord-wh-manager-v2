@@ -9,7 +9,7 @@ export const load: PageLoad = async ({ url }) => {
 
     const pasredData = hookJsonPartial.safeParse(await parseBase64ToJson(data ?? ""))
     if(pasredData.success)
-    consola.success(pasredData?.data)
+        consola.success("Pasred Data",pasredData?.data)
     else
     consola.error(pasredData?.error)
 

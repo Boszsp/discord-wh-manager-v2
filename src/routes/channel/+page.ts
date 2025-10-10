@@ -8,11 +8,13 @@ import { get } from 'svelte/store';
 import { consola } from "consola";
 import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
 import { getChannelsAction } from '$lib/curdFn/channel';
+import { getTemplatesAction } from '$lib/curdFn/template';
 
 
 export const load: PageLoad = async ({ url, depends }) => {
     depends("template:get")
     consola.info("Loading templates...")
+    const templates = await getTemplatesAction()
 
     depends("server:get")
     consola.info("Loading server...")
