@@ -77,7 +77,7 @@
 					console.log(channelIndex)
 					if(channelIndex >= 0){
 					const channelsTemp = [...channels]
-					channelsTemp[channelIndex] = r.affectedChannel
+					channelsTemp[channelIndex] = Object.assign({id:channelId},r.affectedChannel)
 					channels = channelsTemp
 					}
 				}
