@@ -9,12 +9,18 @@
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { channelCurId } from '$lib/store/channel.svelte';
+	import type { ClassValue } from 'svelte/elements';
 
 	const form = superForm(
 		{ name: '', url: '' },
 		{
 			validators: zod4(webhookSchema),
-			validationMethod: 'oninput'
+			validationMethod: 'oninput',
+			onSubmit: (inp) => {
+				inp.cancel();
+				return false;
+			},
+			clearOnSubmit: 'errors'
 		}
 	);
 
@@ -25,8 +31,8 @@
 	let {
 		onCreateChannel = async () => {
 		
-		}
-	}: { onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void> } = $props();
+		},class:className
+	}: { onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void>,class?:ClassValue } = $props();
 
 	async function createChannel() {
 		const { data } = await validateForm();
@@ -41,7 +47,7 @@
 
 <d.Root bind:open>
 	<d.Trigger
-		class={cn(buttonVariants({ size: 'sm', variant: 'ghost' }), 'w-full justify-start p-0')}
+		class={cn(buttonVariants({ size: 'sm', variant: 'ghost' }), 'w-full justify-start p-0 truncate',className)}
 	>
 		<CirclePlusIcon />Add Channel
 	</d.Trigger>

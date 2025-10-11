@@ -19,11 +19,13 @@
 	const {
 		name = 'Server Name',
 		channels = [],
-		onCreateChannel
+		onCreateChannel,
+		onRemoveChannel
 	}: {
 		name?: string;
 		channels?: webhookSchemaType[];
 		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
+		onRemoveChannel?: (serverId: string, channelId: string) => void;
 	} = $props();
 	let selectedId = $state('');
 	//let isOpenCreateChannelDialog:boolean = $state(false);
@@ -43,6 +45,10 @@
 		channelInfo = { name, url, id };
 		openRemove = true;
 	}
+	function onRemoveChannelHandler(){
+		if(onRemoveChannel)
+		onRemoveChannel($channelCurId?.id+"",channelInfo.id)
+	}
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
 
@@ -50,7 +56,9 @@
 	<div class="border-b p-2">
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
-	<ChannelCreateDialog {onCreateChannel} />
+	<div class="px-2">
+	<ChannelCreateDialog class="mt-2" {onCreateChannel} />
+	</div>
 
 	<Separator class="my-2" />
 	<div>
@@ -83,7 +91,8 @@
 							<HashIcon />{channel?.name}<span class="ml-auto">
 								{#if selectedId === channel?.id}
 									<Button
-										onclick={() => {
+										onclick={(e) => {
+											e.stopPropagation();
 											openRemoveDialog(channel?.name, channel?.url, String(channel?.id));
 										}}
 										size="icon"
@@ -93,7 +102,8 @@
 										<TrashIcon class="size-4" />
 									</Button>
 									<Button
-										onclick={() => {
+										onclick={(e) => {
+											e.stopPropagation();
 											openEditDialog(channel?.name, channel?.url, String(channel?.id));
 										}}
 										size="icon"
@@ -112,7 +122,7 @@
 			{#key channelInfo}
 				<ChannelEditDialog onSaveChannel={() => {}} channel={channelInfo} bind:open={openEdit} />
 				<ChannelRemoveDialog
-					onRemoveChannel={() => {}}
+					onRemoveChannel={onRemoveChannelHandler}
 					channel={channelInfo}
 					bind:open={openRemove}
 				/>

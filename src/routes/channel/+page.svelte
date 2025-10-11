@@ -21,7 +21,7 @@
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
-	import { createChannelAction } from '$lib/curdFn/channel';
+	import { createChannelAction, removeChannelAction } from '$lib/curdFn/channel';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -39,7 +39,7 @@
 	let files: File[] = $state([]);
 	let selectedTemplate: string = $state('');
 	let newTemplateValue: string = $state('');
-	let channels:webhookSchemaType[] = $state(data?.channels || [])
+	let channels: webhookSchemaType[] = $state(data?.channels || []);
 
 	const isMoble = new IsMobile();
 
@@ -57,51 +57,56 @@
 		console.log(cleanUpBlank($formData));
 	}
 
-	async function onCreateChannel(serverId:string,channel:webhookSchemaType){
-		
-		createChannelAction(
-			serverId,channel
-		).then(
-			(r)=>{
-				if(r?.affectedChannel?.id)
-				channels.push(r.affectedChannel)
-			}
-		)
+	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
+		createChannelAction(serverId, channel).then((r) => {
+			if (r?.affectedChannel?.id) channels.push(r.affectedChannel);
+		});
+	}
 
+	function onRemoveChannel(serverId: string, channelId: string) {
+		removeChannelAction(serverId, channelId).then((r) => {
+			if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
+		});
 	}
 </script>
 
 <PageTransition />
 <ImagePopupShow />
-<ChannelContainer onCreateChannel={onCreateChannel} channels={channels} leftWidth={16} class="overflow-hidden bg-background">
+<ChannelContainer
+	{onRemoveChannel}
+	{onCreateChannel}
+	{channels}
+	leftWidth={16}
+	class="overflow-hidden bg-background"
+>
 	{#if data?.channels && data?.channels?.length > 0}
-	<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
-		<Resizable.Pane defaultSize={40} class="w-fit">
-			<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
-				<div class="p-4">
-					<h3 class="mb-4 text-lg font-medium">Preview</h3>
-					<div>
-						<Preview content={$formData} {files} />
-						<Separator class="my-8" />
-						<TextareaJson
-							value={JSON.stringify($formData, null, 2)}
-							oninput={(e) => {
-								try {
-									formData.set(
-										safePareseTemplateString(e.currentTarget.value, $formData) as typeof $formData
-									);
-								} catch (err) {
-									console.error(err);
-								}
-							}}
-							class="mt-4"
-						/>
+		<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
+			<Resizable.Pane defaultSize={40} class="w-fit">
+				<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
+					<div class="p-4">
+						<h3 class="mb-4 text-lg font-medium">Preview</h3>
+						<div>
+							<Preview content={$formData} {files} />
+							<Separator class="my-8" />
+							<TextareaJson
+								value={JSON.stringify($formData, null, 2)}
+								oninput={(e) => {
+									try {
+										formData.set(
+											safePareseTemplateString(e.currentTarget.value, $formData) as typeof $formData
+										);
+									} catch (err) {
+										console.error(err);
+									}
+								}}
+								class="mt-4"
+							/>
+						</div>
 					</div>
-				</div>
-			</ScrollArea>
-		</Resizable.Pane>
-		<Resizable.Handle withHandle />
-		<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
+				</ScrollArea>
+			</Resizable.Pane>
+			<Resizable.Handle withHandle />
+			<Resizable.Pane defaultSize={60} class="overflow-hidden md:w-fit">
 				<ScrollArea class="h-full w-full overflow-hidden">
 					<div class="w-full overflow-hidden p-4">
 						<h3 class="text-lg font-medium">Sent To</h3>
@@ -143,7 +148,7 @@
 						{/if}
 					</div>
 				</ScrollArea>
-		</Resizable.Pane>
-	</Resizable.PaneGroup>
+			</Resizable.Pane>
+		</Resizable.PaneGroup>
 	{/if}
 </ChannelContainer>

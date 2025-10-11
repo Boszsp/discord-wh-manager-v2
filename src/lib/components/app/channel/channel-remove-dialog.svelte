@@ -2,24 +2,23 @@
     import { Button, buttonVariants } from '$lib/components/ui/button';
     import * as Dialog from '$lib/components/ui/dialog';
     import { HashIcon, TrashIcon } from 'lucide-svelte';
-    import { cn } from '$lib/utils';
-
+	
     let {
         channel = { name: '', url: '', id: '' },
-        onRemoveChannel = (id: string) => {},
+        onRemoveChannel = () => {},
         triggerType = 'icon', // 'button' or 'icon'
-		open = $bindable(false)
+		open = $bindable(false),
     }: { 
         channel: { name: string, url: string, id?: string },
-        onRemoveChannel: (id: string) => void,
+        onRemoveChannel: () => void,
         triggerType?: 'button' | 'icon',
 		open?: boolean;
     } = $props();
 
 
     function removeChannel() {
-        if (channel.id) {
-            onRemoveChannel(channel.id);
+        if (channel?.id) {
+            onRemoveChannel();
             open = false;
         }
     }
