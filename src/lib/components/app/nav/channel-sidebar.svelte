@@ -20,12 +20,14 @@
 		name = 'Server Name',
 		channels = [],
 		onCreateChannel,
-		onRemoveChannel
+		onRemoveChannel,
+		onEditChannel
 	}: {
 		name?: string;
 		channels?: webhookSchemaType[];
 		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
 		onRemoveChannel?: (serverId: string, channelId: string) => void;
+		onEditChannel?: (channelId: string, channel: webhookSchemaType) => void;
 	} = $props();
 	let selectedId = $state('');
 	//let isOpenCreateChannelDialog:boolean = $state(false);
@@ -48,6 +50,10 @@
 	function onRemoveChannelHandler(){
 		if(onRemoveChannel)
 		onRemoveChannel($channelCurId?.id+"",channelInfo.id)
+	}
+	function onEditChannelHandler(channelId: string, channel: webhookSchemaType){
+		if(onEditChannel)
+		onEditChannel(channelId,channel)
 	}
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
@@ -120,7 +126,7 @@
 			{/each}
 			<div class="h-40"></div>
 			{#key channelInfo}
-				<ChannelEditDialog onSaveChannel={() => {}} channel={channelInfo} bind:open={openEdit} />
+				<ChannelEditDialog onSaveChannel={onEditChannelHandler} channel={channelInfo} bind:open={openEdit} />
 				<ChannelRemoveDialog
 					onRemoveChannel={onRemoveChannelHandler}
 					channel={channelInfo}

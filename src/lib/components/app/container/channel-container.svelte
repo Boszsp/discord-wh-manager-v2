@@ -14,7 +14,8 @@
 		rightWidth = 80,
 		channels,
 		onCreateChannel,
-		onRemoveChannel
+		onRemoveChannel,
+		onEditChannel
 	}: {
 		children: Snippet;
 		class?: ClassValue;
@@ -23,12 +24,13 @@
 		channels?: webhookSchemaType[];
 		onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void>;
 		onRemoveChannel?: (serverId: string, channelId: string) => void;
+		onEditChannel?: (channelId: string, channel: webhookSchemaType) => void;
 	} = $props();
 </script>
 
 <Resizable.PaneGroup class="h-full" direction="horizontal">
 	<Resizable.Pane defaultSize={leftWidth} class="h-full">
-		<ChannelSidebar {onCreateChannel} {onRemoveChannel} {channels} />
+		<ChannelSidebar {onEditChannel} {onCreateChannel} {onRemoveChannel} {channels} />
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane class={cn('relative w-fit', className)} defaultSize={rightWidth}>

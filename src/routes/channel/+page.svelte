@@ -21,7 +21,7 @@
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
-	import { createChannelAction, removeChannelAction } from '$lib/curdFn/channel';
+	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -68,6 +68,22 @@
 			if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
 		});
 	}
+
+	function onEditChannel(channelId: string, channel: webhookSchemaType){
+		editChannelAction(data?.server?.id,channelId,channel).then(
+			(r) => {
+				if (r?.affectedChannel?.name) {
+					const channelIndex = channels.findIndex((v) => (v.id === channelId));
+					console.log(channelIndex)
+					if(channelIndex >= 0){
+					const channelsTemp = [...channels]
+					channelsTemp[channelIndex] = r.affectedChannel
+					channels = channelsTemp
+					}
+				}
+			}
+		)
+	}
 </script>
 
 <PageTransition />
@@ -75,6 +91,7 @@
 <ChannelContainer
 	{onRemoveChannel}
 	{onCreateChannel}
+	{onEditChannel}
 	{channels}
 	leftWidth={16}
 	class="overflow-hidden bg-background"

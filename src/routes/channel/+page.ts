@@ -47,7 +47,7 @@ export const load: PageLoad = async ({ url, depends }) => {
             name: channelId
         },
         templates: [
-            { name: 'Default', content: JSON.stringify({content:"# Hello {{name}}"}) },
+            { name: 'Default', content: JSON.stringify({ content: "# Hello {{name}}" }) },
         ]
     };
 

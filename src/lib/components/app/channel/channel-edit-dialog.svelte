@@ -1,22 +1,21 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { PlusIcon, EditIcon, LinkIcon, HashIcon } from 'lucide-svelte';
-	import { cn } from '$lib/utils';
-	import { webhookSchema } from '$lib/schema/webhookSchema';
+	import { LinkIcon, HashIcon } from 'lucide-svelte';
+	import { webhookSchema, type webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 
 	let {
 		channel = { name: '', url: '', id: undefined },
-		onSaveChannel = (detail: { name: string; url: string; id?: string }) => {},
+		onSaveChannel = (channelId: string, channel: webhookSchemaType) => {},
 		triggerType = 'button', // 'button' or 'icon'
 		open = $bindable(false)
 	}: {
 		channel: { name: string; url: string; id?: string | undefined };
-		onSaveChannel: (detail: { name: string; url: string; id?: string }) => void;
+		onSaveChannel: (channelId: string, channel: webhookSchemaType) => void;
 		triggerType?: 'button' | 'icon';
 		open?: boolean;
 	} = $props();
@@ -29,7 +28,12 @@
 		{ name: channel.name, url: channel.url },
 		{
 			validators: zod4(webhookSchema),
-			validationMethod: 'oninput'
+			validationMethod: 'oninput',
+			onSubmit: (inp) => {
+				inp.cancel();
+				return false;
+			},
+			clearOnSubmit: 'errors'
 		}
 	);
 
@@ -38,7 +42,7 @@
 	async function saveChannel() {
 		const { data } = await validateForm();
 		if (!data?.name || !data?.url || $errors.name || $errors.url) return;
-		onSaveChannel({ name: data.name, url: data.url, id: channel.id });
+		onSaveChannel(String(channel?.id),{ name: data.name, url: data.url});
 		$formData.name = '';
 		$formData.url = '';
 		open = false;
