@@ -15,7 +15,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Toaster />
+<Toaster position="top-right" richColors class="bg-background border" />
 <LayoutDefault servers={data?.servers} >
 	{@render children?.()}
 </LayoutDefault>

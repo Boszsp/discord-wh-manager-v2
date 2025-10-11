@@ -1,5 +1,4 @@
 <script lang="ts">
-	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
 	import {
 		hookJsonPartial,
@@ -36,6 +35,7 @@
 	import { onMount } from 'svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
+	import { Loader2Icon } from 'lucide-svelte';
 
 	const { data }: PageProps = $props();
 
@@ -61,6 +61,7 @@
 	let files: File[] = $state([]);
 
 	const isMoble = new IsMobile();
+	let isLoading = $state(false);
 
 	async function onSm() {
 		const valid = await whValidate();
@@ -68,9 +69,21 @@
 			if ($whErrors.url) toast.error($whErrors.url[0]);
 			return;
 		}
-		const result = await sendToWebhook($whData.url, cleanUpBlank($formData), files);
-		if (result) {
-			toast.success('Message sent successfully');
+		isLoading = true;
+		const result = sendToWebhook(
+			$whData.url,
+			cleanUpBlank($formData),
+			files,
+			(mss, type: 'error' | 'success' = 'success') => {
+				if (type === 'error') toast.error(mss);
+				else toast.success(mss);
+			}
+		);
+		toast.promise(result);
+		const resultAwaited = await result;
+		isLoading = false;
+		if (resultAwaited?.payloadRes || resultAwaited?.payloadRes?.length > 0) {
+			toast.success('All Message sent successfully');
 		} else {
 			toast.error('Failed to send message');
 		}
@@ -141,7 +154,14 @@
 							</Form.Field>
 						</CardContent>
 						<CardFooter>
-							<Button class="ml-auto" onclick={onSm}>Sent</Button>
+							<Button disabled={isLoading} class="ml-auto" onclick={onSm}>
+								{#if isLoading}
+									<Loader2Icon class="animate-spin" />
+									Please wait
+								{:else}
+									Sent
+								{/if}
+							</Button>
 						</CardFooter>
 					</Card>
 					<Separator class="my-4" />

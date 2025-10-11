@@ -1,7 +1,7 @@
 import { DEFAULT_WEBHOOK_CONTENT, DEFAULT_WEBHOOK_CONTENT_AS_STRING } from "$lib/default";
 import { jsonRegexSchema } from "$lib/schema/jsonSchema";
 import { hookJsonFullyPartialSchema,type hookJsonFullyPartialSchemaType,type hookJsonPartialSchemaType } from "$lib/schema/webhookContentSchema";
-import consola from "consola";
+import {consola} from "consola";
 
 export function safePareseTemplateString(str: string, retureOnErrorValue?: hookJsonPartialSchemaType ) {
     try {
