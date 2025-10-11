@@ -18,13 +18,14 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
-	import { safePareseTemplateString, applyTemplate } from '$lib/utilsFn/template';
+	import { safePareseTemplateString, applyTemplate, safeStrinifyTemplateString } from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
 	import TemplateVariableForm from '$lib/components/app/template/template-variable-form.svelte';
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 	import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
+	import { editTemplateAction } from '$lib/curdFn/template';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -63,14 +64,13 @@
 
 	formData.subscribe((v) => fromStore.set(v));
 
-
 	$effect(() => {
-		if (selectedTemplate && selectedTemplate.length > 0 && selectedTemplateObj?.content){
-		$formData = safePareseTemplateString(
-			applyTemplate(templateFromValues, String(selectedTemplateObj?.content))
-		) as typeof $formData;
-		}else{
-			$formData = DEFAULT_WEBHOOK_CONTENT
+		if (selectedTemplate && selectedTemplate.length > 0 && selectedTemplateObj?.content) {
+			$formData = safePareseTemplateString(
+				applyTemplate(templateFromValues, String(selectedTemplateObj?.content))
+			) as typeof $formData;
+		} else {
+			$formData = DEFAULT_WEBHOOK_CONTENT;
 		}
 	});
 
@@ -101,6 +101,18 @@
 					channels = channelsTemp;
 				}
 			}
+		});
+	}
+
+	function onSaveTemplate() {
+		editTemplateAction( selectedTemplate,{
+			id:selectedTemplateObj?.id,
+			name:selectedTemplateObj?.name || "",
+			content:safeStrinifyTemplateString($formData)
+		}).then((r) => {
+			const templatesTemp = [...templates]
+			templatesTemp.find((t)=>t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData)))
+			templates = templatesTemp
 		});
 	}
 </script>
@@ -157,6 +169,7 @@
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
 							onsent={onSm}
+							{onSaveTemplate}
 						/>
 						<Separator class="my-4" />
 						{#if !selectedTemplate || selectedTemplate === ''}

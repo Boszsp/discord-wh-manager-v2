@@ -18,7 +18,8 @@
 		onsent,
 		templates = [],
 		selectedValue = $bindable(''),
-		newTemplateValue = $bindable('')
+		newTemplateValue = $bindable(''),
+		onSaveTemplate
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
@@ -34,6 +35,7 @@
 		) => void;
 		selectedValue?: string;
 		newTemplateValue?: string;
+		onSaveTemplate?: () => void;
 	} = $props();
 
 	const isMoble = new IsMobile();
@@ -76,7 +78,9 @@
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
 						<Button
-							onclick={() => alert('Save Template/Create New Template')}
+							onclick={() => {
+								if (onSaveTemplate) onSaveTemplate();
+							}}
 							class="mt-2 border-0 border-t"
 							variant="outline"
 						>
