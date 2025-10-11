@@ -1,4 +1,5 @@
 import type { sidebarMenuProps } from "$lib/components/app/nav/sidebar.svelte";
+import { PUBLIC_APP_NAME } from '$env/static/public';
 
 export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     image: '/avatar/b.png',
@@ -8,7 +9,7 @@ export const DEFAULT_SIDEBAR_FIRST_MENU:sidebarMenuProps = {
     class:"mt-0.25"
 }
 
-export const APP_NAME = "This Webhook Manager"
+export const APP_NAME = PUBLIC_APP_NAME ?? "This Hook Manager"
 
 export const MAX_FILE_SIZE = 24 * 1024 * 1024; // 25 MB in bytes
 
