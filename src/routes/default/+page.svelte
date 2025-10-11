@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
 	import {
+	hookJsonFullyPartialSchema,
 		hookJsonPartial,
 		urlSchema,
 		type hookJsonPartialSchemaType
@@ -42,17 +43,25 @@
 	const form = superForm(data.formData as hookJsonPartialSchemaType, {
 		dataType: 'json',
 		validators: zod4(hookJsonPartial),
-		validationMethod: 'oninput'
+		validationMethod: 'oninput',
+		onSubmit:(inp)=>{
+				inp.cancel();
+				return false
+			}
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance  } = form;
 
 	const whForm = superForm(
 		{ url: '' },
 		{
 			validators: zod4(z.object({ url: urlSchema })),
 			dataType: 'json',
-			validationMethod: 'oninput'
+			validationMethod: 'oninput',
+			onSubmit:(inp)=>{
+				inp.cancel();
+				return false
+			}
 		}
 	);
 
@@ -63,10 +72,15 @@
 	const isMoble = new IsMobile();
 	let isLoading = $state(false);
 
-	async function onSm() {
+	async function onSend() {
+		const {success:validForm,error} = hookJsonFullyPartialSchema.safeParse($formData);
 		const valid = await whValidate();
 		if (!valid) {
 			if ($whErrors.url) toast.error($whErrors.url[0]);
+			return;
+		}
+		if(!validForm){
+			if (error) toast.error(error.message);
 			return;
 		}
 		isLoading = true;
@@ -83,6 +97,7 @@
 		const resultAwaited = await result;
 		isLoading = false;
 		if (resultAwaited?.payloadRes || resultAwaited?.payloadRes?.length > 0) {
+			console.log(resultAwaited?.payloadRes)
 			toast.success('All Message sent successfully');
 		} else {
 			toast.error('Failed to send message');
@@ -154,7 +169,7 @@
 							</Form.Field>
 						</CardContent>
 						<CardFooter>
-							<Button disabled={isLoading} class="ml-auto" onclick={onSm}>
+							<Button type="button" disabled={isLoading} class="ml-auto" onclick={onSend}>
 								{#if isLoading}
 									<Loader2Icon class="animate-spin" />
 									Please wait
