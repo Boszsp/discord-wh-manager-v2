@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
 	import {
-	hookJsonFullyPartialSchema,
+		hookJsonFullyPartialSchema,
 		hookJsonPartial,
 		urlSchema,
 		type hookJsonPartialSchemaType
@@ -29,7 +29,7 @@
 		CardFooter
 	} from '$lib/components/ui/card';
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
-	import { parseBase64ToJson, toBase64Optimize } from '$lib/utilsFn/string.js';
+	import { toBase64Optimize } from '$lib/utilsFn/string.js';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
@@ -44,13 +44,13 @@
 		dataType: 'json',
 		validators: zod4(hookJsonPartial),
 		validationMethod: 'oninput',
-		onSubmit:(inp)=>{
-				inp.cancel();
-				return false
-			}
+		onSubmit: (inp) => {
+			inp.cancel();
+			return false;
+		}
 	});
 
-	const { form: formData, enhance  } = form;
+	const { form: formData, enhance } = form;
 
 	const whForm = superForm(
 		{ url: '' },
@@ -58,9 +58,9 @@
 			validators: zod4(z.object({ url: urlSchema })),
 			dataType: 'json',
 			validationMethod: 'oninput',
-			onSubmit:(inp)=>{
+			onSubmit: (inp) => {
 				inp.cancel();
-				return false
+				return false;
 			}
 		}
 	);
@@ -73,14 +73,26 @@
 	let isLoading = $state(false);
 
 	async function onSend() {
-		const {success:validForm,error} = hookJsonFullyPartialSchema.safeParse($formData);
+		const { success: validForm, error } = hookJsonFullyPartialSchema.safeParse($formData);
 		const valid = await whValidate();
 		if (!valid) {
 			if ($whErrors.url) toast.error($whErrors.url[0]);
 			return;
 		}
-		if(!validForm){
+		if (!validForm) {
 			if (error) toast.error(error.message);
+			return;
+		}
+		if (
+			!(
+				$formData?.content ||
+				($formData?.embeds && $formData?.embeds?.length > 0) ||
+				files?.length > 0
+			)
+		) {
+			toast.warning(
+				'Note that when sending a message, you must provide a value for at least one of content, embeds, components, file, or poll.'
+			);
 			return;
 		}
 		isLoading = true;
@@ -96,10 +108,17 @@
 		toast.promise(result);
 		const resultAwaited = await result;
 		isLoading = false;
-		if (resultAwaited?.payloadRes || resultAwaited?.payloadRes?.length > 0) {
-			console.log(resultAwaited?.payloadRes)
+		if (
+			(resultAwaited?.payloadRes || resultAwaited?.filesRes?.length > 0) &&
+			!(
+				resultAwaited?.payloadRes instanceof Error ||
+				resultAwaited?.filesRes?.some((v: any) => v instanceof Error)
+			)
+		) {
 			toast.success('All Message sent successfully');
 		} else {
+			console.error(resultAwaited?.payloadRes, resultAwaited?.filesRes);
+
 			toast.error('Failed to send message');
 		}
 	}

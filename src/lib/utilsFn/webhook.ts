@@ -1,8 +1,8 @@
 import { colorCodeToInteger } from "./color";
 import { hookJsonPartial } from "$lib/schema/webhookContentSchema";
-import { DEFAULT_FILE_LIMIT_COUNT } from "$lib/default";
+import { DEFAULT_FILE_LIMIT_COUNT, DEFAULT_FILE_LIMIT_SIZE } from "$lib/default";
 import { ofetch } from "ofetch";
-import {consola} from "consola";
+import { consola } from "consola";
 
 
 export function cleanUpBlank(obj: any) {
@@ -51,8 +51,8 @@ export async function sentFilesParallel(url: string, files: File[]) {
 }
 
 
-export async function sentFilesSequential(url: string, files: File[], callBack: (mss: string, type?: "error" | "success") => void) {
-    const query = { wait: true }
+export async function sentFilesSequential(url: string, files: File[], callBack: (mss: string, type?: "error" | "success") => void, thread_id = undefined) {
+    const query = { wait: true, thread_id }
     let allRes = []
     let i = 0;
     const imgFile = files.filter((v) => v.type.startsWith("image"))
@@ -65,7 +65,7 @@ export async function sentFilesSequential(url: string, files: File[], callBack: 
             allRes.push(await ofetch(
                 url, {
                 method: "POST",
-                body: f,
+                body: formData1,
                 query
             }).then(
                 (r) => {
@@ -75,7 +75,7 @@ export async function sentFilesSequential(url: string, files: File[], callBack: 
             ).catch(
                 (e) => {
                     callBack(`sent error img file 10 index ${i / 10}`, "error")
-                    return e
+                    return new Error(e)
                 }
             ))
 
@@ -92,7 +92,7 @@ export async function sentFilesSequential(url: string, files: File[], callBack: 
         allRes.push(await ofetch(
             url, {
             method: "POST",
-            body: f,
+            body: formData2,
             query
         }).then(
             (r) => {
@@ -101,12 +101,12 @@ export async function sentFilesSequential(url: string, files: File[], callBack: 
             }
         ).catch(
             (e) => {
-                callBack(`sent error file ${f?.name} index ${i}`,"error")
-                return e
+                callBack(`sent error file ${f?.name} index ${i}`, "error")
+                return new Error(e)
             }
         )
         )
-        
+
         i++
     }
     return allRes
@@ -116,8 +116,11 @@ export async function sentFilesSequential(url: string, files: File[], callBack: 
 export async function sendToWebhook(url: string, data: any, files: File[] = [], callBack: (mss: string, type?: "error" | "success") => void = (mss: string, type?: "error" | "success") => { }) {
     const payload = JSON.stringify(data);
     const query = { wait: true }
+    let thread_id = undefined;
+    const allFileSize = Math.floor(files.reduce((acc, file) => acc + file.size, 0) ** (10 ** -6));
 
-    if (files.length > 0 && files.length < DEFAULT_FILE_LIMIT_COUNT) {
+
+    if (false&&files.length > 0 && files.length < DEFAULT_FILE_LIMIT_COUNT && allFileSize < DEFAULT_FILE_LIMIT_SIZE) {
         const formData = new FormData();
         formData.append('payload_json', payload);
         files.forEach((file, i) => {
@@ -136,12 +139,45 @@ export async function sendToWebhook(url: string, data: any, files: File[] = [], 
         ).catch(
             (e) => {
                 callBack(`sent payload error`, "error")
-                return e
+                return new Error(e)
             }
         );
         consola.box({ payloadRes: res, filesRes: [] })
         return { payloadRes: res, filesRes: [] };
-    } else if (payload) {
+    } else if (data?.thread_name){
+        const formData = new FormData();
+        formData.append('payload_json', payload);
+        const imgFile = files.concat([])[0]
+        files = files.slice(1)
+
+        if (imgFile && imgFile.type.startsWith("image"))
+        formData.append(`files`, imgFile);
+        
+
+        const res = await ofetch(url, {
+            method: 'POST',
+            body: formData,
+            query
+        }).then(
+            (r) => {
+                callBack(`sent payload`)
+                return r
+            }
+        ).catch(
+            (e) => {
+                callBack(`sent payload error`, "error")
+                return new Error(e)
+            }
+        );
+        if (data?.thread_name && res?.id) {
+            console.log(data?.thread_name, res?.id)
+            thread_id = res?.id
+        }
+        const fileRes = await sentFilesSequential(url, files, callBack, thread_id)
+        consola.box({ payloadRes: res, filesRes: fileRes })
+        return { payloadRes: res, filesRes: fileRes };
+    } 
+    else if (payload) {
         const res = await ofetch(url, {
             method: 'POST',
             headers: {
@@ -157,16 +193,20 @@ export async function sendToWebhook(url: string, data: any, files: File[] = [], 
         ).catch(
             (e) => {
                 callBack(`sent payload error`, "error")
-                return e
+                return new Error(e)
             }
         );
+        if (data?.thread_name && res?.id) {
+            console.log(data?.thread_name, res?.id)
+            thread_id = res?.id
+        }
 
-        const fileRes = await sentFilesSequential(url, files, callBack)
+        const fileRes = await sentFilesSequential(url, files, callBack, thread_id)
         consola.box({ payloadRes: res, filesRes: fileRes })
         return { payloadRes: res, filesRes: fileRes };
     }
     else {
-        const fileRes = await sentFilesSequential(url, files, callBack)
+        const fileRes = await sentFilesSequential(url, files, callBack, thread_id)
         consola.box({ payloadRes: null, filesRes: fileRes })
         return { payloadRes: null, filesRes: fileRes };
     }
