@@ -40,9 +40,9 @@
 	const { form: formData, errors, enhance, validateForm } = form;
 
 	async function saveChannel() {
-		const { data } = await validateForm();
+		const {data} = await validateForm();
 		if (!data?.name || !data?.url || $errors.name || $errors.url) return;
-		onSaveChannel(String(channel?.id),{ name: data.name, url: data.url});
+		onSaveChannel(String(channel?.id), { name: data.name, url: data.url });
 		$formData.name = '';
 		$formData.url = '';
 		open = false;
@@ -50,14 +50,14 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content class="w-md">
-		<Dialog.Header>
-			<Dialog.Title class="mx-auto w-fit">{title}</Dialog.Title>
-			<Dialog.Description class="mx-auto">
-				{isEditing ? 'Update the channel information' : 'Add a new channel to your server'}
-			</Dialog.Description>
-		</Dialog.Header>
-		<form method="POST" use:enhance>
+	<form method="POST" use:enhance>
+		<Dialog.Content class="w-md">
+			<Dialog.Header>
+				<Dialog.Title class="mx-auto w-fit">{title}</Dialog.Title>
+				<Dialog.Description class="mx-auto">
+					{isEditing ? 'Update the channel information' : 'Add a new channel to your server'}
+				</Dialog.Description>
+			</Dialog.Header>
 			<Form.Field {form} name="name">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -94,10 +94,11 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-		</form>
-		<Dialog.Footer>
-			<Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
-			<Button onclick={saveChannel}>{buttonText}</Button>
-		</Dialog.Footer>
-	</Dialog.Content>
+
+			<Dialog.Footer>
+				<Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
+				<Button onclick={saveChannel}>{buttonText}</Button>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</form>
 </Dialog.Root>

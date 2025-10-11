@@ -22,7 +22,7 @@
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
-		templates?: Pick<TemplateSchemaType, 'name'>[];
+		templates?: TemplateSchemaType[];
 		onsent: (
 			e?:
 				| (MouseEvent & {
@@ -39,7 +39,7 @@
 	const isMoble = new IsMobile();
 	const templatesFormat = $derived(
 		templates.map((t) => ({
-			value: t.name,
+			value: t?.id || t.name,
 			label: t.name
 		}))
 	);

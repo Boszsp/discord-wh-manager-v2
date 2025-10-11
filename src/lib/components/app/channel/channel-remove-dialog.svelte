@@ -34,12 +34,12 @@
                 Are you sure you want to remove this channel?
             </Dialog.Description>
         </Dialog.Header>
-        <div class="py-4">
-            <div class="rounded-md bg-muted p-3 flex items-center">
+        <div class="py-4 overflow-hidden">
+            <div class="rounded-md bg-muted p-3 flex items-center truncate">
                 <span>
                     <HashIcon class="text-muted-foreground" />
                 </span>
-                <span class="ml-4">
+                <span class="ml-4 truncate">
                 <p class="font-medium">{channel.name}</p>
                 <p class="text-sm text-muted-foreground truncate">{channel.url}</p>
                 </span>

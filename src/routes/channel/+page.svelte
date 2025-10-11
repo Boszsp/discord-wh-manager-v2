@@ -22,6 +22,7 @@
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
+	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -37,7 +38,12 @@
 
 	const { form: formData } = form;
 	let files: File[] = $state([]);
+	let templates: TemplateSchemaType[] = $state(data?.templates || []);
 	let selectedTemplate: string = $state('');
+	let selectedTemplateObj: TemplateSchemaType | undefined = $derived(
+		templates.find((v) => v.id === selectedTemplate)
+	);
+
 	let newTemplateValue: string = $state('');
 	let channels: webhookSchemaType[] = $state(data?.channels || []);
 
@@ -69,20 +75,18 @@
 		});
 	}
 
-	function onEditChannel(channelId: string, channel: webhookSchemaType){
-		editChannelAction(data?.server?.id,channelId,channel).then(
-			(r) => {
-				if (r?.affectedChannel?.name) {
-					const channelIndex = channels.findIndex((v) => (v.id === channelId));
-					console.log(channelIndex)
-					if(channelIndex >= 0){
-					const channelsTemp = [...channels]
-					channelsTemp[channelIndex] = Object.assign({id:channelId},r.affectedChannel)
-					channels = channelsTemp
-					}
+	function onEditChannel(channelId: string, channel: webhookSchemaType) {
+		editChannelAction(data?.server?.id, channelId, channel).then((r) => {
+			if (r?.affectedChannel?.name) {
+				const channelIndex = channels.findIndex((v) => v.id === channelId);
+				console.log(channelIndex);
+				if (channelIndex >= 0) {
+					const channelsTemp = [...channels];
+					channelsTemp[channelIndex] = Object.assign({ id: channelId }, r.affectedChannel);
+					channels = channelsTemp;
 				}
 			}
-		)
+		});
 	}
 </script>
 
@@ -134,7 +138,7 @@
 						<ChannelSentCard
 							server={data?.server}
 							channel={data?.channel}
-							templates={data?.templates}
+							templates={templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
 							onsent={onSm}
@@ -162,6 +166,8 @@
 								<Separator class="mt-8 mb-4" />
 								<ChannelForm {form} />
 							</div>
+						{:else}
+							<div>{JSON.stringify(selectedTemplateObj)}</div>
 						{/if}
 					</div>
 				</ScrollArea>
