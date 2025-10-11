@@ -2,7 +2,7 @@ import { DEFAULT_WEBHOOK_CONTENT } from "$lib/default";
 import { hookJsonFullyPartialSchema,type hookJsonPartialSchemaType } from "$lib/schema/webhookContentSchema";
 import consola from "consola";
 
-export function safePareseTemplateString(str: string,retureOnErrorValue?:hookJsonPartialSchemaType) {
+export function safePareseTemplateString(str: string, retureOnErrorValue?: hookJsonPartialSchemaType ) {
     try {
         const {data,success,error} = hookJsonFullyPartialSchema.safeParse(JSON.parse(str));
         if(success)
@@ -12,7 +12,16 @@ export function safePareseTemplateString(str: string,retureOnErrorValue?:hookJso
             return retureOnErrorValue ?? DEFAULT_WEBHOOK_CONTENT
         }
     }catch (e) {
-        consola.error(e)
+        consola.error(e, str)
         return retureOnErrorValue?? DEFAULT_WEBHOOK_CONTENT
     }
+}
+
+export function extractVariables(content: string): string[] {
+    const regex = /{{\s*(\w+)\s*}}/g;
+    const matches = content.match(regex);
+    if (!matches) {
+        return [];
+    }
+    return [...new Set(matches.map(match => match.replace(/{|}/g, "").trim()))];
 }

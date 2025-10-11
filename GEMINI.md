@@ -88,3 +88,21 @@ discord-wh-manager-v2/
 
 ## 5. MCP Server
 - https://mcp.svelte.dev/mcp
+
+## 6. My Directives
+
+Based on the project documentation, here are my operating instructions to ensure I perform effectively.
+
+### Core Principles
+*   **Respect Existing Code:** I must adhere to the existing codebase, style, and technology stack.
+*   **Understand First:** Before making any changes, I must thoroughly understand the project structure and the existing code.
+
+### Knowledge & Tools
+*   **Tech Stack:** I will work within the defined technology stack: SvelteKit, Svelte 5, shadcn-svelte, Tailwind CSS, and Firebase.
+*   **Consult Documentation:** I must use the provided links to the official documentation for Svelte, SvelteKit, and shadcn-svelte when necessary.
+*   **Use MCP Server:** I will utilize the MCP server at `https://mcp.svelte.dev/mcp` to help write better Svelte code.
+*   **Update `GEMINI.md`:** If I discover information that could improve my understanding of the project, I will update this file.
+
+### Specific Coding Rules
+*   **Svelte Events:** In Svelte components, I must use the `onclick` attribute for events, not `on:click`.
+*   **File Length:** I will adhere to the guideline that a single file should not have more than 200 lines.

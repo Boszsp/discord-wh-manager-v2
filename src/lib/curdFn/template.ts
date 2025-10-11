@@ -43,7 +43,7 @@ export async function getTemplatesAction(offset?: number, limit?: number): Promi
     return [{
         id: "xxx",
         name: "x",
-        content: "{\"content\":\"xyz\"}",
+        content: '{"content":"{{xyz}}"}'
     }]
 }
 

@@ -22,6 +22,7 @@
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
+	import TemplateVariableForm from '$lib/components/app/template/template-variable-form.svelte';
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 
 	const { data }: PageProps = $props();
@@ -58,6 +59,11 @@
 	};
 
 	formData.subscribe((v) => fromStore.set(v));
+
+	$effect(() => {
+		if(selectedTemplateObj?.content)
+		$formData = safePareseTemplateString(selectedTemplateObj.content) as typeof $formData;
+	});
 
 	function onSm() {
 		console.log(cleanUpBlank($formData));
@@ -138,7 +144,7 @@
 						<ChannelSentCard
 							server={data?.server}
 							channel={data?.channel}
-							templates={templates}
+							{templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
 							onsent={onSm}
@@ -167,7 +173,7 @@
 								<ChannelForm {form} />
 							</div>
 						{:else}
-							<div>{JSON.stringify(selectedTemplateObj)}</div>
+							<TemplateVariableForm templateContent={selectedTemplateObj?.content || ''} />
 						{/if}
 					</div>
 				</ScrollArea>
