@@ -74,7 +74,8 @@
 		}
 	});
 
-	function onSm() {
+	function onSend() {
+		console.log(data?.channel?.url)
 		console.log(cleanUpBlank($formData));
 	}
 
@@ -168,7 +169,7 @@
 							{templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
-							onsent={onSm}
+							onsent={onSend}
 							{onSaveTemplate}
 						/>
 						<Separator class="my-4" />

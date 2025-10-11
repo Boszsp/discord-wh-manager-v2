@@ -49,7 +49,7 @@ export async function getChannelsAction(serverId: string,offset?:number,limit?:n
 }).map((_,i)=>({
         id: "xxx"+i,
         name: "xxx"+i,
-        url: "xx"
+        url: "xx"+i
     }))
 }
 

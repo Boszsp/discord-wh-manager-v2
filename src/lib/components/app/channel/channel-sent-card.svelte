@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Card } from '$lib/components/ui/card';
-	import { HashIcon, SaveIcon, SendIcon, SquareXIcon } from 'lucide-svelte';
+	import { HashIcon, SaveIcon, SendIcon, SquarePlus, SquareXIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import Autocomplelte from '$lib/components/app/form/autocomplete.svelte';
@@ -19,7 +19,8 @@
 		templates = [],
 		selectedValue = $bindable(''),
 		newTemplateValue = $bindable(''),
-		onSaveTemplate
+		onSaveTemplate,
+		onCreateTemplate
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
@@ -36,6 +37,8 @@
 		selectedValue?: string;
 		newTemplateValue?: string;
 		onSaveTemplate?: () => void;
+		onCreateTemplate?: () => void;
+
 	} = $props();
 
 	const isMoble = new IsMobile();
@@ -74,6 +77,7 @@
 				class="mt-2 border-0 border-t"
 				id="template-select"
 			/>
+			
 			<Tooltip.Provider>
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
@@ -91,7 +95,7 @@
 						side="top"
 						class="border bg-secondary text-secondary-foreground"
 						arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
-						>Save Template/Create New Template | บันทึกข้อมูลปัจจุบันเป็นเป็นเทมเพลต</Tooltip.Content
+						>Save Template | บันทึกข้อมูลปัจจุบันเป็นเทมเพลต</Tooltip.Content
 					>
 				</Tooltip.Root>
 			</Tooltip.Provider>
@@ -100,17 +104,39 @@
 					<Tooltip.Trigger>
 						<Button
 							onclick={() => (selectedValue = '')}
-							class="mt-2 border-0 border-t"
-							variant="outline"
+							class="mt-2 border-0 border-t !bg-destructive/20"
+							variant="destructive"
 						>
 							<SquareXIcon />
 						</Button>
 					</Tooltip.Trigger>
 					<Tooltip.Content
 						side="top"
-						class="border bg-secondary text-secondary-foreground"
-						arrowClasses="bg-secondary text-secondary-foreground border-b border-r"
+						class="border bg-destructive/20 text-destructive-foreground"
+						arrowClasses="bg-destructive/20 text-destructive-foreground border-b border-r"
 						>Clear Selected Template | ล้างข้อมูลเทมเพลตที่เลือกอยู่</Tooltip.Content
+					>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+
+			<Tooltip.Provider>
+				<Tooltip.Root delayDuration={0}>
+					<Tooltip.Trigger>
+						<Button
+							onclick={() => {
+								if (onCreateTemplate) onCreateTemplate();
+							}}
+							class="mt-2 border-0 border-t bg-primary/20 hover:bg-primary/20"
+							variant="default"
+						>
+							<SquarePlus />
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content
+						side="top"
+						class="border bg-primary/20 text-secondary-foreground"
+						arrowClasses="bg-primary/20 text-secondary-foreground border-b border-r"
+						>Create New Template | สร้างเทมเพลตใหม่จากขุอมูลปัจจุบัน</Tooltip.Content
 					>
 				</Tooltip.Root>
 			</Tooltip.Provider>
