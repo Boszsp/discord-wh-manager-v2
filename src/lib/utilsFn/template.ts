@@ -25,3 +25,10 @@ export function extractVariables(content: string): string[] {
     }
     return [...new Set(matches.map(match => match.replace(/{|}/g, "").trim()))];
 }
+
+export function applyTemplate(variables:Record<string,string>,content:string):string{
+    for (const variable in variables) {
+        content = content.replaceAll(`{{${variable}}}`, variables[variable])
+    }
+    return content
+}

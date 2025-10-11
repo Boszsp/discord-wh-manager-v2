@@ -18,12 +18,13 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
-	import { safePareseTemplateString } from '$lib/utilsFn/template';
+	import { safePareseTemplateString, applyTemplate } from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
 	import TemplateVariableForm from '$lib/components/app/template/template-variable-form.svelte';
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
+	import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -46,6 +47,8 @@
 	);
 
 	let newTemplateValue: string = $state('');
+	let templateFromValues: Record<string, string> = $state({});
+
 	let channels: webhookSchemaType[] = $state(data?.channels || []);
 
 	const isMoble = new IsMobile();
@@ -60,9 +63,15 @@
 
 	formData.subscribe((v) => fromStore.set(v));
 
+
 	$effect(() => {
-		if(selectedTemplateObj?.content)
-		$formData = safePareseTemplateString(selectedTemplateObj.content) as typeof $formData;
+		if (selectedTemplate && selectedTemplate.length > 0 && selectedTemplateObj?.content){
+		$formData = safePareseTemplateString(
+			applyTemplate(templateFromValues, String(selectedTemplateObj?.content))
+		) as typeof $formData;
+		}else{
+			$formData = DEFAULT_WEBHOOK_CONTENT
+		}
 	});
 
 	function onSm() {
@@ -173,7 +182,10 @@
 								<ChannelForm {form} />
 							</div>
 						{:else}
-							<TemplateVariableForm templateContent={selectedTemplateObj?.content || ''} />
+							<TemplateVariableForm
+								bind:values={templateFromValues}
+								templateContent={selectedTemplateObj?.content || ''}
+							/>
 						{/if}
 					</div>
 				</ScrollArea>

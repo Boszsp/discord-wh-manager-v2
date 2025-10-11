@@ -7,7 +7,7 @@
 
 	let {
 		templateContent = '',
-		values = {}
+		values = $bindable({})
 	}: {
 		templateContent: string;
 		values?: Values;
