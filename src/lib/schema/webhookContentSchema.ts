@@ -114,4 +114,6 @@ export const hookJsonFullyPartialSchema  = z
         thread_name: z.string().max(100, "Thread name length must be less than 100 characters").optional(),
     }).partial()
 
+export type hookJsonFullyPartialSchemaType = z.infer<typeof hookJsonFullyPartialSchema>
+
 export type authorFullyPartialSchemaType = z.infer<typeof authorFullyPartialSchema>

@@ -6,7 +6,7 @@
 	import Autocomplelte from '$lib/components/app/form/autocomplete.svelte';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import type { templateShemaType } from '$lib/schema/templateShema';
+	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 
 	interface serverProps {
 		id?: string | number;
@@ -18,11 +18,12 @@
 		onsent,
 		templates = [],
 		selectedValue = $bindable(''),
-		newTemplateValue = $bindable('')
+		newTemplateValue = $bindable(''),
+		onSaveTemplate
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
-		templates?:Pick<templateShemaType,"name">[];
+		templates?: TemplateSchemaType[];
 		onsent: (
 			e?:
 				| (MouseEvent & {
@@ -33,13 +34,14 @@
 				  })
 		) => void;
 		selectedValue?: string;
-		newTemplateValue?:string
+		newTemplateValue?: string;
+		onSaveTemplate?: () => void;
 	} = $props();
 
 	const isMoble = new IsMobile();
 	const templatesFormat = $derived(
 		templates.map((t) => ({
-			value: t.name,
+			value: t?.id || t.name,
 			label: t.name
 		}))
 	);
@@ -65,11 +67,23 @@
 	<div>
 		<Label for="template-select">Template</Label>
 		<div class="inline-flex w-full gap-2">
-			<Autocomplelte values={templatesFormat} bind:inputValue={newTemplateValue} bind:value={selectedValue} class="mt-2 border-0 border-t" id="template-select" />
+			<Autocomplelte
+				values={templatesFormat}
+				bind:inputValue={newTemplateValue}
+				bind:value={selectedValue}
+				class="mt-2 border-0 border-t"
+				id="template-select"
+			/>
 			<Tooltip.Provider>
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
-						<Button onclick={() => alert('Save Template/Create New Template')} class="mt-2 border-0 border-t" variant="outline">
+						<Button
+							onclick={() => {
+								if (onSaveTemplate) onSaveTemplate();
+							}}
+							class="mt-2 border-0 border-t"
+							variant="outline"
+						>
 							<SaveIcon />
 						</Button>
 					</Tooltip.Trigger>
@@ -84,7 +98,11 @@
 			<Tooltip.Provider>
 				<Tooltip.Root delayDuration={0}>
 					<Tooltip.Trigger>
-						<Button onclick={() => selectedValue = ""} class="mt-2 border-0 border-t" variant="outline">
+						<Button
+							onclick={() => (selectedValue = '')}
+							class="mt-2 border-0 border-t"
+							variant="outline"
+						>
 							<SquareXIcon />
 						</Button>
 					</Tooltip.Trigger>

@@ -54,7 +54,7 @@
 		}
 
 		newEmbeds.push(newEmbed);
-		console.log(newEmbeds, newEmbed);
+		//console.log(newEmbeds, newEmbed);
 		$formData.embeds = newEmbeds;
 	}
 
@@ -83,8 +83,8 @@
 
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
-		<p class="font-bold">Embeds</p>
-		<Button onclick={addEmbed} type="button">Add Embed</Button>
+		<p class="">Embeds</p>
+		<Button onclick={addEmbed} variant="outline" type="button">Add Embed</Button>
 	</div>
 	<Accordion.Root type="multiple" class="flex w-full flex-col gap-2">
 		{#if $formData.embeds}
@@ -212,7 +212,7 @@
 																	>{embed?.author?.name?.length ?? 0}/256</span
 																></Form.Label
 															>
-															<Input {...props} bind:value={embed.author.name as string} />
+															<Input {...props} bind:value={(embed.author as {name:string}).name as string} />
 														{/snippet}
 													</Form.Control>
 													<Form.FieldErrors />
@@ -222,7 +222,7 @@
 														<Form.Control>
 															{#snippet children({ props })}
 																<Form.Label>URL</Form.Label>
-																<Input {...props} bind:value={embed.author.url} />
+																<Input {...props} bind:value={(embed.author as {url:string}).url} />
 															{/snippet}
 														</Form.Control>
 														<Form.FieldErrors />
@@ -231,7 +231,7 @@
 														<Form.Control>
 															{#snippet children({ props })}
 																<Form.Label>Icon URL</Form.Label>
-																<Input {...props} bind:value={embed.author.icon_url} />
+																<Input {...props} bind:value={(embed.author as {icon_url:string}).icon_url} />
 															{/snippet}
 														</Form.Control>
 														<Form.FieldErrors />
@@ -247,7 +247,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={embed.thumbnail.url} />
+														<Input {...props} bind:value={(embed.thumbnail as {url:string}).url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -267,7 +267,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={embed.image.url} />
+														<Input {...props} bind:value={(embed.image as {url:string}).url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -287,7 +287,7 @@
 																>{embed?.footer?.text?.length ?? 0}/2048</span
 															></Form.Label
 														>
-														<Input {...props} bind:value={embed.footer.text} />
+														<Input {...props} bind:value={(embed.footer as {text:string}).text} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -296,7 +296,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>Icon URL</Form.Label>
-														<Input {...props} bind:value={embed.footer.icon_url} />
+														<Input {...props} bind:value={(embed.footer as {icon_url:string}).icon_url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />

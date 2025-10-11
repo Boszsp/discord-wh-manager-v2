@@ -19,7 +19,7 @@
 		<div class="sticky top-0 inline-flex w-full border-b p-2 backdrop-blur-md">
 			<Button size="sm" variant="ghost" onclick={() => goto('/')}>
 				<img alt="flat logo" src="/logo-flat.png" class="w-6" />
-				DWH v.2</Button
+				TWH v.2</Button
 			>
 			<a href="https://github.com/Boszsp/discord-wh-manager-v2" class="my-auto mr-2 ml-auto size-4">
 				<img alt="github" src="/logo/github.png" />
@@ -29,7 +29,7 @@
 			<div class="h-48"></div>
 			<img alt="flat logo" src="/logo-flat.png" class="mb-12 w-32" />
 			<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
-				Welcome to DWH v2.x
+				Welcome to TWH v2.x
 			</h1>
 			<p class="text-xl text-foreground/80">Improve UI and system from v.1</p>
 			<div class="h-48"></div>

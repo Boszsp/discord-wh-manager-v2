@@ -8,36 +8,34 @@
 	} from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
-	import type { templateShemaType } from '$lib/schema/templateShema';
-	import { RefreshCcw, Save, Pencil, Check, TrashIcon } from 'lucide-svelte';
+	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
+	import { LayoutTemplateIcon, Save, SquarePenIcon, TrashIcon } from 'lucide-svelte';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import { onMount } from 'svelte';
 	import Preview from '$lib/components/app/preview/preview.svelte';
-	import {
-		type hookJsonPartialSchemaType
-	} from '$lib/schema/webhookContentSchema';
+	import { type hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import { templateStore } from '$lib/store/template.svelte';
-	import {consola} from "consola";
+	import { consola } from 'consola';
 	import TextareaJson from '../form/textarea-json.svelte';
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
 	import { safePareseTemplateString } from '$lib/utilsFn/template';
 
-
-
 	let {
 		template,
-		class: className
+		class: className,
+		onEditTemplate,
+		onRemoveTemplate
 	}: {
-		template: templateShemaType;
-		class?:ClassValue
+		template: TemplateSchemaType;
+		class?: ClassValue;
+		onEditTemplate?: (templateId: string, template: TemplateSchemaType) => void;
+		onRemoveTemplate?: (templateId: string) => void;
 	} = $props();
-
-	let isEditingName = $state(false);
+	let isEditing = $state(false);
 	let newName = $state('');
-	let variables = $state<Record<string, string>>({});
 	let preview = $state(template.content);
-	let previewHTML = $state('');
+	let previewHTML = $state(template.name || '');
 	let previewObj = $state<hookJsonPartialSchemaType>({});
 
 	onMount(async () => {
@@ -50,63 +48,51 @@
 		}
 	});
 
-	function saveName() {
+	function onEdit() {
+		newName = template.name;
+		isEditing = true;
+	}
+	function save() {
+		//console.log(template.id)
+		if (template.id && onEditTemplate)
+			onEditTemplate(template.id, { name: newName, content: template.content });
 		templateStore.updateTemplate({ ...template, name: newName });
-		isEditingName = false;
+		isEditing = false;
 	}
 </script>
 
-<Card class={cn("border-0",className)}>
+<Card class={cn('border-0', className)}>
 	<CardHeader>
-		<div class="flex items-center justify-between">
-			<div>
-				{#if isEditingName}
+		<div class="flex h-fit items-start justify-between gap-2">
+			<div class="h-fit w-full">
+				{#if isEditing}
 					<div class="flex items-center gap-2">
-						<Input bind:value={newName} />
-						<Button variant="outline" size="icon" onclick={saveName}>
-							<Check class="size-4" />
+						<div class="relative w-full">
+							<LayoutTemplateIcon class="absolute top-2.5 left-2.5 size-4" />
+							<Input class="w-full pl-8" bind:value={newName} />
+						</div>
+						<Button variant="outline" size="icon" onclick={save}>
+							<Save class="size-4" />
 						</Button>
 					</div>
 				{:else}
 					<div class="flex items-center gap-2">
 						<CardTitle>{template.name}</CardTitle>
-						<Button
-							variant="ghost"
-							size="sm"
-							class="p-1 h-fit"
-							onclick={() => {
-								isEditingName = true;
-							}}
-						>
-							<Pencil class="size-4" />
-						</Button>
 					</div>
 				{/if}
 				<CardDescription>Fill in the variables to preview the template</CardDescription>
 			</div>
 			<div class="flex items-center gap-2">
-				<Button
-					variant="outline"
-					size="icon"
-					onclick={() => {
-						templateStore.updateTemplate({ ...template, content: preview });
-					}}
-				>
-					<Save class="size-4" />
-				</Button>
-				<Button
-					variant="outline"
-					size="icon"
-					onclick={() => {
-						variables = Object.fromEntries(Object.keys(variables).map((key) => [key, '']));
-					}}
-				>
-					<RefreshCcw class="size-4" />
-				</Button>
+				{#if !isEditing}
+					<Button variant="outline" size="icon" onclick={onEdit}>
+						<SquarePenIcon class="size-4" />
+					</Button>
+				{/if}
 				<Button
 					variant="destructive"
 					size="icon"
 					onclick={() => {
+						if (onRemoveTemplate && template.id) onRemoveTemplate(template.id);
 					}}
 				>
 					<TrashIcon class="size-4" />
@@ -122,7 +108,11 @@
 				{/if}
 			</span>
 			<span class="relative flex-1">
-				<TextareaJson bind:value={preview}  />
+				<TextareaJson
+					class={isEditing ? 'border' : ''}
+					bind:value={preview}
+					readonly={!isEditing}
+				/>
 			</span>
 		</div>
 	</CardContent>

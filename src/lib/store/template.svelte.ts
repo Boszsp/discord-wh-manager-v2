@@ -1,13 +1,13 @@
 import { writable } from 'svelte/store';
-import type { templateShemaType } from '$lib/schema/templateShema';
+import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 
 const isBrowser = typeof window !== 'undefined';
 
-const initialValue: templateShemaType[] = isBrowser
+const initialValue: TemplateSchemaType[] = isBrowser
     ? JSON.parse(window.localStorage.getItem('templates') || '[]')
     : [];
 
-const { subscribe, set, update } = writable<templateShemaType[]>(initialValue);
+const { subscribe, set, update } = writable<TemplateSchemaType[]>(initialValue);
 
 subscribe((value) => {
     if (isBrowser) {
@@ -15,11 +15,11 @@ subscribe((value) => {
     }
 });
 
-function addTemplate(template: templateShemaType) {
+function addTemplate(template: TemplateSchemaType) {
     update((templates) => [...templates, template]);
 }
 
-function updateTemplate(template: templateShemaType) {
+function updateTemplate(template: TemplateSchemaType) {
     update((templates) => {
         const index = templates.findIndex((t) => t.name === template.name);
         if (index !== -1) {

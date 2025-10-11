@@ -58,7 +58,7 @@ export const parseBase64ToJson = async (str: string) => {
             consola.info(error)
             //return jsonSchema.safeParse({ "content": "" })?.data
             //console.log(fromBase64(str))
-            console.log(normalParse?.split(",").map(v => parseInt(v)))
+            //console.log(normalParse?.split(",").map(v => parseInt(v)))
             return parseTarGzip(new Uint8Array(normalParse?.split(",").map(v => parseInt(v))))
         }
         else {
@@ -71,14 +71,6 @@ export const parseBase64ToJson = async (str: string) => {
 
 }
 
-export function extractVariables(content: string): string[] {
-    const regex = /{{\s*(\w+)\s*}}/g;
-    const matches = content.match(regex);
-    if (!matches) {
-        return [];
-    }
-    return [...new Set(matches.map(match => match.replace(/{|}/g, "").trim()))];
-}
 
 
 export const getInitials = (name: string) => {

@@ -3,7 +3,6 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import LayoutDefault from '$lib/components/app/layout/layout-default.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 	
 

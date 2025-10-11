@@ -9,7 +9,10 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import type { PageProps } from './$types';
 	import { CardContent } from '$lib/components/ui/card';
-	
+	import { toast } from 'svelte-sonner';
+	import { createServerAction, editServerAction, removeServerAction } from '$lib/curdFn/server';
+	import { channelCurId } from '$lib/store/channel.svelte';
+
 	const { data }: PageProps = $props();
 
 	let servers = $state(data?.servers);
@@ -17,31 +20,49 @@
 	let searchTerm = $state('');
 	let isDeleteDialogOpen = $state(false);
 	let serverToDelete = $state<ServerType | null>(null);
+	let deleteTarget = $state("")
 
 	let filteredServers = $derived(
 		servers.filter((server) => server.title.toLowerCase().includes(searchTerm.toLowerCase()))
 	);
 
-	function createServer({ name }: { name: string }) {
-		servers.unshift({ id: crypto.randomUUID(), title: name });
+	function createServer({ name, color }: { name: string; color: string }) {
+		createServerAction({ name, color }).then((v) => {
+			if (v.affectedServer) {
+				servers.unshift({
+					id: v.serverId + '',
+					title: v.affectedServer?.name + '',
+					color: v.affectedServer?.color
+				});
+			}
+		});
 	}
 
 	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
 		const index = servers.findIndex((s) => s.id === id);
-		if (index !== -1) {
-			servers[index].title = name;
-			servers[index].color = color;
-		}
+		editServerAction(id, { name, color }).then((r) => {
+			if (index !== -1 && r.affectedServer) {
+				servers[index].title = r.affectedServer?.name;
+				servers[index].color = r.affectedServer?.color;
+			}
+		});
 	}
 
 	function deleteServer({ id }: { id: string }) {
+		//console.log(id)
 		serverToDelete = servers.find((s) => s.id === id) ?? null;
 		isDeleteDialogOpen = true;
+		//console.log(serverToDelete)
+		deleteTarget = id
 	}
 
 	function confirmDelete() {
 		if (serverToDelete) {
-			servers = servers.filter((s) => s.id !== serverToDelete!.id);
+			removeServerAction(deleteTarget)
+				.then(() => {
+					serverToDelete = servers.find((s) => s.id === deleteTarget) ?? null;
+				})
+				.finally(() => (isDeleteDialogOpen = false));
 		}
 	}
 </script>

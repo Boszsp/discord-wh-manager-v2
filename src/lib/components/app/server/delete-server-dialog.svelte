@@ -4,12 +4,16 @@
 	import { Input } from '$lib/components/ui/input';
 	import type { ServerType } from '../types';
 
-	let { open = $bindable(false), serverToDelete = $bindable<ServerType | null>(null), onConfirm = () => {} } = $props();
+	let { open = $bindable(false), serverToDelete = $bindable(null), onConfirm = () => {} } :{
+		open: boolean;
+		serverToDelete: ServerType | null;
+		onConfirm: () => void;
+	}= $props();
 
 	let deleteConfirmName = $state('');
 
 	function confirmDelete() {
-		if (serverToDelete && deleteConfirmName === serverToDelete.name) {
+		if (serverToDelete && deleteConfirmName === serverToDelete?.title) {
 			onConfirm();
 			closeDeleteDialog();
 		} else {
@@ -31,7 +35,7 @@
 		</Dialog.Header>
 		<Dialog.Description>
 			This action cannot be undone. To confirm, please type
-			<span class="font-bold text-foreground">{serverToDelete?.name}</span>
+			<span class="font-bold text-foreground">{serverToDelete?.title}</span>
 			below.
 		</Dialog.Description>
 		<div class="grid gap-4 py-4">
