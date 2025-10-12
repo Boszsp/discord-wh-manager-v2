@@ -4,20 +4,20 @@ import { consola } from "consola";
 export async function createTemplateAction(template: TemplateSchemaType) {
     if (!template) throw new Error("Template Not Define")
     const templateId = "xxx"
-    consola.success("CreateTemplateAction")
+    consola.success("CreateTemplateAction",template)
 
     return {
         status: 200,
         message: "success",
         templateId,
-        template: template
+        affectedTemplate: { ...template, id: "xxxzxsd" }
     }
 }
 
 export async function editTemplateAction(templateId: string, template: TemplateSchemaType) {
     if (!templateId) throw new Error("Template Id Not Define")
     if (!template) throw new Error("Template Not Define")
-    consola.success("EditTemplateAction",template)
+    consola.success("EditTemplateAction", template)
 
     return {
         status: 200,

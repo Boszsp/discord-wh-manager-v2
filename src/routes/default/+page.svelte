@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
 	import {
+		hookJsonFullyPartialSchema,
 		hookJsonPartial,
 		urlSchema,
 		type hookJsonPartialSchemaType
@@ -29,20 +29,25 @@
 		CardFooter
 	} from '$lib/components/ui/card';
 	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
-	import { parseBase64ToJson, toBase64Optimize } from '$lib/utilsFn/string.js';
+	import { toBase64Optimize } from '$lib/utilsFn/string.js';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
+	import { Loader2Icon } from 'lucide-svelte';
 
 	const { data }: PageProps = $props();
 
 	const form = superForm(data.formData as hookJsonPartialSchemaType, {
 		dataType: 'json',
 		validators: zod4(hookJsonPartial),
-		validationMethod: 'oninput'
+		validationMethod: 'oninput',
+		onSubmit: (inp) => {
+			inp.cancel();
+			return false;
+		}
 	});
 
 	const { form: formData, enhance } = form;
@@ -52,7 +57,11 @@
 		{
 			validators: zod4(z.object({ url: urlSchema })),
 			dataType: 'json',
-			validationMethod: 'oninput'
+			validationMethod: 'oninput',
+			onSubmit: (inp) => {
+				inp.cancel();
+				return false;
+			}
 		}
 	);
 
@@ -61,17 +70,55 @@
 	let files: File[] = $state([]);
 
 	const isMoble = new IsMobile();
+	let isLoading = $state(false);
 
-	async function onSm() {
+	async function onSend() {
+		const { success: validForm, error } = hookJsonFullyPartialSchema.safeParse($formData);
 		const valid = await whValidate();
 		if (!valid) {
 			if ($whErrors.url) toast.error($whErrors.url[0]);
 			return;
 		}
-		const result = await sendToWebhook($whData.url, cleanUpBlank($formData), files);
-		if (result) {
-			toast.success('Message sent successfully');
+		if (!validForm) {
+			if (error) toast.error(error.message);
+			return;
+		}
+		if (
+			!(
+				$formData?.content ||
+				($formData?.embeds && $formData?.embeds?.length > 0) ||
+				files?.length > 0
+			)
+		) {
+			toast.warning(
+				'Note that when sending a message, you must provide a value for at least one of content, embeds, components, file, or poll.'
+			);
+			return;
+		}
+		isLoading = true;
+		const result = sendToWebhook(
+			$whData.url,
+			cleanUpBlank($formData),
+			files,
+			(mss, type: 'error' | 'success' = 'success') => {
+				if (type === 'error') toast.error(mss);
+				else toast.success(mss);
+			}
+		);
+		toast.promise(result);
+		const resultAwaited = await result;
+		isLoading = false;
+		if (
+			(resultAwaited?.payloadRes || resultAwaited?.filesRes?.length > 0) &&
+			!(
+				resultAwaited?.payloadRes instanceof Error ||
+				resultAwaited?.filesRes?.some((v: any) => v instanceof Error)
+			)
+		) {
+			toast.success('All Message sent successfully');
 		} else {
+			console.error(resultAwaited?.payloadRes, resultAwaited?.filesRes);
+
 			toast.error('Failed to send message');
 		}
 	}
@@ -141,7 +188,14 @@
 							</Form.Field>
 						</CardContent>
 						<CardFooter>
-							<Button class="ml-auto" onclick={onSm}>Sent</Button>
+							<Button type="button" disabled={isLoading} class="ml-auto" onclick={onSend}>
+								{#if isLoading}
+									<Loader2Icon class="animate-spin" />
+									Please wait
+								{:else}
+									Sent
+								{/if}
+							</Button>
 						</CardFooter>
 					</Card>
 					<Separator class="my-4" />

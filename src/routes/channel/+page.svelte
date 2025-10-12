@@ -18,14 +18,18 @@
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
-	import { safePareseTemplateString, applyTemplate, safeStrinifyTemplateString } from '$lib/utilsFn/template';
+	import {
+		safePareseTemplateString,
+		applyTemplate,
+		safeStrinifyTemplateString
+	} from '$lib/utilsFn/template';
 	import { fade } from 'svelte/transition';
 	import type { webhookSchemaType } from '$lib/schema/webhookSchema';
 	import { createChannelAction, editChannelAction, removeChannelAction } from '$lib/curdFn/channel';
 	import TemplateVariableForm from '$lib/components/app/template/template-variable-form.svelte';
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 	import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
-	import { editTemplateAction } from '$lib/curdFn/template';
+	import { createTemplateAction, editTemplateAction } from '$lib/curdFn/template';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -74,7 +78,8 @@
 		}
 	});
 
-	function onSm() {
+	function onSend() {
+		console.log(data?.channel?.url);
 		console.log(cleanUpBlank($formData));
 	}
 
@@ -105,14 +110,24 @@
 	}
 
 	function onSaveTemplate() {
-		editTemplateAction( selectedTemplate,{
-			id:selectedTemplateObj?.id,
-			name:selectedTemplateObj?.name || "",
-			content:safeStrinifyTemplateString($formData)
+		editTemplateAction(selectedTemplate, {
+			id: selectedTemplateObj?.id,
+			name: selectedTemplateObj?.name || '',
+			content: safeStrinifyTemplateString($formData)
 		}).then((r) => {
-			const templatesTemp = [...templates]
-			templatesTemp.find((t)=>t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData)))
-			templates = templatesTemp
+			const templatesTemp = [...templates];
+			templatesTemp.find(
+				(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
+			);
+			templates = templatesTemp;
+		});
+	}
+	function onCreateTemplate(name:string|undefined) {
+		createTemplateAction({
+			name: name+"",
+			content: safeStrinifyTemplateString($formData)
+		}).then((r) => {
+			if (r?.affectedTemplate?.id)  templates.push(r.affectedTemplate);
 		});
 	}
 </script>
@@ -168,8 +183,9 @@
 							{templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
-							onsent={onSm}
+							onsent={onSend}
 							{onSaveTemplate}
+							{onCreateTemplate}
 						/>
 						<Separator class="my-4" />
 						{#if !selectedTemplate || selectedTemplate === ''}

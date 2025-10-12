@@ -42,10 +42,7 @@ export const load: PageLoad = async ({ url, depends }) => {
             name: serverId
         },
         channels: channels,
-        channel: {
-            id: channelId,
-            name: channelId
-        },
+        channel: channels.find((v) => v.id == channelId),
         templates: templates
     };
 
