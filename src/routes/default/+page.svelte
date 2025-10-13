@@ -36,7 +36,7 @@
 	import { onMount } from 'svelte';
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
-	import { Loader2Icon } from 'lucide-svelte';
+	import { LoaderCircleIcon } from 'lucide-svelte';
 
 	const { data }: PageProps = $props();
 
@@ -190,7 +190,7 @@
 						<CardFooter>
 							<Button type="button" disabled={isLoading} class="ml-auto" onclick={onSend}>
 								{#if isLoading}
-									<Loader2Icon class="animate-spin" />
+									<LoaderCircleIcon class="animate-spin" />
 									Please wait
 								{:else}
 									Sent

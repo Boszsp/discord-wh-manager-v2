@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Card } from '$lib/components/ui/card';
-	import { HashIcon, SaveIcon, SendIcon, SquarePlus, SquareXIcon } from 'lucide-svelte';
+	import { HashIcon, LoaderCircleIcon, SaveIcon, SendIcon, SquarePlus, SquareXIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import Autocomplelte from '$lib/components/app/form/autocomplete.svelte';
@@ -21,7 +21,8 @@
 		selectedValue = $bindable(''),
 		newTemplateValue = $bindable(''),
 		onSaveTemplate,
-		onCreateTemplate
+		onCreateTemplate,
+		isLoading
 	}: {
 		server?: serverProps;
 		channel?: serverProps;
@@ -38,7 +39,8 @@
 		selectedValue?: string;
 		newTemplateValue?: string;
 		onSaveTemplate?: () => void;
-		onCreateTemplate?: (name?:string) => void;
+		onCreateTemplate?: (name?: string) => void;
+		isLoading?: boolean;
 	} = $props();
 
 	const isMoble = new IsMobile();
@@ -64,7 +66,14 @@
 			</div>
 		</span>
 		<span>
-			<Button onclick={onsent} class="h-full"><SendIcon /></Button>
+			<Button disabled={isLoading} onclick={onsent} class="h-full">
+				{#if isLoading}
+					<LoaderCircleIcon class="animate-spin" />
+					Please wait
+				{:else}
+					<SendIcon />
+				{/if}</Button
+			>
 		</span>
 	</div>
 	<div>

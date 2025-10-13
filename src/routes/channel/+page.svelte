@@ -1,13 +1,13 @@
 <script lang="ts">
 	import ChannelContainer from '$lib/components/app/container/channel-container.svelte';
 	import ChannelForm from '$lib/components/app/channel/channel-form.svelte';
-	import { hookJsonPartial } from '$lib/schema/webhookContentSchema';
+	import { hookJsonFullyPartialSchema, hookJsonPartial } from '$lib/schema/webhookContentSchema';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
 	import Preview from '$lib/components/app/preview/preview.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as Resizable from '$lib/components/ui/resizable';
-	import { cleanUpBlank } from '$lib/utilsFn/webhook.js';
+	import { cleanUpBlank, sendToWebhook } from '$lib/utilsFn/webhook.js';
 	import type { Snapshot, PageProps } from './$types';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import { Separator } from '$lib/components/ui/separator';
@@ -30,6 +30,8 @@
 	import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 	import { DEFAULT_WEBHOOK_CONTENT } from '$lib/default';
 	import { createTemplateAction, editTemplateAction } from '$lib/curdFn/template';
+	import { toast } from 'svelte-sonner';
+	import z from 'zod';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -78,9 +80,60 @@
 		}
 	});
 
-	function onSend() {
-		console.log(data?.channel?.url);
-		console.log(cleanUpBlank($formData));
+	let isLoading = $state(false);
+	async function onSend() {
+		const {
+			success: validForm,
+			data: formDataa,
+			error
+		} = hookJsonFullyPartialSchema.safeParse($formData);
+		if (!validForm) {
+			if (error) toast.error(error.message);
+			return;
+		}
+		const { success, data: url, error: urlError } = z.string().url().safeParse(data?.channel?.url);
+		if (!success) {
+			if (urlError) toast.error(urlError.message);
+			return;
+		}
+		if (
+			!(
+				$formData?.content ||
+				($formData?.embeds && $formData?.embeds?.length > 0) ||
+				files?.length > 0
+			)
+		) {
+			toast.warning(
+				'Note that when sending a message, you must provide a value for at least one of content, embeds, components, file, or poll.'
+			);
+			return;
+		}
+		isLoading = true;
+		const result = sendToWebhook(
+			url,
+			cleanUpBlank(formDataa),
+			files,
+			(mss, type: 'error' | 'success' = 'success') => {
+				if (type === 'error') toast.error(mss);
+				else toast.success(mss);
+			}
+		);
+		toast.promise(result);
+		const resultAwaited = await result;
+		isLoading = false;
+		if (
+			(resultAwaited?.payloadRes || resultAwaited?.filesRes?.length > 0) &&
+			!(
+				resultAwaited?.payloadRes instanceof Error ||
+				resultAwaited?.filesRes?.some((v: any) => v instanceof Error)
+			)
+		) {
+			toast.success('All Message sent successfully');
+		} else {
+			console.error(resultAwaited?.payloadRes, resultAwaited?.filesRes);
+
+			toast.error('Failed to send message');
+		}
 	}
 
 	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
@@ -122,12 +175,12 @@
 			templates = templatesTemp;
 		});
 	}
-	function onCreateTemplate(name:string|undefined) {
+	function onCreateTemplate(name: string | undefined) {
 		createTemplateAction({
-			name: name+"",
+			name: name + '',
 			content: safeStrinifyTemplateString($formData)
 		}).then((r) => {
-			if (r?.affectedTemplate?.id)  templates.push(r.affectedTemplate);
+			if (r?.affectedTemplate?.id) templates.push(r.affectedTemplate);
 		});
 	}
 </script>
@@ -186,6 +239,7 @@
 							onsent={onSend}
 							{onSaveTemplate}
 							{onCreateTemplate}
+							{isLoading}
 						/>
 						<Separator class="my-4" />
 						{#if !selectedTemplate || selectedTemplate === ''}
