@@ -45,6 +45,8 @@
 		SquareBottomDashedScissorsIcon
 	} from 'lucide-svelte';
 	import { Toggle } from '$lib/components/ui/toggle';
+	import FileManipulationSelectedfile from './file-manipulation-selectedfile.svelte';
+	import type { FileType } from '../types';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -58,17 +60,18 @@
 		}
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData } = form;
 
-	let { class: className, files = $bindable([]) }: { class?: ClassValue; files: File[] } = $props();
+	let { class: className, files = $bindable([]) }: { class?: ClassValue; files: FileType[] } = $props();
 </script>
 
-<Card class={cn('border-0 border-t bg-secondary overflow-hidden ', className)}>
+<Card class={cn('border-0 border-t bg-secondary/80 overflow-hidden ', className)}>
 	<CardHeader>
 		<CardTitle>File Manipulation</CardTitle>
 		<CardDescription>Manipulation file</CardDescription>
 	</CardHeader>
 	<CardContent class="grid gap-4">
+		<FileManipulationSelectedfile />
 		<Form.Field {form} name="fileName">
 			<Form.Control>
 				{#snippet children({ props })}
@@ -78,7 +81,7 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<div class="flex max-md:flex-wrap gap-2">
+		<div class="flex flex-wrap gap-2">
 			<Form.Field {form} name="fileSizeLimit">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -92,7 +95,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Rem Source</Form.Label>
-						<Toggle {...props} bind:pressed={$formData.isRemoveSoure} variant="outline">
+						<Toggle {...props} bind:pressed={$formData.isRemoveSoure} class="bg-input/30 transition" variant="outline">
 							{#if $formData.isRemoveSoure}
 								<CheckIcon />
 							{:else}
@@ -108,7 +111,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Fixed Size</Form.Label>
-						<Toggle {...props} bind:pressed={$formData.isFixedSize} variant="outline">
+						<Toggle {...props} bind:pressed={$formData.isFixedSize} class="bg-input/30 transition" variant="outline">
 							{#if $formData.isFixedSize}
 								<CheckIcon />
 							{:else}
@@ -122,19 +125,20 @@
 			</Form.Field>
 		</div>
 		<Separator class="my-4" />
-		<div class="grid grid-cols-3 max-sm:grid-cols-1 gap-2">
-			<Button variant="outline"><PackageIcon /> Zip</Button>
-			<Button variant="outline"><PackageOpen /> Unzip</Button>
-			<Button variant="outline"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
+		<Label>File Manipulation Menu</Label>
+		<div class="flex flex-wrap gap-2">
+			<Button variant="outline" class="flex-1"><PackageIcon /> Zip</Button>
+			<Button variant="outline" class="flex-1"><PackageOpen /> Unzip</Button>
+			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
-		<div class="grid grid-cols-3 max-sm:grid-cols-1 gap-2">
-			<Button variant="outline"><FileTextIcon /> Image to PDF</Button>
-			<Button variant="outline"><ImageIcon /> PDF to Image</Button>
-			<Button variant="outline"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
+		<div class="flex flex-wrap gap-2">
+			<Button variant="outline" class="flex-1"><FileTextIcon /> Image to PDF</Button>
+			<Button variant="outline" class="flex-1"><ImageIcon /> PDF to Image</Button>
+			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
 		</div>
 		<Separator class="my-4" />
 		<div class="grid gap-2">
-			<div class="flex  max-md:flex-wrap w-full gap-2">
+			<div class="flex flex-wrap w-full gap-2">
 				<Form.Field {form} name="quality">
 					<Form.Control>
 						{#snippet children({ props })}
@@ -158,7 +162,7 @@
 						{#snippet children({ props })}
 							<Form.Label>Extension</Form.Label>
 							<Select.Root type="single" bind:value={$formData.extension}>
-								<Select.Trigger class="w-full" {...props}>
+								<Select.Trigger class="w-full min-w-28" {...props}>
 									{$formData.extension ? $formData.extension : 'Select a verified extension'}
 								</Select.Trigger>
 								<Select.Content>

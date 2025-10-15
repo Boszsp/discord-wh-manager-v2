@@ -7,20 +7,25 @@
 	import { Button } from '$lib/components/ui/button';
 	import { ArrowDown, ArrowUp, ClipboardIcon, FileIcon, SortAsc, Trash } from 'lucide-svelte';
 	import { naturalSort } from '$lib/utilsFn/string';
+	import { nanoid } from 'nanoid';
+	import type { FileType } from '../types';
 
-	let { files = $bindable([]), class: className }: { files: File[]; class?: ClassValue } = $props();
+	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } = $props();
 
 	function addFiles(filelist: FileList | null) {
 		if (filelist === null) return;
 		const newFiles = [...files]
 		for (let f of filelist) {
-			newFiles.push(f);
+			newFiles.push({
+				id:(nanoid(8) as string),
+				file:f
+			});
 		}
 		files = newFiles;
 	}
 
-	function removeFile(index: number) {
-		files = files.filter((_, i) => i !== index);
+	function removeFile(id: string) {
+		files = files?.filter((f) => f?.id !== id);
 	}
 
 	function moveFileUp(index: number) {
@@ -42,7 +47,7 @@
 	}
 
 	function sortFiles() {
-		files = [...files.sort((a, b) => naturalSort(a.name, b.name))];
+		files = [...files.sort((a, b) => naturalSort(a?.file?.name, b?.file?.name))];
 	}
 </script>
 
@@ -74,10 +79,10 @@
 			</Accordion.Trigger>
 			<Accordion.Content class="text-sm">
 				<div class="flex flex-col gap-2">
-					{#each files as file, i ("channel-file-"+file.name+"-" + i)}
+					{#each files as file, i ("channel-file-"+file?.file?.name+"-" + i)}
 						<div class="inline-flex items-center rounded-md bg-input/20 p-2 text-foreground/60">
 							<FileIcon class="mr-2 size-4" />
-							<p class="grow">{file.name}</p>
+							<p class="grow">{file?.file?.name}</p>
 							<div class="inline-flex gap-2">
 								<Button
 									variant="ghost"
@@ -101,7 +106,7 @@
 									variant="ghost"
 									size="icon"
 									class="size-6 text-destructive"
-									onclick={() => removeFile(i)}
+									onclick={() => removeFile(file?.id)}
 								>
 									<Trash class="size-4" />
 								</Button>

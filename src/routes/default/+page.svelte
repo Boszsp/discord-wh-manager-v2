@@ -38,6 +38,7 @@
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 	import { LoaderCircleIcon } from 'lucide-svelte';
 	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
+	import type { FileType } from '$lib/components/app/types';
 
 	const { data }: PageProps = $props();
 
@@ -68,7 +69,7 @@
 
 	const { form: whData, enhance: whEnhance, validateForm: whValidate, errors: whErrors } = whForm;
 
-	let files: File[] = $state([]);
+	let files: FileType[] = $state([]);
 
 	const isMoble = new IsMobile();
 	let isLoading = $state(false);
@@ -100,7 +101,7 @@
 		const result = sendToWebhook(
 			$whData.url,
 			cleanUpBlank($formData),
-			files,
+			files?.map(v=>v?.file),
 			(mss, type: 'error' | 'success' = 'success') => {
 				if (type === 'error') toast.error(mss);
 				else toast.success(mss);
@@ -154,7 +155,7 @@
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
-						<Preview content={$formData} {files} />
+						<Preview content={$formData} files={files?.map(v=>v?.file)} />
 						<Separator class="my-8" />
 						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>

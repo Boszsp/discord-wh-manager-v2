@@ -32,6 +32,7 @@
 	import { createTemplateAction, editTemplateAction } from '$lib/curdFn/template';
 	import { toast } from 'svelte-sonner';
 	import z from 'zod';
+	import type { FileType } from '$lib/components/app/types';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -46,7 +47,7 @@
 	});
 
 	const { form: formData } = form;
-	let files: File[] = $state([]);
+	let files: FileType[] = $state([]);
 	let templates: TemplateSchemaType[] = $state(data?.templates || []);
 	let selectedTemplate: string = $state('');
 	let selectedTemplateObj: TemplateSchemaType | undefined = $derived(
@@ -112,7 +113,7 @@
 		const result = sendToWebhook(
 			url,
 			cleanUpBlank(formDataa),
-			files,
+			files?.map(v=>v?.file),
 			(mss, type: 'error' | 'success' = 'success') => {
 				if (type === 'error') toast.error(mss);
 				else toast.success(mss);
@@ -202,7 +203,7 @@
 					<div class="p-4">
 						<h3 class="mb-4 text-lg font-medium">Preview</h3>
 						<div>
-							<Preview content={$formData} {files} />
+							<Preview content={$formData} files={files?.map(v=>v?.file)} />
 							<Separator class="my-8" />
 							<TextareaJson
 								value={JSON.stringify($formData, null, 2)}
