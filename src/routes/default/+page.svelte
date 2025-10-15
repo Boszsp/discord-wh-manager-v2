@@ -37,6 +37,7 @@
 	import ImagePopupShow from '$lib/components/app/preview/image-popup-show.svelte';
 	import TextareaJson from '$lib/components/app/form/textarea-json.svelte';
 	import { LoaderCircleIcon } from 'lucide-svelte';
+	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
 
 	const { data }: PageProps = $props();
 
@@ -198,6 +199,7 @@
 							</Button>
 						</CardFooter>
 					</Card>
+					<FileManipulation class="mt-4" bind:files />
 					<Separator class="my-4" />
 					<ChannelFile bind:files />
 					<Separator class="mt-8 mb-4" />
