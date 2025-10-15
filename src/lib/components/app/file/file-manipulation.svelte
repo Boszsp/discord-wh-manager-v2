@@ -6,10 +6,13 @@
 		quality: z.number().min(0).max(100).default(100),
 		scale: z.number().min(0).max(1).default(1),
 		extension: z.enum(['png', 'jpg', 'webp']).default('jpg'),
-		fileSizeLimit: z.number().min(1).default(MAX_FILE_SIZE/1024/1024),
+		fileSizeLimit: z
+			.number()
+			.min(1)
+			.default(MAX_FILE_SIZE / 1024 / 1024),
 		fileName: z.string().trim(),
 		isRemoveSoure: z.boolean().default(false),
-		isFixedSize: z.boolean().default(false),
+		isFixedSize: z.boolean().default(false)
 	});
 </script>
 
@@ -33,6 +36,7 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import {
+		CheckIcon,
 		FileTextIcon,
 		ImageIcon,
 		MinusIcon,
@@ -59,23 +63,22 @@
 	let { class: className, files = $bindable([]) }: { class?: ClassValue; files: File[] } = $props();
 </script>
 
-<Card class={cn('border-0 border-t bg-secondary', className)}>
+<Card class={cn('border-0 border-t bg-secondary overflow-hidden ', className)}>
 	<CardHeader>
 		<CardTitle>File Manipulation</CardTitle>
 		<CardDescription>Manipulation file</CardDescription>
 	</CardHeader>
 	<CardContent class="grid gap-4">
-		<Form.Field {form} name="fileName" >
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Name</Form.Label>
-						<Input {...props} bind:value={$formData.fileName} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		<div class="flex gap-2">
-			
+		<Form.Field {form} name="fileName">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Name</Form.Label>
+					<Input {...props} bind:value={$formData.fileName} />
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+		<div class="flex max-md:flex-wrap gap-2">
 			<Form.Field {form} name="fileSizeLimit">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -85,30 +88,53 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<div>
-				<Label class="mb-2 opacity-0">Rem Source</Label>
-			<Toggle variant="outline" >
-				<MinusIcon />Remove source</Toggle
-			></div>
-			<div>
-				<Label class="mb-2 opacity-0">Fixed size</Label>
-			<Toggle variant="outline">
-				<MinusIcon />Fixed pdf page size</Toggle
-			></div>
+			<Form.Field {form} name="isRemoveSoure">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label class="opacity-0">Rem Source</Form.Label>
+						<Toggle {...props} bind:pressed={$formData.isRemoveSoure} variant="outline">
+							{#if $formData.isRemoveSoure}
+								<CheckIcon />
+							{:else}
+								<MinusIcon />
+							{/if}
+							Remove source</Toggle
+						>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="isFixedSize">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label class="opacity-0">Fixed Size</Form.Label>
+						<Toggle {...props} bind:pressed={$formData.isFixedSize} variant="outline">
+							{#if $formData.isFixedSize}
+								<CheckIcon />
+							{:else}
+								<MinusIcon />
+							{/if}
+							Fixed pdf-page size</Toggle
+						>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
 		</div>
-		<div class="grid grid-cols-3 gap-2">
+		<Separator class="my-4" />
+		<div class="grid grid-cols-3 max-sm:grid-cols-1 gap-2">
 			<Button variant="outline"><PackageIcon /> Zip</Button>
 			<Button variant="outline"><PackageOpen /> Unzip</Button>
 			<Button variant="outline"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
-		<div class="grid grid-cols-3 gap-2">
+		<div class="grid grid-cols-3 max-sm:grid-cols-1 gap-2">
 			<Button variant="outline"><FileTextIcon /> Image to PDF</Button>
 			<Button variant="outline"><ImageIcon /> PDF to Image</Button>
 			<Button variant="outline"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
 		</div>
 		<Separator class="my-4" />
 		<div class="grid gap-2">
-			<div class="flex w-full gap-2">
+			<div class="flex  max-md:flex-wrap w-full gap-2">
 				<Form.Field {form} name="quality">
 					<Form.Control>
 						{#snippet children({ props })}
