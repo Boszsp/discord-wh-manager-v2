@@ -12,7 +12,8 @@
 			.default(MAX_FILE_SIZE / 1024 / 1024),
 		fileName: z.string().trim(),
 		isRemoveSoure: z.boolean().default(false),
-		isFixedSize: z.boolean().default(false)
+		isFixedSize: z.boolean().default(false),
+		compressLevel: z.number().min(0).max(9).default(6)
 	});
 </script>
 
@@ -72,8 +73,8 @@
 
 	function addFileHandler(file: File | File[]) {
 		let tempFiles = [...files];
-		console.log(file)
-		if (Array.isArray(file)) tempFiles = tempFiles.concat(file.map((f) => ({ id: nanoid(8), file: f })));
+		if (Array.isArray(file))
+			tempFiles = tempFiles.concat(file.map((f) => ({ id: nanoid(8), file: f })));
 		else
 			tempFiles.push({
 				id: nanoid(8),
@@ -86,7 +87,9 @@
 	function onZipHandler() {
 		loading = true;
 		createZip(
-			files.filter((file) => $selectedFileStore.includes(file.id)).map((file) => file.file)
+			files.filter((file) => $selectedFileStore.includes(file.id)).map((file) => file.file),{
+				filename:$formData?.fileName
+			}
 		).then((z) => {
 			if ($formData.isRemoveSoure)
 				files = files.filter((file) => !$selectedFileStore.includes(file.id));
@@ -95,25 +98,23 @@
 	}
 	function onUnZipHandler() {
 		loading = true;
-		let latestId = '';
-		files
-			.filter((f) => $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type))
-			.map((z) => {
-				console.log(z);
-				latestId = z?.id;
-				unzipFiles(z?.file).then((f) => {
-					addFileHandler(f);
-					loading = true;
-					if (latestId === z?.id) {
-						loading = false;
-						if ($formData.isRemoveSoure)
-							files = files.filter(
-								(fi) =>
-									!($selectedFileStore.includes(fi.id) && zipMimeTypeList.includes(fi.file.type))
-							);
-					}
-				});
+		const processFile = files.filter(
+			(f) => $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type)
+		);
+		processFile.map((z,i) => {
+			unzipFiles(z?.file).then((f) => {
+				addFileHandler(f);
+				loading = true;
+				if (processFile.length === i+1) {
+					loading = false;
+					if ($formData.isRemoveSoure)
+						files = files.filter(
+							(fi) =>
+								!($selectedFileStore.includes(fi.id) && zipMimeTypeList.includes(fi.file.type))
+						);
+				}
 			});
+		});
 	}
 </script>
 
@@ -198,7 +199,9 @@
 		<Label>File Manipulation Menu</Label>
 		<div class="flex flex-wrap gap-2">
 			<Button variant="outline" class="flex-1" onclick={onZipHandler}><PackageIcon /> Zip</Button>
-			<Button variant="outline" class="flex-1" onclick={onUnZipHandler}><PackageOpen /> Unzip</Button>
+			<Button variant="outline" class="flex-1" onclick={onUnZipHandler}
+				><PackageOpen /> Unzip</Button
+			>
 			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
 		<div class="flex flex-wrap gap-2">

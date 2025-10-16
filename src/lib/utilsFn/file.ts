@@ -43,3 +43,70 @@ export function formatFileSize(bytes: number, decimals: number = 2): string {
 
     return `${formattedSize} ${units[unitIndex]}`;
 }
+
+
+export function getMimeTypeFromFilename(fname: string): string {
+    const extension = fname.split('.').pop()?.toLowerCase();
+    switch (extension) {
+        case 'png':
+            return 'image/png';
+        case 'jpg':
+        case 'jpeg':
+            return 'image/jpeg';
+        case 'gif':
+            return 'image/gif';
+        case 'web':
+            return 'image/web';
+        case 'bmp':
+            return 'image/bmp';
+        case 'svg':
+            return 'image/svg+xml';
+        case 'pdf':
+            return 'application/pdf';
+        case 'txt':
+            return 'text/plain';
+        case 'html':
+            return 'text/html';
+        case 'css':
+            return 'text/css';
+        case 'js':
+            return 'application/javascript';
+        case 'json':
+            return 'application/json';
+        case 'zip':
+            return 'application/zip';
+        case 'vue':
+            return 'text/vue';
+        case 'svelte':
+            return 'text/svelte';
+        case 'md':
+            return 'text/markdown';
+        case 'mp4':
+            return 'video/mp4';
+        case 'mp3':
+            return 'audio/mpeg';
+        case 'wav':
+            return 'audio/wav';
+        case 'webm':
+            return 'video/webm';
+        case 'mov':
+            return 'video/quicktime';
+        case 'avi':
+            return 'video/x-msvideo';
+        case 'php':
+            return 'text/php';
+        case 'py':
+            return 'text/python';
+        case 'gzip':
+            return 'application/gzip';
+        case 'tar':
+            return 'application/x-tar';
+        case '7z':
+            return 'application/x-7z-compressed';
+        case 'rar':
+            return 'application/x-rar-compressed';
+        default:
+            return 'text/plantext'; // Default to generic binary type
+    }
+}
+
