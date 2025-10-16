@@ -6,7 +6,7 @@
 	import { cn } from '$lib/utils';
 	import type { FileType } from '../types';
 	import { formatFileSize } from '$lib/utilsFn/file';
-	import { selectedFileStore } from './selected-file-store.svelte';
+	import { selectedFileStore } from '../../../store/selected-file-store.svelte';
 
 	let { class: className, files = $bindable([]) }: { class?: ClassValue; files?: FileType[] } =
 		$props();

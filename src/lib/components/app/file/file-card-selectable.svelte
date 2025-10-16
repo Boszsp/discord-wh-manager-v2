@@ -2,7 +2,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label';
 	import type { ClassValue } from 'svelte/elements';
-	import { selectedFileStore } from './selected-file-store.svelte';
+	import { selectedFileStore } from '../../../store/selected-file-store.svelte';
 	import { cn } from '$lib/utils';
 
 	let {

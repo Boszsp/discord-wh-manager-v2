@@ -155,7 +155,7 @@
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
-						<Preview content={$formData} files={files?.map(v=>v?.file)} />
+						<Preview content={$formData} files={files} />
 						<Separator class="my-8" />
 						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>

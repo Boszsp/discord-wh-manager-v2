@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { selectedFileStore } from "./selected-file-store.svelte";
+	import { selectedFileStore } from "../../../store/selected-file-store.svelte";
 
     let val:string[] = $state([])
     selectedFileStore.subscribe(v=>val = v)

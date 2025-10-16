@@ -1,17 +1,22 @@
 <script lang="ts">
+	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
 	import { cn } from '$lib/utils';
+	import type { FileType } from '../types';
 
 	const {
 		images
 	}: {
-		images: (string | File)[];
+		images: (string | File | FileType)[];
 	} = $props();
 
-	function getUrl(image: string | File): string {
+	function getUrl(image: string | File | FileType): string {
 		if (typeof image === 'string') {
 			return image;
 		}
-		return URL.createObjectURL(image);
+		let fileURL: string;
+		if (image instanceof File) return URL.createObjectURL(image);
+		else return URL.createObjectURL(image?.file);
+		return '';
 	}
 
 	const remainingImages = images.length > 4 ? images.length - 10 : 0;
@@ -23,8 +28,11 @@
 			<img
 				src={getUrl(images[0])}
 				alt="preview 0"
-				class="image-preview image-showable h-full w-full rounded-md bg-black/20 object-cover"
+				class={cn('image-preview image-showable h-full w-full rounded-md bg-black/20 object-cover')}
 			/>
+			{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
+				<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+			{/if}
 		</div>
 	{:else if images.length === 3}
 		<div class="grid grid-cols-2 grid-rows-2 gap-1">
@@ -34,6 +42,9 @@
 					alt="preview 0"
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
+				{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
+					<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+				{/if}
 			</div>
 			<div class="relative col-start-2 aspect-square h-full w-full">
 				<img
@@ -41,6 +52,9 @@
 					alt="preview 1"
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
+				{#if $selectedFileStore.includes((images[1] as FileType)?.id)}
+					<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+				{/if}
 			</div>
 			<div class="relative col-start-2 row-start-2 aspect-square h-full w-full">
 				<img
@@ -48,6 +62,9 @@
 					alt="preview 2"
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
+				{#if $selectedFileStore.includes((images[2] as FileType)?.id)}
+					<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+				{/if}
 			</div>
 		</div>
 	{:else if images?.length % 3 === 0 && Number.isSafeInteger(images.length / 2)}
@@ -59,6 +76,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -71,6 +91,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -83,6 +106,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -94,6 +120,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -111,6 +140,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -122,6 +154,9 @@
 						alt={`preview ${i}`}
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -133,6 +168,9 @@
 					alt={`preview 0`}
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
+				{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					{/if}
 			</div>
 			{#each images.slice(1, 10) as image, i (i)}
 				<div class="relative aspect-square h-full w-full">
@@ -154,6 +192,9 @@
 								class="image-preview image-showable hidden"
 							/>
 						{/each}
+					{/if}
+					{#if $selectedFileStore.includes((image as FileType)?.id)}
+						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
 					{/if}
 				</div>
 			{/each}
