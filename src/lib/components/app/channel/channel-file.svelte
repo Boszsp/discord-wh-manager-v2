@@ -9,6 +9,7 @@
 	import { naturalSort } from '$lib/utilsFn/string';
 	import { nanoid } from 'nanoid';
 	import type { FileType } from '../types';
+	import { formatFileSize } from '$lib/utilsFn/file';
 
 	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } = $props();
 
@@ -82,7 +83,10 @@
 					{#each files as file, i ("channel-file-"+file?.file?.name+"-" + i)}
 						<div class="inline-flex items-center rounded-md bg-input/20 p-2 text-foreground/60">
 							<FileIcon class="mr-2 size-4" />
-							<p class="grow">{file?.file?.name}</p>
+							<div class="grow">
+								{file?.file?.name}
+								</div>
+							<div class="mr-2 text-xs">{formatFileSize(file?.file?.size)}</div>
 							<div class="inline-flex gap-2">
 								<Button
 									variant="ghost"

@@ -5,26 +5,41 @@
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
 	import type { FileType } from '../types';
+	import { formatFileSize } from '$lib/utilsFn/file';
+	import { selectedFileStore } from './selected-file-store.svelte';
 
-	let { class: className, files = $bindable([]) }: { class?: ClassValue; files?: FileType[] } = $props();
+	let { class: className, files = $bindable([]) }: { class?: ClassValue; files?: FileType[] } =
+		$props();
 
-	
+	function selectAll(){
+		
+		if($selectedFileStore.length === files.length){
+			selectedFileStore.set([])
+			return
+		}
+		selectedFileStore.set(files?.map(v=>v?.id))
+	}
 </script>
 
 <div class={cn('h-80 w-full overflow-y-auto rounded-md bg-theme-accent p-4 pt-0', className)}>
-	<div class="sticky top-0 pt-4 bg-theme-accent">
+	<div class="sticky top-0 bg-theme-accent py-4">
 		<InputGroup.Root>
 			<InputGroup.Input placeholder="Search..." />
 			<InputGroup.Addon>
 				<SearchIcon />
 			</InputGroup.Addon>
 			<InputGroup.Addon align="inline-end">
-				<InputGroup.Button>Select All</InputGroup.Button>
+				<InputGroup.Button onclick={selectAll}>Select All</InputGroup.Button>
 			</InputGroup.Addon>
 		</InputGroup.Root>
 	</div>
-	{#each files as file, i ("file-selected-mani-"+i)}
-		<FileCardSelectable id={file?.id}  title={file?.file?.name} description={'d' + i}  />
-	
+	<div class="grid gap-2" >
+	{#each files as file, i ('file-selected-mani-' + i)}
+		<FileCardSelectable
+			id={file?.id}
+			title={file?.file?.name}
+			description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type}`}
+		/>
 	{/each}
+	</div>
 </div>
