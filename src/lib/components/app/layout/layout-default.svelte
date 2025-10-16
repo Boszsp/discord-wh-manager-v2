@@ -28,7 +28,7 @@
 						{selected.title}
 					</small>
 				{:else}
-					<img src="/logo.png" alt="logo" class="mr-2 size-4" />
+					<img src="/logo-flat.png" alt="logo" class="mr-2 w-4" />
 					<small class="text-sm leading-none font-medium">{APP_NAME}</small>
 				{/if}
 			</a>

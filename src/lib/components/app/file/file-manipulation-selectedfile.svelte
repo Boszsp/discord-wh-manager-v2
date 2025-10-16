@@ -10,21 +10,21 @@
 
 	let { class: className, files = $bindable([]) }: { class?: ClassValue; files?: FileType[] } =
 		$props();
+	let filterString = $state('');
 
-	function selectAll(){
-		
-		if($selectedFileStore.length === files.length){
-			selectedFileStore.set([])
-			return
+	function selectAll() {
+		if ($selectedFileStore.length === files.length) {
+			selectedFileStore.set([]);
+			return;
 		}
-		selectedFileStore.set(files?.map(v=>v?.id))
+		selectedFileStore.set(files?.map((v) => v?.id));
 	}
 </script>
 
-<div class={cn('h-80 w-full overflow-y-auto rounded-md bg-theme-accent p-4 pt-0', className)}>
-	<div class="sticky top-0 bg-theme-accent py-4">
+<div class={cn('h-80 w-full overflow-y-auto rounded-md bg-card p-4 pt-0', className)}>
+	<div class="sticky top-0 bg-card py-4">
 		<InputGroup.Root>
-			<InputGroup.Input placeholder="Search..." />
+			<InputGroup.Input bind:value={filterString} placeholder="Search..." />
 			<InputGroup.Addon>
 				<SearchIcon />
 			</InputGroup.Addon>
@@ -33,13 +33,13 @@
 			</InputGroup.Addon>
 		</InputGroup.Root>
 	</div>
-	<div class="grid gap-2" >
-	{#each files as file, i ('file-selected-mani-' + i)}
-		<FileCardSelectable
-			id={file?.id}
-			title={file?.file?.name}
-			description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type}`}
-		/>
-	{/each}
+	<div class="grid gap-2">
+		{#each files.filter((f) => filterString?.length < 1 || f?.file?.name?.includes(filterString)) as file, i ('file-selected-mani-' + i)}
+			<FileCardSelectable
+				id={file?.id}
+				title={file?.file?.name}
+				description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type}`}
+			/>
+		{/each}
 	</div>
 </div>

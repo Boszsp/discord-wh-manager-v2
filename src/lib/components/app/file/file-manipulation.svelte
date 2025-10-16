@@ -47,8 +47,6 @@
 	import { Toggle } from '$lib/components/ui/toggle';
 	import FileManipulationSelectedfile from './file-manipulation-selectedfile.svelte';
 	import type { FileType } from '../types';
-	import { onMount } from 'svelte';
-	import DebugValue from './debug-value.svelte';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -73,7 +71,6 @@
 	<CardHeader>
 		<CardTitle>File Manipulation</CardTitle>
 		<CardDescription>Manipulation file</CardDescription>
-		<DebugValue/>
 	</CardHeader>
 	<CardContent class="grid gap-4">
 		<FileManipulationSelectedfile {files} />

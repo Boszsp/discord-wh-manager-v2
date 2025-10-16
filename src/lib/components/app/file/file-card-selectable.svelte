@@ -33,8 +33,6 @@
 	}
 </script>
 {#key $selectedFileStore}
-	
-
 <Label
 	class={cn(
 		'flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/50 has-[[aria-checked=true]]:border-indigo-600',
