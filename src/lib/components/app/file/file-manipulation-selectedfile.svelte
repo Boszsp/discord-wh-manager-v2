@@ -4,8 +4,11 @@
 	import FileCardSelectable from './file-card-selectable.svelte';
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
+	import type { FileType } from '../types';
 
-	let { class: className, files = $bindable([]), selectedFile = $bindable([]) }: { class?: ClassValue; files?: File[] } = $props();
+	let { class: className, files = $bindable([]) }: { class?: ClassValue; files?: FileType[] } = $props();
+
+	
 </script>
 
 <div class={cn('h-80 w-full overflow-y-auto rounded-md bg-theme-accent p-4 pt-0', className)}>
@@ -20,7 +23,8 @@
 			</InputGroup.Addon>
 		</InputGroup.Root>
 	</div>
-	{#each new Array(9) as file, i (i)}
-		<FileCardSelectable title={'x' + i} description={'d' + i} />
+	{#each files as file, i ("file-selected-mani-"+i)}
+		<FileCardSelectable id={file?.id}  title={file?.file?.name} description={'d' + i}  />
+	
 	{/each}
 </div>

@@ -47,6 +47,8 @@
 	import { Toggle } from '$lib/components/ui/toggle';
 	import FileManipulationSelectedfile from './file-manipulation-selectedfile.svelte';
 	import type { FileType } from '../types';
+	import { onMount } from 'svelte';
+	import DebugValue from './debug-value.svelte';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -62,16 +64,19 @@
 
 	const { form: formData } = form;
 
-	let { class: className, files = $bindable([]) }: { class?: ClassValue; files: FileType[] } = $props();
+	let { class: className, files = $bindable([])}: { class?: ClassValue; files: FileType[] } = $props();
+	let selectedFileId:string[] = $state([])
+
 </script>
 
 <Card class={cn('border-0 border-t bg-secondary/80 overflow-hidden ', className)}>
 	<CardHeader>
 		<CardTitle>File Manipulation</CardTitle>
 		<CardDescription>Manipulation file</CardDescription>
+		<DebugValue/>
 	</CardHeader>
 	<CardContent class="grid gap-4">
-		<FileManipulationSelectedfile />
+		<FileManipulationSelectedfile {files} />
 		<Form.Field {form} name="fileName">
 			<Form.Control>
 				{#snippet children({ props })}
