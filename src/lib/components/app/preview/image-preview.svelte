@@ -31,7 +31,7 @@
 				class={cn('image-preview image-showable h-full w-full rounded-md bg-black/20 object-cover')}
 			/>
 			{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
-				<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+				<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 			{/if}
 		</div>
 	{:else if images.length === 3}
@@ -43,7 +43,7 @@
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 				{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
-					<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 				{/if}
 			</div>
 			<div class="relative col-start-2 aspect-square h-full w-full">
@@ -63,7 +63,7 @@
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 				{#if $selectedFileStore.includes((images[2] as FileType)?.id)}
-					<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+					<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 				{/if}
 			</div>
 		</div>
@@ -77,7 +77,7 @@
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -92,7 +92,7 @@
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -107,7 +107,7 @@
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -121,7 +121,7 @@
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -138,10 +138,10 @@
 					<img
 						src={getUrl(image)}
 						alt={`preview ${i}`}
-						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
+						class="image-preview image-showable h-full w-full bg-black/20 object-cover pointer-events-none"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -155,7 +155,7 @@
 						class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 					/>
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}
@@ -169,7 +169,7 @@
 					class="image-preview image-showable h-full w-full bg-black/20 object-cover"
 				/>
 				{#if $selectedFileStore.includes((images[0] as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 			</div>
 			{#each images.slice(1, 10) as image, i (i)}
@@ -194,7 +194,7 @@
 						{/each}
 					{/if}
 					{#if $selectedFileStore.includes((image as FileType)?.id)}
-						<div class="absolute inset-0 size-full bg-indigo-800/60"></div>
+						<div class="absolute inset-0 size-full bg-indigo-800/60 pointer-events-none"></div>
 					{/if}
 				</div>
 			{/each}

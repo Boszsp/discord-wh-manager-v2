@@ -41,6 +41,6 @@
 		{/if}
 	</div>
 	{#if $selectedFileStore.includes((file as FileType)?.id)}
-		<div class="absolute inset-0 size-full bg-indigo-800/20"></div>
+		<div class="absolute inset-0 size-full bg-indigo-800/20 pointer-events-none"></div>
 	{/if}
 </button>

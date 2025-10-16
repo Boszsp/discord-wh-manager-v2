@@ -62,6 +62,7 @@
 		"@fontsource-variable/noto-sans-thai-looped": "^5.2.3",
 		"@fontsource-variable/source-code-pro": "^5.2.7",
 		"consola": "^3.4.2",
+		"fflate": "^0.8.2",
 		"isomorphic-dompurify": "^2.28.0",
 		"lucide-svelte": "^0.544.0",
 		"marked": "^16.3.0",
@@ -69,6 +70,8 @@
 		"nanoid": "^5.1.6",
 		"nanotar": "^0.2.0",
 		"ofetch": "^1.4.1",
+		"pdf-lib": "^1.17.1",
+		"pdfjs-dist": "^5.4.296",
 		"svelte-sonner": "^1.0.5"
 	}
 }
