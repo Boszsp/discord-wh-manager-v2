@@ -1,46 +1,51 @@
-import { zip, unzip } from 'fflate';
+import { consola } from 'consola';
+import { zip, unzip } from 'fflate/browser';
 
-export const createZip = async (files: File[]): Promise<File> => {
+interface optionType {
+	level: 0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined;
+	filename: string;
+}
+
+export const zipMimeTypeList = ["application/zip", "application/x-zip", "application/x-zip-compressed", "application/octet-stream"]
+
+export const createZip = async (files: File[], option?: optionType): Promise<File> => {
 	const fileData: Record<string, Uint8Array> = {};
 	for (const file of files) {
 		const buffer = await file.arrayBuffer();
 		fileData[file.name] = new Uint8Array(buffer);
 	}
-
-	return new Promise((resolve, reject) => {
-		zip(fileData, (err, data) => {
+	return await new Promise((resolve, reject) => {
+		zip(fileData, { level: option?.level }, (err, data) => {
 			if (err) {
+				consola.error(err);
 				reject(err);
 			} else {
+				consola.log(data)
 				const blob = new Blob([data], { type: 'application/zip' });
-				const zipFile = new File([blob], 'archive.zip', { type: 'application/zip' });
+				const zipFile = new File([blob], option?.filename ?? 'compressed.zip', { type: 'application/zip' });
 				resolve(zipFile);
 			}
 		});
 	});
 };
 
-export const unzipFiles = (zippedFile: File): Promise<File[]> => {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onload = () => {
-			const zippedData = new Uint8Array(reader.result as ArrayBuffer);
-			unzip(zippedData, (err, unzipped) => {
-				if (err) {
-					reject(err);
-				} else {
-					const files: File[] = [];
-					for (const fileName in unzipped) {
-						const fileData = unzipped[fileName];
-						const blob = new Blob([fileData]);
-						const file = new File([blob], fileName);
-						files.push(file);
-					}
-					resolve(files);
+export const unzipFiles = async (zippedFile: File): Promise<File[]> => {
+	const zippedData = new Uint8Array(await zippedFile.arrayBuffer());
+	return await new Promise((resolve, reject) => {
+		unzip(zippedData, (err, unzipped) => {
+			if (err) {
+				consola.error(err);
+				reject(err);
+			} else {
+				const files: File[] = [];
+				for (const fileName in unzipped) {
+					const fileData = unzipped[fileName];
+					const blob = new Blob([fileData]);
+					const file = new File([blob], fileName);
+					files.push(file);
 				}
-			});
-		};
-		reader.onerror = reject;
-		reader.readAsArrayBuffer(zippedFile);
+				resolve(files);
+			}
+		});
 	});
 };

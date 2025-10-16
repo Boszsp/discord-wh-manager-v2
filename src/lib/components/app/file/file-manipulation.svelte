@@ -47,6 +47,10 @@
 	import { Toggle } from '$lib/components/ui/toggle';
 	import FileManipulationSelectedfile from './file-manipulation-selectedfile.svelte';
 	import type { FileType } from '../types';
+	import { createZip, unzipFiles, zipMimeTypeList } from '$lib/utilsFn/zip';
+	import { nanoid } from 'nanoid';
+	import { Spinner } from '$lib/components/ui/spinner';
+	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -62,12 +66,66 @@
 
 	const { form: formData } = form;
 
-	let { class: className, files = $bindable([])}: { class?: ClassValue; files: FileType[] } = $props();
-	let selectedFileId:string[] = $state([])
+	let { class: className, files = $bindable([]) }: { class?: ClassValue; files: FileType[] } =
+		$props();
+	let loading = $state(false);
 
+	function addFileHandler(file: File | File[]) {
+		let tempFiles = [...files];
+		console.log(file)
+		if (Array.isArray(file)) tempFiles = tempFiles.concat(file.map((f) => ({ id: nanoid(8), file: f })));
+		else
+			tempFiles.push({
+				id: nanoid(8),
+				file
+			});
+		files = tempFiles;
+		loading = false;
+	}
+
+	function onZipHandler() {
+		loading = true;
+		createZip(
+			files.filter((file) => $selectedFileStore.includes(file.id)).map((file) => file.file)
+		).then((z) => {
+			if ($formData.isRemoveSoure)
+				files = files.filter((file) => !$selectedFileStore.includes(file.id));
+			addFileHandler(z);
+		});
+	}
+	function onUnZipHandler() {
+		loading = true;
+		let latestId = '';
+		files
+			.filter((f) => $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type))
+			.map((z) => {
+				console.log(z);
+				latestId = z?.id;
+				unzipFiles(z?.file).then((f) => {
+					addFileHandler(f);
+					loading = true;
+					if (latestId === z?.id) {
+						loading = false;
+						if ($formData.isRemoveSoure)
+							files = files.filter(
+								(fi) =>
+									!($selectedFileStore.includes(fi.id) && zipMimeTypeList.includes(fi.file.type))
+							);
+					}
+				});
+			});
+	}
 </script>
 
-<Card class={cn('border-0 border-t bg-secondary/80 overflow-hidden ', className)}>
+<Card class={cn('relative overflow-hidden border-0 border-t bg-secondary/80', className)}>
+	{#if loading}
+		<div
+			class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-xs"
+		>
+			<Spinner class="mr-2 size-8" />
+			<small class="text-sm leading-none font-medium">Processing...</small>
+		</div>
+	{/if}
 	<CardHeader>
 		<CardTitle>File Manipulation</CardTitle>
 		<CardDescription>Manipulation file</CardDescription>
@@ -97,7 +155,12 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Rem Source</Form.Label>
-						<Toggle {...props} bind:pressed={$formData.isRemoveSoure} class="bg-input/30 transition" variant="outline">
+						<Toggle
+							{...props}
+							bind:pressed={$formData.isRemoveSoure}
+							class="bg-input/30 transition"
+							variant="outline"
+						>
 							{#if $formData.isRemoveSoure}
 								<CheckIcon />
 							{:else}
@@ -113,7 +176,12 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Fixed Size</Form.Label>
-						<Toggle {...props} bind:pressed={$formData.isFixedSize} class="bg-input/30 transition" variant="outline">
+						<Toggle
+							{...props}
+							bind:pressed={$formData.isFixedSize}
+							class="bg-input/30 transition"
+							variant="outline"
+						>
 							{#if $formData.isFixedSize}
 								<CheckIcon />
 							{:else}
@@ -129,8 +197,8 @@
 		<Separator class="my-4" />
 		<Label>File Manipulation Menu</Label>
 		<div class="flex flex-wrap gap-2">
-			<Button variant="outline" class="flex-1"><PackageIcon /> Zip</Button>
-			<Button variant="outline" class="flex-1"><PackageOpen /> Unzip</Button>
+			<Button variant="outline" class="flex-1" onclick={onZipHandler}><PackageIcon /> Zip</Button>
+			<Button variant="outline" class="flex-1" onclick={onUnZipHandler}><PackageOpen /> Unzip</Button>
 			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
 		<div class="flex flex-wrap gap-2">
@@ -140,7 +208,7 @@
 		</div>
 		<Separator class="my-4" />
 		<div class="grid gap-2">
-			<div class="flex flex-wrap w-full gap-2">
+			<div class="flex w-full flex-wrap gap-2">
 				<Form.Field {form} name="quality">
 					<Form.Control>
 						{#snippet children({ props })}

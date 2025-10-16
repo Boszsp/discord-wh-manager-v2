@@ -29,7 +29,7 @@
 
 	const handleCreatePdf = async () => {
 		const pdfData = await createPdf();
-		pdfFile = new File([pdfData], 'test.pdf', { type: 'application/pdf' });
+		pdfFile = new File([n], 'test.pdf', { type: 'application/pdf' });
 	};
 
 	const handleExtractText = async () => {
