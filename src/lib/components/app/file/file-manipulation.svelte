@@ -52,7 +52,7 @@
 	import { nanoid } from 'nanoid';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
-	import { createPdfFromImages } from '$lib/utilsFn/pdf';
+	import { createPdfFromImages, extractPdfImages, pdfMimeTypeList } from '$lib/utilsFn/pdf';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -123,7 +123,24 @@
 		loading = true;
 		const processFile = files.filter((f) => $selectedFileStore.includes(f.id));
 		if (processFile.length < 1) return onEmptyProcessFile();
-		createPdfFromImages(processFile.map((f) => f.file),$formData.fileName, $formData.isFixedSize).then((p) => addFileHandler(p, processFile));
+		createPdfFromImages(
+			processFile.map((f) => f.file),
+			$formData.fileName,
+			$formData.isFixedSize
+		).then((p) => addFileHandler(p, processFile));
+	}
+	function onUnPdf() {
+		loading = true;
+		const processFile = files.filter(
+			(f) => $selectedFileStore.includes(f.id) && pdfMimeTypeList.includes(f?.file?.type)
+		);
+		if (processFile.length < 1) return onEmptyProcessFile();
+		processFile.map((p) =>
+			extractPdfImages(p?.file, $formData.fileName).then((im) => {
+				loading = true;
+				addFileHandler(im, [{ id: p.id, file: new File([], 'temp.txt') }]);
+			})
+		);
 	}
 </script>
 
@@ -216,7 +233,7 @@
 		<div class="flex flex-wrap gap-2">
 			<Button variant="outline" class="flex-1" onclick={onPdf}><FileTextIcon /> Image to PDF</Button
 			>
-			<Button variant="outline" class="flex-1"><ImageIcon /> PDF to Image</Button>
+			<Button variant="outline" class="flex-1" onclick={onUnPdf}><ImageIcon /> PDF to Image</Button>
 			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
 		</div>
 		<Separator class="my-4" />
