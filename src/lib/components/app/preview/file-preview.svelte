@@ -3,6 +3,7 @@
 	import type { FileType } from '../types';
 	import { cn } from '$lib/utils';
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
+	import { formatFileSize } from '$lib/utilsFn/file';
 
 	const {
 		file
@@ -36,7 +37,7 @@
 		{:else}
 			<span class="truncate font-light text-blue-400">{file?.file?.name}</span>
 			<span class="text-xs font-light text-muted-foreground"
-				>{Math.round(file?.file?.size / 1024)} KB</span
+				>{formatFileSize(file?.file?.size)}</span
 			>
 		{/if}
 	</div>

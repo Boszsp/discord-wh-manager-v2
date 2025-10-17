@@ -52,6 +52,7 @@
 	import { nanoid } from 'nanoid';
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
+	import { createPdfFromImages } from '$lib/utilsFn/pdf';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -71,7 +72,9 @@
 		$props();
 	let loading = $state(false);
 
-	function addFileHandler(file: File | File[]) {
+	function addFileHandler(file: File | File[], processedFiles: FileType[] = []) {
+		if ($formData.isRemoveSoure)
+			files = files.filter((file) => !processedFiles.map((v) => v.id).includes(file.id));
 		let tempFiles = [...files];
 		if (Array.isArray(file))
 			tempFiles = tempFiles.concat(file.map((f) => ({ id: nanoid(8), file: f })));
@@ -84,16 +87,23 @@
 		loading = false;
 	}
 
+	function onEmptyProcessFile() {
+		toast.error('Not Have File Can Process Or Selected');
+		loading = false;
+	}
+
 	function onZipHandler() {
 		loading = true;
+		const processFile = files.filter((file) => $selectedFileStore.includes(file.id));
+
+		if (processFile.length < 1) return onEmptyProcessFile();
 		createZip(
-			files.filter((file) => $selectedFileStore.includes(file.id)).map((file) => file.file),{
-				filename:$formData?.fileName
+			processFile.map((file) => file.file),
+			{
+				filename: $formData?.fileName
 			}
 		).then((z) => {
-			if ($formData.isRemoveSoure)
-				files = files.filter((file) => !$selectedFileStore.includes(file.id));
-			addFileHandler(z);
+			addFileHandler(z, processFile);
 		});
 	}
 	function onUnZipHandler() {
@@ -101,20 +111,19 @@
 		const processFile = files.filter(
 			(f) => $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type)
 		);
-		processFile.map((z,i) => {
+		if (processFile.length < 1) return onEmptyProcessFile();
+		processFile.map((z, i) => {
 			unzipFiles(z?.file).then((f) => {
-				addFileHandler(f);
 				loading = true;
-				if (processFile.length === i+1) {
-					loading = false;
-					if ($formData.isRemoveSoure)
-						files = files.filter(
-							(fi) =>
-								!($selectedFileStore.includes(fi.id) && zipMimeTypeList.includes(fi.file.type))
-						);
-				}
+				addFileHandler(f, [{ id: z.id, file: new File([], 'temp.txt') }]);
 			});
 		});
+	}
+	function onPdf() {
+		loading = true;
+		const processFile = files.filter((f) => $selectedFileStore.includes(f.id));
+		if (processFile.length < 1) return onEmptyProcessFile();
+		createPdfFromImages(processFile.map((f) => f.file),$formData.fileName, $formData.isFixedSize).then((p) => addFileHandler(p, processFile));
 	}
 </script>
 
@@ -205,7 +214,8 @@
 			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
 		<div class="flex flex-wrap gap-2">
-			<Button variant="outline" class="flex-1"><FileTextIcon /> Image to PDF</Button>
+			<Button variant="outline" class="flex-1" onclick={onPdf}><FileTextIcon /> Image to PDF</Button
+			>
 			<Button variant="outline" class="flex-1"><ImageIcon /> PDF to Image</Button>
 			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
 		</div>
