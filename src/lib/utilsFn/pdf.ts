@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import * as pdfjs from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 
 /**
  * A list of common MIME types used for PDF files.
@@ -12,9 +12,7 @@ export const pdfMimeTypeList = [
 ];
 
 // Set the worker source for pdf.js
-// This is a bit of a hack, but it works for now.
-// In a real app, you'd want to host this worker file yourself.
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 export const createPdf = async (): Promise<Uint8Array> => {
   const pdfDoc = await PDFDocument.create();
@@ -39,7 +37,7 @@ export const splitPdf = async (pdfData: Uint8Array): Promise<Uint8Array[]> => {
 };
 
 export const extractPdfText = async (pdfData: Uint8Array): Promise<string> => {
-  const loadingTask = pdfjs.getDocument({ data: pdfData });
+  const loadingTask = pdfjsLib.getDocument({ data: pdfData });
   const pdf = await loadingTask.promise;
   let fullText = '';
 
@@ -137,80 +135,112 @@ export async function createPdfFromImages(
 }
 
 
+
+
+
 /**
- * Extracts all images from a PDF file (ROBUST VERSION).
+ * Extracts all images from a PDF file with maximum reliability.
+ * This version pre-fetches all image objects to avoid race conditions.
  *
  * @param pdf The PDF file to extract images from.
+ * @param fileName Optional. A base name for the extracted image files. If provided,
+ *                 images will be named like `mydocument_p1_1.png`, `mydocument_p1_2.png`, etc.
+ *                 If not provided, it falls back to using the PDF's internal object ID or a sequential index.
  * @returns A Promise that resolves to an array of File objects, where each File is an extracted image in PNG format.
- *          Image names are derived from the PDF if available, otherwise they are named sequentially (e.g., 1.png, 2.png).
  * @throws {Error} If the PDF cannot be loaded or parsed.
  */
-export async function extractPdfImages(pdf: File, fileName: string): Promise<File[]> {
+export async function extractPdfImages(pdf: File, fileName?: string): Promise<File[]> {
+  // Defensive check for bundler/HMR issues where the imported namespace might be undefined.
+  if (!pdfjsLib) {
+    throw new Error("pdfjs-dist library was not loaded correctly. Please check your import statement and bundler configuration.");
+  }
+
   const pdfData = await pdf.arrayBuffer();
-  const loadingTask = pdfjs.getDocument({ data: pdfData });
+  const loadingTask = pdfjsLib.getDocument({ data: pdfData });
   const pdfDocument = await loadingTask.promise;
 
   const extractedFiles: File[] = [];
-  let imageIndex = 1;
+  let globalImageIndex = 1; // Used for fallback naming
 
   for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
     const page = await pdfDocument.getPage(pageNum);
-    const operatorList = await page.getOperatorList();
 
+    // 1. Get the list of drawing operations
+    const operatorList = await page.getOperatorList();
     const imageObjectIds = new Set<string>();
+
     for (let i = 0; i < operatorList.fnArray.length; i++) {
-      if (operatorList.fnArray[i] === pdfjs.OPS.paintImageXObject) {
+      if (operatorList.fnArray[i] === pdfjsLib.OPS.paintImageXObject) {
         const imageId = operatorList.argsArray[i][0];
         imageObjectIds.add(imageId);
       }
     }
 
+    if (imageObjectIds.size === 0) {
+      continue; // No images on this page, move to the next.
+    }
+
+    // 2. KEY FIX: Pre-fetch all image objects to ensure they are resolved.
+    // This creates an array of promises, one for each image object.
+    const imagePromises = Array.from(imageObjectIds).map(id => page.objs.get(id));
+    // Await all of them simultaneously. This guarantees that after this line,
+    // every object we're interested in is fully loaded in the page.objs cache.
+    await Promise.all(imagePromises);
+
+    // 3. Now that all objects are guaranteed to be available, process them.
+    let imageIndexOnPage = 1; // Resets for each page
+
     for (const objId of imageObjectIds) {
       try {
+        // This call will now succeed because the object has been explicitly fetched.
         const pdfImageProxy = await page.objs.get(objId) as any;
 
         if (!pdfImageProxy || !pdfImageProxy.width || !pdfImageProxy.height) {
+          console.warn(`Object with ID ${objId} on page ${pageNum} is not a valid image. Skipping.`);
           continue;
         }
 
-        // --- KEY FIX IS HERE ---
-        // Instead of accessing 'rgbData' directly, we use the 'bitmap' property.
-        // This is a promise that resolves to an ImageBitmap, which is a
-        // fully decoded and ready-to-draw image object, handling all formats (JPEG, PNG, etc.)
-        // and color spaces (CMYK, Grayscale, etc.) for us.
+        // The 'bitmap' property is the most reliable way to get decoded image data.
         if (!pdfImageProxy.bitmap) {
-          console.warn(`Image object with ID ${objId} does not have a bitmap property. Skipping.`);
+          console.warn(`Image object with ID ${objId} on page ${pageNum} does not have a bitmap property. Skipping.`);
           continue;
         }
         const bitmap = await pdfImageProxy.bitmap;
-        // --- END OF KEY FIX ---
 
-        const canvas = document.createElement('canvas');
-        canvas.width = pdfImageProxy.width;
-        canvas.height = pdfImageProxy.height;
-        const ctx = canvas.getContext('2d');
+        // Create a canvas to draw the bitmap and convert it to a PNG blob.
+        const imageCanvas = document.createElement('canvas');
+        imageCanvas.width = pdfImageProxy.width;
+        imageCanvas.height = pdfImageProxy.height;
+        const ctx = imageCanvas.getContext('2d');
 
         if (!ctx) {
           throw new Error('Could not get 2D context from canvas.');
         }
 
-        // Draw the fully decoded bitmap onto the canvas
         ctx.drawImage(bitmap, 0, 0);
 
         const blob = await new Promise<Blob | null>((resolve) => {
-          canvas.toBlob(resolve, 'image/png');
+          imageCanvas.toBlob(resolve, 'image/png');
         });
 
         if (!blob) {
           continue;
         }
 
-        fileName = /^[a-zA-Z0-9_-]+$/.test(objId) ? `${objId}.png` : `${imageIndex++}.png`.replaceAll("img", fileName && fileName.length < 1 ? fileName : 'img');
-        const file = new File([blob], fileName, { type: 'image/png' });
+        // --- Filename Generation Logic ---
+        let finalFileName: string;
+        if (fileName) {
+          finalFileName = `${fileName}_p${pageNum}_${imageIndexOnPage++}.png`;
+        } else {
+          const isObjIdValid = /^[a-zA-Z0-9_-]+$/.test(objId);
+          finalFileName = isObjIdValid ? `${objId}.png` : `${globalImageIndex++}.png`;
+        }
+
+        const file = new File([blob], finalFileName, { type: 'image/png' });
         extractedFiles.push(file);
 
       } catch (e) {
-        console.error(`Failed to extract image with ID ${objId}:`, e);
+        console.error(`Failed to extract image with ID ${objId} on page ${pageNum}:`, e);
       }
     }
   }

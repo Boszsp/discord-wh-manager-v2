@@ -12,8 +12,9 @@
 			.default(MAX_FILE_SIZE / 1024 / 1024),
 		fileName: z.string().trim(),
 		isRemoveSoure: z.boolean().default(false),
-		isFixedSize: z.boolean().default(false),
-		compressLevel: z.number().min(0).max(9).default(6)
+		isFixedSize: z.boolean().default(true),
+		compressLevel: z.number().min(0).max(9).default(6),
+		processAll:z.boolean().default(true)
 	});
 </script>
 
@@ -94,7 +95,7 @@
 
 	function onZipHandler() {
 		loading = true;
-		const processFile = files.filter((file) => $selectedFileStore.includes(file.id));
+		const processFile = files.filter((file) => $formData.processAll || $selectedFileStore.includes(file.id));
 
 		if (processFile.length < 1) return onEmptyProcessFile();
 		createZip(
@@ -109,7 +110,7 @@
 	function onUnZipHandler() {
 		loading = true;
 		const processFile = files.filter(
-			(f) => $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type)
+			(f) =>  $formData.processAll || $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((z, i) => {
@@ -121,7 +122,7 @@
 	}
 	function onPdf() {
 		loading = true;
-		const processFile = files.filter((f) => $selectedFileStore.includes(f.id));
+		const processFile = files.filter((f) =>  $formData.processAll ||  $selectedFileStore.includes(f.id));
 		if (processFile.length < 1) return onEmptyProcessFile();
 		createPdfFromImages(
 			processFile.map((f) => f.file),
@@ -132,7 +133,7 @@
 	function onUnPdf() {
 		loading = true;
 		const processFile = files.filter(
-			(f) => $selectedFileStore.includes(f.id) && pdfMimeTypeList.includes(f?.file?.type)
+			(f) =>  $formData.processAll || $selectedFileStore.includes(f.id) && pdfMimeTypeList.includes(f?.file?.type)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((p) =>
@@ -169,7 +170,7 @@
 			<Form.FieldErrors />
 		</Form.Field>
 		<div class="flex flex-wrap gap-2">
-			<Form.Field {form} name="fileSizeLimit">
+			<Form.Field {form} name="fileSizeLimit" class="flex-1">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>Maximum Limit Size</Form.Label>
@@ -178,14 +179,14 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<Form.Field {form} name="isRemoveSoure">
+			<Form.Field {form} name="isRemoveSoure" class="flex-1">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Rem Source</Form.Label>
 						<Toggle
 							{...props}
 							bind:pressed={$formData.isRemoveSoure}
-							class="bg-input/30 transition"
+							class="bg-input/30 transition data-[state=on]:bg-primary/40"
 							variant="outline"
 						>
 							{#if $formData.isRemoveSoure}
@@ -199,14 +200,14 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<Form.Field {form} name="isFixedSize">
+			<Form.Field {form} name="isFixedSize" class="flex-1">
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label class="opacity-0">Fixed Size</Form.Label>
 						<Toggle
 							{...props}
 							bind:pressed={$formData.isFixedSize}
-							class="bg-input/30 transition"
+							class="bg-input/30 transition data-[state=on]:bg-primary/40"
 							variant="outline"
 						>
 							{#if $formData.isFixedSize}
@@ -214,7 +215,28 @@
 							{:else}
 								<MinusIcon />
 							{/if}
-							Fixed pdf-page size</Toggle
+							Fixed pageSize</Toggle
+						>
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="processAll" class="flex-1">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label class="opacity-0">Process All</Form.Label>
+						<Toggle
+							{...props}
+							bind:pressed={$formData.processAll}
+							class="bg-input/30 transition data-[state=on]:bg-primary/40"
+							variant="outline"
+						>
+							{#if $formData.processAll}
+								<CheckIcon />
+							{:else}
+								<MinusIcon />
+							{/if}
+							ProcessAll file</Toggle
 						>
 					{/snippet}
 				</Form.Control>
