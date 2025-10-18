@@ -11,7 +11,7 @@
 			.min(1)
 			.default(MAX_FILE_SIZE / 1024 / 1024),
 		fileName: z.string().trim(),
-		isRemoveSoure: z.boolean().default(false),
+		isRemoveSoure: z.boolean().default(true),
 		isFixedSize: z.boolean().default(true),
 		compressLevel: z.number().min(0).max(9).default(6),
 		processAll:z.boolean().default(true)
@@ -54,6 +54,7 @@
 	import { Spinner } from '$lib/components/ui/spinner';
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
 	import { createPdfFromImages, extractPdfImages, pdfMimeTypeList } from '$lib/utilsFn/pdf';
+	import { splitFile } from '$lib/utilsFn/file-splitter';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -101,7 +102,8 @@
 		createZip(
 			processFile.map((file) => file.file),
 			{
-				filename: $formData?.fileName
+				filename: $formData?.fileName,
+				level: $formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined
 			}
 		).then((z) => {
 			addFileHandler(z, processFile);
@@ -143,6 +145,67 @@
 			})
 		);
 	}
+
+	function onSplitFileHandler() {
+		loading = true;
+		const processFile = files.filter(
+			(f) =>
+				($formData.processAll || $selectedFileStore.includes(f.id)) &&
+				(pdfMimeTypeList.includes(f?.file?.type) || zipMimeTypeList.includes(f?.file?.type))
+		);
+		if (processFile.length < 1) return onEmptyProcessFile();
+		processFile.map((p) =>
+			splitFile(p?.file, $formData.fileSizeLimit, $formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined).then((f) => {
+				loading = true;
+				addFileHandler(f, [{ id: p.id, file: new File([], 'temp.txt') }]);
+			})
+		);
+	}
+
+	function onChangeExtensionHandler() {
+		loading = true;
+		const processFile = files.filter(
+			(f) =>
+				($formData.processAll || $selectedFileStore.includes(f.id)) &&
+				f?.file?.type.startsWith('image')
+		);
+		if (processFile.length < 1) return onEmptyProcessFile();
+
+		const promises = processFile.map((f) => {
+			return new Promise<File>((resolve, reject) => {
+				const img = new Image();
+				img.src = URL.createObjectURL(f.file);
+				img.onload = () => {
+					const canvas = document.createElement('canvas');
+					const ctx = canvas.getContext('2d');
+					if (!ctx) return reject('no context');
+
+					canvas.width = img.width * $formData.scale;
+					canvas.height = img.height * $formData.scale;
+
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+					canvas.toBlob(
+						(blob) => {
+							if (!blob) return reject('no blob');
+							const newFile = new File(
+								[blob],
+								`${f.file.name.split('.').slice(0, -1).join('.')}.${$formData.extension}`,
+								{ type: `image/${$formData.extension}` }
+							);
+							resolve(newFile);
+						},
+						`image/${$formData.extension}`,
+						$formData.quality / 100
+					);
+				};
+			});
+		});
+
+		Promise.all(promises).then((newFiles) => {
+			addFileHandler(newFiles, processFile);
+		});
+	}
 </script>
 
 <Card class={cn('relative overflow-hidden border-0 border-t bg-secondary/80', className)}>
@@ -169,7 +232,7 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<div class="flex flex-wrap gap-2">
+		<div class="flex flex-wrap gap-2 items-end">
 			<Form.Field {form} name="fileSizeLimit" class="flex-1">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -179,10 +242,19 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
+			<Form.Field {form} name="compressLevel" class="flex-1">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>Compress Level</Form.Label>
+						<Input type="number" {...props} bind:value={$formData.compressLevel} />
+					{/snippet}
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
 			<Form.Field {form} name="isRemoveSoure" class="flex-1">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label class="opacity-0">Rem Source</Form.Label>
+						<Form.Label class="opacity-0 grow h-full">Rem Source</Form.Label>
 						<Toggle
 							{...props}
 							bind:pressed={$formData.isRemoveSoure}
@@ -250,13 +322,16 @@
 			<Button variant="outline" class="flex-1" onclick={onUnZipHandler}
 				><PackageOpen /> Unzip</Button
 			>
-			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split Zip</Button>
 		</div>
 		<div class="flex flex-wrap gap-2">
 			<Button variant="outline" class="flex-1" onclick={onPdf}><FileTextIcon /> Image to PDF</Button
 			>
 			<Button variant="outline" class="flex-1" onclick={onUnPdf}><ImageIcon /> PDF to Image</Button>
-			<Button variant="outline" class="flex-1"><SquareBottomDashedScissorsIcon /> Split PDF</Button>
+		</div>
+		<div class="flex flex-wrap gap-2">
+			<Button variant="outline" class="flex-1" onclick={onSplitFileHandler}
+				><SquareBottomDashedScissorsIcon /> Split File</Button
+			>
 		</div>
 		<Separator class="my-4" />
 		<div class="grid gap-2">
@@ -299,7 +374,7 @@
 				</Form.Field>
 				<div class="ml-auto">
 					<Label class="mb-2 opacity-0">Button</Label>
-					<Button variant="outline">Change Extension</Button>
+					<Button variant="outline" onclick={onChangeExtensionHandler}>Change Extension</Button>
 				</div>
 			</div>
 		</div>
