@@ -136,23 +136,70 @@ export async function createPdfFromImages(
 
 
 
+/**
+ * A factory function that creates a canvas setup for capturing images.
+ * It uses a closure to maintain the list of captured images.
+ */
+function createImageCapture() {
+  const capturedImagePromises: Promise<ImageBitmap>[] = [];
+
+  const create = (width: number, height: number) => {
+    if (typeof document === 'undefined') {
+      throw new Error('This function requires a DOM environment (document).');
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+      throw new Error('Could not get 2D context from canvas.');
+    }
+
+    const originalDrawImage = context.drawImage.bind(context);
+
+    // Override drawImage to intercept ImageBitmaps
+    context.drawImage = (image: ImageBitmap, ...args: number[]) => {
+      if (image && image.width > 0 && image.height > 0 && image instanceof ImageBitmap) {
+        // Create a copy of the bitmap to prevent it from being recycled by the browser
+        const canvasForCopy = document.createElement('canvas');
+        canvasForCopy.width = image.width;
+        canvasForCopy.height = image.height;
+        const ctx = canvasForCopy.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(image, 0, 0);
+          // createImageBitmap is async, so we store the promise
+          const bitmapPromise = createImageBitmap(canvasForCopy);
+          capturedImagePromises.push(bitmapPromise);
+        }
+      }
+      // Execute the original drawing operation
+      return originalDrawImage(image, args[0], args[1], args[2], args[3]);
+    };
+
+    return { canvas, context };
+  };
+
+  const getCaptured = (): Promise<ImageBitmap[]> => {
+    // Return a single promise that resolves when all individual image promises are resolved
+    return Promise.all(capturedImagePromises);
+  };
+
+  return { create, getCaptured };
+}
 
 
 /**
- * Extracts all images from a PDF file with maximum reliability.
- * This version pre-fetches all image objects to avoid race conditions.
+ * Extracts all images from a PDF file by intercepting them during the render process.
+ * This is the most robust method that avoids internal cache race conditions.
  *
  * @param pdf The PDF file to extract images from.
- * @param fileName Optional. A base name for the extracted image files. If provided,
- *                 images will be named like `mydocument_p1_1.png`, `mydocument_p1_2.png`, etc.
- *                 If not provided, it falls back to using the PDF's internal object ID or a sequential index.
- * @returns A Promise that resolves to an array of File objects, where each File is an extracted image in PNG format.
- * @throws {Error} If the PDF cannot be loaded or parsed.
+ * @param fileName Optional. A base name for the extracted image files.
+ * @returns A Promise that resolves to an array of File objects.
  */
 export async function extractPdfImages(pdf: File, fileName?: string): Promise<File[]> {
-  // Defensive check for bundler/HMR issues where the imported namespace might be undefined.
   if (!pdfjsLib) {
-    throw new Error("pdfjs-dist library was not loaded correctly. Please check your import statement and bundler configuration.");
+    throw new Error("pdfjs-dist library was not loaded correctly.");
   }
 
   const pdfData = await pdf.arrayBuffer();
@@ -160,77 +207,67 @@ export async function extractPdfImages(pdf: File, fileName?: string): Promise<Fi
   const pdfDocument = await loadingTask.promise;
 
   const extractedFiles: File[] = [];
-  let globalImageIndex = 1; // Used for fallback naming
+  let globalImageIndex = 1;
 
   for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
     const page = await pdfDocument.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2.0 });
 
-    // 1. Get the list of drawing operations
+    // 1. Get the list of image IDs (names) from the operator list
     const operatorList = await page.getOperatorList();
-    const imageObjectIds = new Set<string>();
-
+    const imageObjectIds: string[] = [];
     for (let i = 0; i < operatorList.fnArray.length; i++) {
       if (operatorList.fnArray[i] === pdfjsLib.OPS.paintImageXObject) {
         const imageId = operatorList.argsArray[i][0];
-        imageObjectIds.add(imageId);
+        imageObjectIds.push(imageId);
       }
     }
 
-    if (imageObjectIds.size === 0) {
-      continue; // No images on this page, move to the next.
+    if (imageObjectIds.length === 0) {
+      continue; // No images on this page
     }
 
-    // 2. KEY FIX: Pre-fetch all image objects to ensure they are resolved.
-    // This creates an array of promises, one for each image object.
-    const imagePromises = Array.from(imageObjectIds).map(id => page.objs.get(id));
-    // Await all of them simultaneously. This guarantees that after this line,
-    // every object we're interested in is fully loaded in the page.objs cache.
-    await Promise.all(imagePromises);
+    // 2. Set up our functional canvas factory to capture the images
+    const { create, getCaptured } = createImageCapture();
+    const renderContext = {
+      canvasContext: create(viewport.width, viewport.height).context,
+      viewport: viewport,
+    };
 
-    // 3. Now that all objects are guaranteed to be available, process them.
-    let imageIndexOnPage = 1; // Resets for each page
+    // 3. Render the page. During this render, our factory will capture all the images.
+    await page.render(renderContext as any).promise;
 
-    for (const objId of imageObjectIds) {
+    // 4. Get the captured bitmaps. This will wait for all async image copies to complete.
+    const capturedBitmaps = await getCaptured();
+
+    if (capturedBitmaps.length !== imageObjectIds.length) {
+      console.warn(`Page ${pageNum}: Mismatch between captured images (${capturedBitmaps.length}) and found IDs (${imageObjectIds.length}).`);
+    }
+
+    // 5. Create files from the captured bitmaps
+    for (let i = 0; i < capturedBitmaps.length; i++) {
+      const bitmap = capturedBitmaps[i];
+      const objId = imageObjectIds[i];
+
       try {
-        // This call will now succeed because the object has been explicitly fetched.
-        const pdfImageProxy = await page.objs.get(objId) as any;
-
-        if (!pdfImageProxy || !pdfImageProxy.width || !pdfImageProxy.height) {
-          console.warn(`Object with ID ${objId} on page ${pageNum} is not a valid image. Skipping.`);
-          continue;
-        }
-
-        // The 'bitmap' property is the most reliable way to get decoded image data.
-        if (!pdfImageProxy.bitmap) {
-          console.warn(`Image object with ID ${objId} on page ${pageNum} does not have a bitmap property. Skipping.`);
-          continue;
-        }
-        const bitmap = await pdfImageProxy.bitmap;
-
-        // Create a canvas to draw the bitmap and convert it to a PNG blob.
         const imageCanvas = document.createElement('canvas');
-        imageCanvas.width = pdfImageProxy.width;
-        imageCanvas.height = pdfImageProxy.height;
+        imageCanvas.width = bitmap.width;
+        imageCanvas.height = bitmap.height;
         const ctx = imageCanvas.getContext('2d');
-
-        if (!ctx) {
-          throw new Error('Could not get 2D context from canvas.');
-        }
+        if (!ctx) continue;
 
         ctx.drawImage(bitmap, 0, 0);
+        bitmap.close(); // Release the bitmap memory
 
         const blob = await new Promise<Blob | null>((resolve) => {
           imageCanvas.toBlob(resolve, 'image/png');
         });
 
-        if (!blob) {
-          continue;
-        }
+        if (!blob) continue;
 
-        // --- Filename Generation Logic ---
         let finalFileName: string;
         if (fileName) {
-          finalFileName = `${fileName}_p${pageNum}_${imageIndexOnPage++}.png`;
+          finalFileName = `${fileName}_p${pageNum}_${i + 1}.png`;
         } else {
           const isObjIdValid = /^[a-zA-Z0-9_-]+$/.test(objId);
           finalFileName = isObjIdValid ? `${objId}.png` : `${globalImageIndex++}.png`;
@@ -238,9 +275,8 @@ export async function extractPdfImages(pdf: File, fileName?: string): Promise<Fi
 
         const file = new File([blob], finalFileName, { type: 'image/png' });
         extractedFiles.push(file);
-
       } catch (e) {
-        console.error(`Failed to extract image with ID ${objId} on page ${pageNum}:`, e);
+        console.error(`Failed to create file for captured image on page ${pageNum}:`, e);
       }
     }
   }
