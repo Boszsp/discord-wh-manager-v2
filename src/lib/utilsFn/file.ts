@@ -110,3 +110,16 @@ export function getMimeTypeFromFilename(fname: string): string {
     }
 }
 
+export async function getFilesFromClipboard(): Promise<File[]> {
+    const clipboardItems = await navigator.clipboard.read();
+    const files: File[] = [];
+    for (const item of clipboardItems) {
+        for (const type of item.types) {
+            if (type.startsWith('image/') || type === 'application/pdf' || type === 'application/zip') {
+                const blob = await item.getType(type);
+                files.push(new File([blob], 'clipboard-file', { type }));
+            }
+        }
+    }
+    return files;
+}

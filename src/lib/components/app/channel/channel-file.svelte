@@ -9,7 +9,7 @@
 	import { naturalSort } from '$lib/utilsFn/string';
 	import { nanoid } from 'nanoid';
 	import type { FileType } from '../types';
-	import { formatFileSize } from '$lib/utilsFn/file';
+	import { formatFileSize, getFilesFromClipboard } from '$lib/utilsFn/file';
 	import {
 		Tooltip,
 		TooltipContent,
@@ -19,13 +19,13 @@
 
 	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } = $props();
 
-	function addFiles(filelist: FileList | null) {
+	function addFiles(filelist: FileList | File[] | null) {
 		if (filelist === null) return;
-		const newFiles = [...files]
+		const newFiles = [...files];
 		for (let f of filelist) {
 			newFiles.push({
-				id:(nanoid(8) as string),
-				file:f
+				id: nanoid(8) as string,
+				file: f
 			});
 		}
 		files = newFiles;
@@ -56,6 +56,11 @@
 	function sortFiles() {
 		files = [...files.sort((a, b) => naturalSort(a?.file?.name, b?.file?.name))];
 	}
+
+	async function onPasteFromClipboard() {
+		const newFiles = await getFilesFromClipboard();
+		addFiles(newFiles);
+	}
 </script>
 
 <TooltipProvider>
@@ -72,7 +77,11 @@
 				multiple
 				type="file"
 			/>
-			<Button variant="secondary" size="icon" title="paste from clipboard"
+			<Button
+				variant="secondary"
+				size="icon"
+				title="paste from clipboard"
+				onclick={onPasteFromClipboard}
 				><ClipboardIcon class="size-4" /></Button
 			>
 			<Button variant="secondary" size="icon" onclick={sortFiles} title="sort file"
