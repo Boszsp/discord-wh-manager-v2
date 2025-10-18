@@ -21,7 +21,7 @@
 	}
 </script>
 
-<div class={cn('h-64 w-full overflow-y-auto rounded-md bg-card p-4 pt-0', className)}>
+<div class={cn('h-64 w-full overflow-y-auto rounded-md bg-card p-4 pt-0 overflow-x-hidden', className)}>
 	<div class="sticky top-0 bg-card py-4">
 		<InputGroup.Root>
 			<InputGroup.Input bind:value={filterString} placeholder="Search..." />

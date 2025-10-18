@@ -38,6 +38,12 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import {
+		Accordion,
+		AccordionContent,
+		AccordionItem,
+		AccordionTrigger
+	} from '$lib/components/ui/accordion';
+	import {
 		CheckIcon,
 		FileTextIcon,
 		ImageIcon,
@@ -55,6 +61,7 @@
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
 	import { createPdfFromImages, extractPdfImages, pdfMimeTypeList } from '$lib/utilsFn/pdf';
 	import { splitFile } from '$lib/utilsFn/file-splitter';
+	import { consola } from 'consola';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -105,9 +112,15 @@
 				filename: $formData?.fileName,
 				level: $formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined
 			}
-		).then((z) => {
-			addFileHandler(z, processFile);
-		});
+		)
+			.then((z) => {
+				addFileHandler(z, processFile);
+			})
+			.catch((err) => {
+				consola.error(err);
+				toast.error(err.message);
+				loading = false;
+			});
 	}
 	function onUnZipHandler() {
 		loading = true;
@@ -208,175 +221,189 @@
 	}
 </script>
 
-<Card class={cn('relative overflow-hidden border-0 border-t bg-secondary/80', className)}>
-	{#if loading}
-		<div
-			class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-xs"
-		>
-			<Spinner class="mr-2 size-8" />
-			<small class="text-sm leading-none font-medium">Processing...</small>
-		</div>
-	{/if}
-	<CardHeader>
-		<CardTitle>File Manipulation</CardTitle>
-		<CardDescription>Manipulation file</CardDescription>
-	</CardHeader>
-	<CardContent class="grid gap-4">
-		<FileManipulationSelectedfile {files} />
-		<Form.Field {form} name="fileName">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Name</Form.Label>
-					<Input {...props} bind:value={$formData.fileName} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-		<div class="flex flex-wrap gap-2 items-end">
-			<Form.Field {form} name="fileSizeLimit" class="flex-1">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Maximum Limit Size</Form.Label>
-						<Input type="number" {...props} bind:value={$formData.fileSizeLimit} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="compressLevel" class="flex-1">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Compress Level</Form.Label>
-						<Input type="number" {...props} bind:value={$formData.compressLevel} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="isRemoveSoure" class="flex-1">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="opacity-0 grow h-full">Rem Source</Form.Label>
-						<Toggle
-							{...props}
-							bind:pressed={$formData.isRemoveSoure}
-							class="bg-input/30 transition data-[state=on]:bg-primary/40"
-							variant="outline"
-						>
-							{#if $formData.isRemoveSoure}
-								<CheckIcon />
-							{:else}
-								<MinusIcon />
-							{/if}
-							Remove source</Toggle
-						>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="isFixedSize" class="flex-1">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="opacity-0">Fixed Size</Form.Label>
-						<Toggle
-							{...props}
-							bind:pressed={$formData.isFixedSize}
-							class="bg-input/30 transition data-[state=on]:bg-primary/40"
-							variant="outline"
-						>
-							{#if $formData.isFixedSize}
-								<CheckIcon />
-							{:else}
-								<MinusIcon />
-							{/if}
-							Fixed pageSize</Toggle
-						>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="processAll" class="flex-1">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="opacity-0">Process All</Form.Label>
-						<Toggle
-							{...props}
-							bind:pressed={$formData.processAll}
-							class="bg-input/30 transition data-[state=on]:bg-primary/40"
-							variant="outline"
-						>
-							{#if $formData.processAll}
-								<CheckIcon />
-							{:else}
-								<MinusIcon />
-							{/if}
-							ProcessAll file</Toggle
-						>
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		</div>
-		<Separator class="my-4" />
-		<Label>File Manipulation Menu</Label>
-		<div class="flex flex-wrap gap-2">
-			<Button variant="outline" class="flex-1" onclick={onZipHandler}><PackageIcon /> Zip</Button>
-			<Button variant="outline" class="flex-1" onclick={onUnZipHandler}
-				><PackageOpen /> Unzip</Button
-			>
-		</div>
-		<div class="flex flex-wrap gap-2">
-			<Button variant="outline" class="flex-1" onclick={onPdf}><FileTextIcon /> Image to PDF</Button
-			>
-			<Button variant="outline" class="flex-1" onclick={onUnPdf}><ImageIcon /> PDF to Image</Button>
-		</div>
-		<div class="flex flex-wrap gap-2">
-			<Button variant="outline" class="flex-1" onclick={onSplitFileHandler}
-				><SquareBottomDashedScissorsIcon /> Split File</Button
-			>
-		</div>
-		<Separator class="my-4" />
-		<div class="grid gap-2">
-			<div class="flex w-full flex-wrap gap-2">
-				<Form.Field {form} name="quality">
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Quality</Form.Label>
-							<Input type="number" {...props} bind:value={$formData.quality} />
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field {form} name="scale">
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Scale</Form.Label>
-							<Input step="0.1" type="number" {...props} bind:value={$formData.scale} />
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field {form} name="extension">
-					<Form.Control>
-						{#snippet children({ props })}
-							<Form.Label>Extension</Form.Label>
-							<Select.Root type="single" bind:value={$formData.extension}>
-								<Select.Trigger class="w-full min-w-28" {...props}>
-									{$formData.extension ? $formData.extension : 'Select a verified extension'}
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Item value="jpg">jpg</Select.Item>
-									<Select.Item value="png">png</Select.Item>
-									<Select.Item value="webp">webp</Select.Item>
-								</Select.Content>
-							</Select.Root>
-						{/snippet}
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<div class="ml-auto">
-					<Label class="mb-2 opacity-0">Button</Label>
-					<Button variant="outline" onclick={onChangeExtensionHandler}>Change Extension</Button>
-				</div>
+<Accordion
+	class={cn('relative overflow-hidden border-0 border-t rounded-md bg-secondary/80', className)}
+	type="single"
+>
+	<AccordionItem value="item-1">
+		<AccordionTrigger class="px-6">
+			<div>
+				<CardTitle>File Manipulation</CardTitle>
+				<CardDescription>Manipulation file</CardDescription>
 			</div>
-		</div>
-	</CardContent>
-</Card>
+		</AccordionTrigger
+		>
+		<AccordionContent>
+			<CardContent class="grid gap-4">
+				<FileManipulationSelectedfile {files} />
+				<Form.Field {form} name="fileName">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>Name</Form.Label>
+							<Input {...props} bind:value={$formData.fileName} />
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+				<div class="flex flex-wrap items-end gap-2">
+					<Form.Field {form} name="fileSizeLimit" class="flex-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Maximum Limit Size</Form.Label>
+								<Input type="number" {...props} bind:value={$formData.fileSizeLimit} />
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="compressLevel" class="flex-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Compress Level</Form.Label>
+								<Input type="number" {...props} bind:value={$formData.compressLevel} />
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="isRemoveSoure" class="flex-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label class="h-full grow opacity-0">Rem Source</Form.Label>
+								<Toggle
+									{...props}
+									bind:pressed={$formData.isRemoveSoure}
+									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									variant="outline"
+								>
+									{#if $formData.isRemoveSoure}
+										<CheckIcon />
+									{:else}
+										<MinusIcon />
+									{/if}
+									Remove source</Toggle
+								>
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="isFixedSize" class="flex-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label class="opacity-0">Fixed Size</Form.Label>
+								<Toggle
+									{...props}
+									bind:pressed={$formData.isFixedSize}
+									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									variant="outline"
+								>
+									{#if $formData.isFixedSize}
+										<CheckIcon />
+									{:else}
+										<MinusIcon />
+									{/if}
+									Fixed pageSize</Toggle
+								>
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+					<Form.Field {form} name="processAll" class="flex-1">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label class="opacity-0">Process All</Form.Label>
+								<Toggle
+									{...props}
+									bind:pressed={$formData.processAll}
+									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									variant="outline"
+								>
+									{#if $formData.processAll}
+										<CheckIcon />
+									{:else}
+										<MinusIcon />
+									{/if}
+									ProcessAll file</Toggle
+								>
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+				</div>
+				<Separator class="my-4" />
+				<Label>File Manipulation Menu</Label>
+				<div class="flex flex-wrap gap-2">
+					<Button variant="outline" class="flex-1" onclick={onZipHandler} disabled={loading}><PackageIcon /> Zip</Button>
+					<Button variant="outline" class="flex-1" onclick={onUnZipHandler} disabled={loading}
+						><PackageOpen /> Unzip</Button
+					>
+				</div>
+				<div class="flex flex-wrap gap-2">
+					<Button variant="outline" class="flex-1" onclick={onPdf} disabled={loading}
+						><FileTextIcon /> Image to PDF</Button
+					>
+					<Button variant="outline" class="flex-1" onclick={onUnPdf} disabled={loading}
+						><ImageIcon /> PDF to Image</Button
+					>
+				</div>
+				<div class="flex flex-wrap gap-2">
+					<Button variant="outline" class="flex-1" onclick={onSplitFileHandler} disabled={loading}
+						><SquareBottomDashedScissorsIcon /> Split File</Button
+					>
+				</div>
+				<Separator class="my-4" />
+				<div class="grid gap-2">
+					<div class="flex w-full flex-wrap gap-2">
+						<Form.Field {form} name="quality">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Quality</Form.Label>
+									<Input type="number" {...props} bind:value={$formData.quality} />
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+						<Form.Field {form} name="scale">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Scale</Form.Label>
+									<Input
+										step="0.1"
+										type="number"
+										{...props}
+										bind:value={$formData.scale}
+									/>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+						<Form.Field {form} name="extension">
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Extension</Form.Label>
+									<Select.Root type="single" bind:value={$formData.extension}>
+										<Select.Trigger class="min-w-28 w-full" {...props}>
+											{$formData.extension
+												? $formData.extension
+												: 'Select a verified extension'}
+										</Select.Trigger>
+										<Select.Content>
+											<Select.Item value="jpg">jpg</Select.Item>
+											<Select.Item value="png">png</Select.Item>
+											<Select.Item value="webp">webp</Select.Item>
+										</Select.Content>
+									</Select.Root>
+								{/snippet}
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+						<div class="ml-auto">
+							<Label class="mb-2 opacity-0">Button</Label>
+							<Button variant="outline" onclick={onChangeExtensionHandler} disabled={loading}
+								>Change Extension</Button
+							>
+						</div>
+					</div>
+				</div>
+			</CardContent>
+		</AccordionContent>
+	</AccordionItem>
+</Accordion>
