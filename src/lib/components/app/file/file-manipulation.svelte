@@ -125,37 +125,59 @@
 	function onUnZipHandler() {
 		loading = true;
 		const processFile = files.filter(
-			(f) =>  $formData.processAll || $selectedFileStore.includes(f.id) && zipMimeTypeList.includes(f?.file?.type)
+			(f) =>
+				($formData.processAll || $selectedFileStore.includes(f.id)) &&
+				zipMimeTypeList.includes(f?.file?.type)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((z, i) => {
-			unzipFiles(z?.file).then((f) => {
-				loading = true;
-				addFileHandler(f, [{ id: z.id, file: new File([], 'temp.txt') }]);
-			});
+			unzipFiles(z?.file)
+				.then((f) => {
+					loading = true;
+					addFileHandler(f, [{ id: z.id, file: new File([], 'temp.txt') }]);
+				})
+				.catch((err) => {
+					consola.error(err);
+					toast.error(err.message);
+					loading = false;
+				});
 		});
 	}
 	function onPdf() {
 		loading = true;
-		const processFile = files.filter((f) =>  $formData.processAll ||  $selectedFileStore.includes(f.id));
+		const processFile = files.filter((f) => $formData.processAll || $selectedFileStore.includes(f.id));
 		if (processFile.length < 1) return onEmptyProcessFile();
 		createPdfFromImages(
 			processFile.map((f) => f.file),
 			$formData.fileName,
 			$formData.isFixedSize
-		).then((p) => addFileHandler(p, processFile));
+		)
+			.then((p) => addFileHandler(p, processFile))
+			.catch((err) => {
+				consola.error(err);
+				toast.error(err.message);
+				loading = false;
+			});
 	}
 	function onUnPdf() {
 		loading = true;
 		const processFile = files.filter(
-			(f) =>  $formData.processAll || $selectedFileStore.includes(f.id) && pdfMimeTypeList.includes(f?.file?.type)
+			(f) =>
+				($formData.processAll || $selectedFileStore.includes(f.id)) &&
+				pdfMimeTypeList.includes(f?.file?.type)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((p) =>
-			extractPdfImages(p?.file, $formData.fileName).then((im) => {
-				loading = true;
-				addFileHandler(im, [{ id: p.id, file: new File([], 'temp.txt') }]);
-			})
+			extractPdfImages(p?.file, $formData.fileName)
+				.then((im) => {
+					loading = true;
+					addFileHandler(im, [{ id: p.id, file: new File([], 'temp.txt') }]);
+				})
+				.catch((err) => {
+					consola.error(err);
+					toast.error(err.message);
+					loading = false;
+				})
 		);
 	}
 
@@ -168,10 +190,20 @@
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((p) =>
-			splitFile(p?.file, $formData.fileSizeLimit, $formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined).then((f) => {
-				loading = true;
-				addFileHandler(f, [{ id: p.id, file: new File([], 'temp.txt') }]);
-			})
+			splitFile(
+				p?.file,
+				$formData.fileSizeLimit,
+				($formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined)
+			)
+				.then((f) => {
+					loading = true;
+					addFileHandler(f, [{ id: p.id, file: new File([], 'temp.txt') }]);
+				})
+				.catch((err) => {
+					consola.error(err);
+					toast.error(err.message);
+					loading = false;
+				})
 		);
 	}
 
@@ -215,9 +247,15 @@
 			});
 		});
 
-		Promise.all(promises).then((newFiles) => {
-			addFileHandler(newFiles, processFile);
-		});
+		Promise.all(promises)
+			.then((newFiles) => {
+				addFileHandler(newFiles, processFile);
+			})
+			.catch((err) => {
+				consola.error(err);
+				toast.error(err.message);
+				loading = false;
+			});
 	}
 </script>
 
