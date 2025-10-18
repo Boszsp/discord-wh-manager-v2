@@ -7,6 +7,8 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import * as Form from '$lib/components/ui/form';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import { consola } from 'consola';
+	import { toast } from 'svelte-sonner';
 
 	let {
 		channel = { name: '', url: '', id: undefined },
@@ -40,12 +42,17 @@
 	const { form: formData, errors, enhance, validateForm } = form;
 
 	async function saveChannel() {
-		const {data} = await validateForm();
-		if (!data?.name || !data?.url || $errors.name || $errors.url) return;
-		onSaveChannel(String(channel?.id), { name: data.name, url: data.url });
-		$formData.name = '';
-		$formData.url = '';
-		open = false;
+		try {
+			const { data } = await validateForm();
+			if (!data?.name || !data?.url || $errors.name || $errors.url) return;
+			onSaveChannel(String(channel?.id), { name: data.name, url: data.url });
+			$formData.name = '';
+			$formData.url = '';
+			open = false;
+		} catch (err: any) {
+			consola.error(err);
+			toast.error(err.message);
+		}
 	}
 </script>
 

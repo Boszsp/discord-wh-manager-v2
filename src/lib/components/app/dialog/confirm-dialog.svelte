@@ -3,6 +3,8 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { TrashIcon, AlertTriangleIcon } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
+	import { consola } from 'consola';
+	import { toast } from 'svelte-sonner';
 
 	let {
 		title = 'Confirm',
@@ -33,8 +35,13 @@
 	} = $props();
 
 	function handleConfirm() {
-		onConfirm();
-		open = false;
+		try {
+			onConfirm();
+			open = false;
+		} catch (err: any) {
+			consola.error(err);
+			toast.error(err.message);
+		}
 	}
 </script>
 

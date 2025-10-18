@@ -32,6 +32,8 @@
 	import { createTemplateAction, editTemplateAction } from '$lib/curdFn/template';
 	import { toast } from 'svelte-sonner';
 	import z from 'zod';
+	import type { FileType } from '$lib/components/app/types';
+	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -46,7 +48,7 @@
 	});
 
 	const { form: formData } = form;
-	let files: File[] = $state([]);
+	let files: FileType[] = $state([]);
 	let templates: TemplateSchemaType[] = $state(data?.templates || []);
 	let selectedTemplate: string = $state('');
 	let selectedTemplateObj: TemplateSchemaType | undefined = $derived(
@@ -112,7 +114,7 @@
 		const result = sendToWebhook(
 			url,
 			cleanUpBlank(formDataa),
-			files,
+			files?.map((v) => v?.file),
 			(mss, type: 'error' | 'success' = 'success') => {
 				if (type === 'error') toast.error(mss);
 				else toast.success(mss);
@@ -241,6 +243,8 @@
 							{onCreateTemplate}
 							{isLoading}
 						/>
+						<FileManipulation class="mt-4" bind:files />
+
 						<Separator class="my-4" />
 						{#if !selectedTemplate || selectedTemplate === ''}
 							<div transition:fade>
