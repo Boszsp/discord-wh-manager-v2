@@ -4,6 +4,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import type { hookJsonPartialSchemaType } from '$lib/schema/webhookContentSchema';
 	import { Textarea } from '$lib/components/ui/textarea';
+	import MarkdownEditor from '$lib/components/app/form/markdown-editor.svelte';
 	let {
 		class: className,
 		form
@@ -22,9 +23,11 @@
 					>{$formData.content?.length}/2000</span
 				></Form.Label
 			>
-			<Textarea {...props} bind:value={$formData.content} class="h-32" />
+			<MarkdownEditor bind:value={$formData.content}/>
+			<!--<Textarea {...props} bind:value={$formData.content} class="h-32" />-->
 		{/snippet}
 	</Form.Control>
 	<Form.Description />
 	<Form.FieldErrors />
 </Form.Field>
+

@@ -3,6 +3,7 @@
 	import { cn, type WithElementRef, type WithoutChildren } from '$lib/utils';
 	import { highlightCode } from '$lib/utilsFn/string';
 	import type { HTMLTextareaAttributes } from 'svelte/elements';
+	import { fade } from 'svelte/transition';
 	import './textarea-json.css';
 
 	let {
@@ -10,7 +11,7 @@
 		ref = $bindable(null),
 		class: className,
 		...restProps
-	}: WithoutChildren<WithElementRef<HTMLTextareaAttributes>> & {value:string} = $props();
+	}: WithoutChildren<WithElementRef<HTMLTextareaAttributes>> & { value: string } = $props();
 
 	let oldVal = $state('');
 </script>
@@ -23,16 +24,21 @@
 >
 	<div>
 		{#await highlightCode(value, 'json')}
-			{@html oldVal}
+			<div transition:fade>
+				{@html oldVal}
+			</div>
 		{:then res}
-			<p hidden class="hidden">{(oldVal = res && '')}</p>
-			{@html res}
-			{#if value.endsWith('\n')}
-				<br />
-			{/if}
+			<div transition:fade>
+				<p hidden class="hidden">{(oldVal = res && '')}</p>
+				{@html res}
+				{#if value.endsWith('\n')}
+					<br />
+				{/if}
+			</div>
 		{:catch e}
-			{@debug e}
-			{@html oldVal}
+			<div transition:fade>
+				{@html oldVal}
+			</div>
 		{/await}
 	</div>
 
