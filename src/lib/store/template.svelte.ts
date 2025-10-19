@@ -21,7 +21,7 @@ function addTemplate(template: TemplateSchemaType) {
 
 function updateTemplate(template: TemplateSchemaType) {
     update((templates) => {
-        const index = templates.findIndex((t) => t.name === template.name);
+        const index = templates.findIndex((t) => t.id === template.id);
         if (index !== -1) {
             templates[index] = template;
         }
