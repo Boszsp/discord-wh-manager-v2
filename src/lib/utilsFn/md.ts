@@ -36,3 +36,7 @@ export async function convertMdToHTML(str: string) {
 
     return clean
 }
+
+export function sanitize(str:string):string{
+    return DOMPurify.sanitize(str)
+} 

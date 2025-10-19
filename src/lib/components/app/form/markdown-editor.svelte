@@ -8,8 +8,9 @@
 	import './markdown-editor.css';
 	import type { ClassValue } from 'svelte/elements';
 	import { cn } from '$lib/utils';
+	import { sanitize } from '$lib/utilsFn/md';
 	const carta = new Carta({
-		sanitizer: (x) => x,
+		sanitizer: sanitize,
 		extensions: [code({ theme: 'github-dark' }), emoji()]
 	});
 
