@@ -59,8 +59,11 @@
 		]
 	},
 	"dependencies": {
+		"@cartamd/plugin-code": "^4.2.0",
+		"@cartamd/plugin-emoji": "^4.3.0",
 		"@fontsource-variable/noto-sans-thai-looped": "^5.2.3",
 		"@fontsource-variable/source-code-pro": "^5.2.7",
+		"carta-md": "^4.11.1",
 		"consola": "^3.4.2",
 		"fflate": "^0.8.2",
 		"isomorphic-dompurify": "^2.28.0",

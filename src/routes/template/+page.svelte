@@ -12,7 +12,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { CardTitle } from '$lib/components/ui/card';
 	import type { PageProps } from './$types';
-	import { editTemplateAction, removeTemplateAction } from '$lib/curdFn/template';
+import { createTemplateAction, editTemplateAction, removeTemplateAction } from '$lib/curdFn/template';
 	import ConfirmDialog from '$lib/components/app/dialog/confirm-dialog.svelte';
 
 	const { data }: PageProps = $props();
@@ -50,17 +50,13 @@
 		editTemplateAction(id, template).then();
 	}
 
-	function handleSubmit() {
+	async function handleSubmit() {
 		if (isEditing && selectedTemplate) {
-			templateStore.update((templates) => {
-				const index = templates.findIndex((t) => t.name === selectedTemplate!.name);
-				if (index !== -1) {
-					templates[index] = { ...$formData };
-				}
-				return templates;
-			});
+			const result = await editTemplateAction(selectedTemplate?.id + "", { ...$formData, id: selectedTemplate.id });
+      templates = templates.map(t => t.id === selectedTemplate!.id ? result.affectedTemplate : t);
 		} else {
-			templateStore.update((templates) => [...templates, { ...$formData }]);
+			const result = await createTemplateAction({ ...$formData, id: '' });
+      templates = [...templates, result.affectedTemplate];
 		}
 		isOpenEditDialog = false;
 	}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { convertMdToHTML } from '$lib/utilsFn/md';
+	import { fade } from 'svelte/transition';
 	import './side-avatar.css';
 	
 
@@ -14,11 +15,11 @@
 
 <div>
 	{#await convertMdToHTML(content)}
-		<div class="md-content">
+		<div transition:fade class="md-content">
 			{@html oldMdContent}
 		</div>
 	{:then res}
-		<div class="md-content">
+		<div transition:fade class="md-content">
 			<p hidden class="hidden">
 				{(oldMdContent = res && '')}
 			</p>
@@ -26,7 +27,7 @@
 		</div>
 	{:catch e}
 		{@debug e}
-		<div class="md-content">
+		<div transition:fade class="md-content">
 			{@html oldMdContent}
 		</div>
 	{/await}

@@ -283,7 +283,7 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<div class="flex flex-wrap items-end gap-2">
+				<div class="flex flex-wrap gap-2">
 					<Form.Field {form} name="fileSizeLimit" class="flex-1">
 						<Form.Control>
 							{#snippet children({ props })}
@@ -302,14 +302,15 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
+				</div>
+				<div class="flex flex-wrap gap-2">
 					<Form.Field {form} name="isRemoveSoure" class="flex-1">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label class="h-full grow opacity-0">Rem Source</Form.Label>
 								<Toggle
 									{...props}
 									bind:pressed={$formData.isRemoveSoure}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
 									variant="outline"
 								>
 									{#if $formData.isRemoveSoure}
@@ -323,14 +324,14 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
+				
 					<Form.Field {form} name="isFixedSize" class="flex-1">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label class="opacity-0">Fixed Size</Form.Label>
 								<Toggle
 									{...props}
 									bind:pressed={$formData.isFixedSize}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
 									variant="outline"
 								>
 									{#if $formData.isFixedSize}
@@ -347,11 +348,10 @@
 					<Form.Field {form} name="processAll" class="flex-1">
 						<Form.Control>
 							{#snippet children({ props })}
-								<Form.Label class="opacity-0">Process All</Form.Label>
 								<Toggle
 									{...props}
 									bind:pressed={$formData.processAll}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40"
+									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
 									variant="outline"
 								>
 									{#if $formData.processAll}
