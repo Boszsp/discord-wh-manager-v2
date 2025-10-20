@@ -1,11 +1,12 @@
-import type { webhookSchemaType } from "$lib/schema/webhookSchema";
+import { db } from "$lib/db/db.schema";
+import { webhookSchema, type webhookSchemaType } from "$lib/schema/webhookSchema";
 import { consola } from "consola";
 
 export async function createChannelAction(serverId: string, channel: webhookSchemaType) {
     if (!serverId) throw new Error("Server Id Not Define")
     if (!channel) throw new Error("Channel Not Define")
     consola.success("CreateChannelAction At Server ",serverId," Value ",channel)
-
+    
     return {
         status: 200,
         message: "success",
@@ -33,6 +34,11 @@ export async function editChannelAction(serverId: string, channelId: string, cha
 }
 
 export async function getChannelAction(serverId: string, channelId: string): Promise<webhookSchemaType> {
+    const serverIdf = db.servers.id(serverId);
+    const channelIdf = db.servers(serverIdf).channels.id(channelId)
+
+    await db.servers(serverIdf).channels.get(channelIdf)
+    consola.success("GetChannelAction At Server ", serverId, " Channel ", channelId)
     return {
         id: "xxx",
         name: "x",
@@ -42,15 +48,9 @@ export async function getChannelAction(serverId: string, channelId: string): Pro
 
 export async function getChannelsAction(serverId: string,offset?:number,limit?:number): Promise<webhookSchemaType[]> {
     consola.success("GetChannel(s)Action At Server ", serverId)
-    return new Array(2).fill({
-        id: "xxx" ,
-        name: "xxx" ,
-        url: "xx"
-}).map((_,i)=>({
-        id: "xxx"+i,
-        name: "xxx"+i,
-        url: "xx"+i
-    }))
+    const serverIdf = db.servers.id(serverId);
+    const res = (await db.servers(serverIdf).channels.all()).map(v =>v.data)
+    return res as webhookSchemaType[]
 }
 
 export async function removeChannelAction(serverId: string, channelId: string) {
