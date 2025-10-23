@@ -23,11 +23,10 @@
 					>{$formData.content?.length}/2000</span
 				></Form.Label
 			>
-			<MarkdownEditor bind:value={$formData.content}/>
+			<MarkdownEditor bind:value={$formData.content} />
 			<!--<Textarea {...props} bind:value={$formData.content} class="h-32" />-->
 		{/snippet}
 	</Form.Control>
 	<Form.Description />
 	<Form.FieldErrors />
 </Form.Field>
-

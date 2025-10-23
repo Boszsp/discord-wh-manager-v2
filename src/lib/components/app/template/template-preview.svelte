@@ -54,8 +54,8 @@
 	}
 	function save() {
 		//console.log(template.id)
-		if (template.id && onEditTemplate){
-			onEditTemplate(template.id, { name: newName, content:preview });
+		if (template.id && onEditTemplate) {
+			onEditTemplate(template.id, { name: newName, content: preview });
 			template = { name: newName, content: preview };
 		}
 		isEditing = false;

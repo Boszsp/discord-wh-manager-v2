@@ -11,8 +11,10 @@ import svelteConfig from './svelte.config.js';
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default defineConfig(
-	includeIgnoreFile(gitignorePath),
-	globalIgnores(['src/lib/components/ui/**/*']),
+	{
+		ignores: ['node_modules', '.svelte-kit', 'build', 'dist', 'src/lib/components/ui/**/*']
+	},
+
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,

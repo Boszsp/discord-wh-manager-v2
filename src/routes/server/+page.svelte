@@ -20,7 +20,7 @@
 	let searchTerm = $state('');
 	let isDeleteDialogOpen = $state(false);
 	let serverToDelete = $state<ServerType | null>(null);
-	let deleteTarget = $state("")
+	let deleteTarget = $state('');
 
 	let filteredServers = $derived(
 		servers.filter((server) => server.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -28,11 +28,11 @@
 
 	function createServer({ name, color }: { name: string; color: string }) {
 		createServerAction({ name, color }).then((v) => {
-			if (v.affectedServer) {
+			if (v?.affectedServer) {
 				servers.unshift({
-					id: v.serverId + '',
-					title: v.affectedServer?.name + '',
-					color: v.affectedServer?.color
+					id: v?.serverId || '',
+					title: v?.affectedServer?.name || '',
+					color: v?.affectedServer?.color || ''
 				});
 			}
 		});
@@ -43,7 +43,7 @@
 		editServerAction(id, { name, color }).then((r) => {
 			if (index !== -1 && r.affectedServer) {
 				servers[index].title = r.affectedServer?.name;
-				servers[index].color = r.affectedServer?.color;
+				servers[index].color = r.affectedServer?.color || '';
 			}
 		});
 	}
@@ -53,7 +53,7 @@
 		serverToDelete = servers.find((s) => s.id === id) ?? null;
 		isDeleteDialogOpen = true;
 		//console.log(serverToDelete)
-		deleteTarget = id
+		deleteTarget = id;
 	}
 
 	function confirmDelete() {

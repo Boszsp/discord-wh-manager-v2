@@ -47,13 +47,11 @@
 		channelInfo = { name, url, id };
 		openRemove = true;
 	}
-	function onRemoveChannelHandler(){
-		if(onRemoveChannel)
-		onRemoveChannel($channelCurId?.id+"",channelInfo.id)
+	function onRemoveChannelHandler() {
+		if (onRemoveChannel) onRemoveChannel($channelCurId?.id + '', channelInfo.id);
 	}
-	function onEditChannelHandler(channelId: string, channel: webhookSchemaType){
-		if(onEditChannel)
-		onEditChannel(channelId,channel)
+	function onEditChannelHandler(channelId: string, channel: webhookSchemaType) {
+		if (onEditChannel) onEditChannel(channelId, channel);
 	}
 	//const channelsFilterd = $derived(channels.filter((v)=>(!(searchChannelKey?.length > 0))||(v.includes(searchChannelKey))))
 </script>
@@ -63,7 +61,7 @@
 		<CardTitle class="mx-auto rounded-md p-2">{name}</CardTitle>
 	</div>
 	<div class="px-2">
-	<ChannelCreateDialog class="mt-2" {onCreateChannel} />
+		<ChannelCreateDialog class="mt-2" {onCreateChannel} />
 	</div>
 
 	<Separator class="my-2" />
@@ -72,7 +70,7 @@
 			>Webhooks | เว็บฮุก</small
 		>
 	</div>
-	<div class="relative mt-1 mx-2">
+	<div class="relative mx-2 mt-1">
 		<SearchIcon class="absolute top-1.5 left-1.5 size-4 text-muted-foreground" />
 		<Input
 			bind:value={searchChannelKey}
@@ -126,7 +124,11 @@
 			{/each}
 			<div class="h-40"></div>
 			{#key channelInfo}
-				<ChannelEditDialog onSaveChannel={onEditChannelHandler} channel={channelInfo} bind:open={openEdit} />
+				<ChannelEditDialog
+					onSaveChannel={onEditChannelHandler}
+					channel={channelInfo}
+					bind:open={openEdit}
+				/>
 				<ChannelRemoveDialog
 					onRemoveChannel={onRemoveChannelHandler}
 					channel={channelInfo}

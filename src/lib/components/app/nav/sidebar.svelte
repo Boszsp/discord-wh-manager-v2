@@ -104,7 +104,6 @@
 				</div>
 			{/each}
 			<div class="h-10"></div>
-
 		</nav>
 	</ScrollArea>
 </aside>

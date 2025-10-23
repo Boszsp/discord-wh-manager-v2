@@ -29,10 +29,12 @@
 	let open = $state(false);
 
 	let {
-		onCreateChannel = async () => {
-		
-		},class:className
-	}: { onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void>,class?:ClassValue } = $props();
+		onCreateChannel = async () => {},
+		class: className
+	}: {
+		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
+		class?: ClassValue;
+	} = $props();
 
 	async function createChannel() {
 		const { data } = await validateForm();
@@ -47,7 +49,11 @@
 
 <d.Root bind:open>
 	<d.Trigger
-		class={cn(buttonVariants({ size: 'sm', variant: 'ghost' }), 'w-full justify-start p-0 truncate',className)}
+		class={cn(
+			buttonVariants({ size: 'sm', variant: 'ghost' }),
+			'w-full justify-start truncate p-0',
+			className
+		)}
 	>
 		<CirclePlusIcon />Add Channel
 	</d.Trigger>

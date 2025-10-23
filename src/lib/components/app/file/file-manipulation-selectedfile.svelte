@@ -21,7 +21,9 @@
 	}
 </script>
 
-<div class={cn('h-64 w-full overflow-y-auto rounded-md bg-card p-4 pt-0 overflow-x-hidden', className)}>
+<div
+	class={cn('h-64 w-full overflow-x-hidden overflow-y-auto rounded-md bg-card p-4 pt-0', className)}
+>
 	<div class="sticky top-0 bg-card py-4">
 		<InputGroup.Root>
 			<InputGroup.Input bind:value={filterString} placeholder="Search..." />
@@ -38,7 +40,7 @@
 			<FileCardSelectable
 				id={file?.id}
 				title={file?.file?.name}
-				description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type?.split("/").pop()}`}
+				description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type?.split('/').pop()}`}
 				class="flex-1"
 			/>
 		{/each}

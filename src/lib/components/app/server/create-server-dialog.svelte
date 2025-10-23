@@ -12,8 +12,8 @@
 	import { DEFAULT_SERVER_BG_COLOR } from '$lib/default';
 
 	let {
-		onCreateServer = (detail: { name: string ,color:string}) => {}
-	}: { onCreateServer:(detail: { name: string ,color:string}) => void} = $props();
+		onCreateServer = (detail: { name: string; color: string }) => {}
+	}: { onCreateServer: (detail: { name: string; color: string }) => void } = $props();
 
 	const form = superForm(
 		{ name: '', color: DEFAULT_SERVER_BG_COLOR },
@@ -23,26 +23,25 @@
 			onSubmit: (inp) => {
 				inp.cancel();
 				return false;
-			},
-
+			}
 		}
 	);
 
-	const { form: formData, errors, enhance,validateForm } = form;
+	const { form: formData, errors, enhance, validateForm } = form;
 
 	let open = $state(false);
 
 	async function createServer() {
-		const {data} = await validateForm()
+		const { data } = await validateForm();
 		if (!data?.name || $errors.name) return;
-		onCreateServer({name:data.name, color:data.color});
+		onCreateServer({ name: data.name, color: data.color });
 		$formData.name = '';
 		open = false;
 	}
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger class={cn(buttonVariants({ size: 'sm',variant:"outline" }), 'p-0')}>
+	<Dialog.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'p-0')}>
 		<PlusIcon />
 		Create Server
 	</Dialog.Trigger>

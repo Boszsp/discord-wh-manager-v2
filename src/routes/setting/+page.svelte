@@ -1,9 +1,9 @@
 <script>
-	import DashboardContainer from "$lib/components/app/container/dashboard-container.svelte";
-	import PageTransition from "$lib/components/app/layout/page-transition.svelte";
-
+	import DashboardContainer from '$lib/components/app/container/dashboard-container.svelte';
+	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 </script>
-<PageTransition/>
+
+<PageTransition />
 <DashboardContainer>
-    <div class="w-full"></div>
+	<div class="w-full"></div>
 </DashboardContainer>

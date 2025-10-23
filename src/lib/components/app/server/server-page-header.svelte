@@ -4,7 +4,8 @@
 	import { ServerIcon } from 'lucide-svelte';
 	import CreateServerDialog from './create-server-dialog.svelte';
 
-	let { onCreateServer }: { onCreateServer: (detail: { name: string,color:string }) => void } = $props();
+	let { onCreateServer }: { onCreateServer: (detail: { name: string; color: string }) => void } =
+		$props();
 </script>
 
 <div class="m-0 inline-flex w-full items-center-safe gap-4 border-b px-4 py-2">

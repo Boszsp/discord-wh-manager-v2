@@ -54,9 +54,7 @@
 		reader.onload = async () => {
 			const pdfData = new Uint8Array(reader.result as ArrayBuffer);
 			const splitPdfData = await splitPdf(pdfData);
-			splitPdfs = splitPdfData.map(
-				(data, i) => new Blob([data], { type: 'application/pdf' })
-			);
+			splitPdfs = splitPdfData.map((data, i) => new Blob([data], { type: 'application/pdf' }));
 		};
 		reader.readAsArrayBuffer(pdfFile);
 	};

@@ -5,15 +5,17 @@
 	import { APP_NAME } from '$lib/default';
 	import type { Snippet } from 'svelte';
 
-	let { children,servers=[] }:{children:Snippet,servers?:sidebarMenuProps[]} = $props();
-	const datas: sidebarMenuProps[] = $derived(servers?.map((v,id) => ({
-		//fallback: v.fallback ?? "$",
-		id:v?.id ?? id+"",
-		title: v.title,
-		link: v.link,
-		color: v.color ,
-		isSelected: page.url.searchParams.get("id") === `${v?.id}`
-	})) ?? []);
+	let { children, servers = [] }: { children: Snippet; servers?: sidebarMenuProps[] } = $props();
+	const datas: sidebarMenuProps[] = $derived(
+		servers?.map((v, id) => ({
+			//fallback: v.fallback ?? "$",
+			id: v?.id ?? id + '',
+			title: v.title,
+			link: v.link,
+			color: v.color,
+			isSelected: page.url.searchParams.get('id') === `${v?.id}`
+		})) ?? []
+	);
 	const selected = $derived(datas.filter((v) => v.isSelected).pop());
 </script>
 
@@ -41,7 +43,7 @@
 	</header>
 	<div class="flex h-full w-full">
 		<Sidebar sidebarMenu={datas} />
-		<main class="h-[96dvh] w-full rounded-tl-2xl border-t border-l overflow-hidden">
+		<main class="h-[96dvh] w-full overflow-hidden rounded-tl-2xl border-t border-l">
 			{@render children?.()}
 		</main>
 	</div>

@@ -22,7 +22,7 @@
 		leftWidth?: number;
 		rightWidth?: number;
 		channels?: webhookSchemaType[];
-		onCreateChannel?:  (serverId: string, channel: webhookSchemaType) => Promise<void>;
+		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
 		onRemoveChannel?: (serverId: string, channelId: string) => void;
 		onEditChannel?: (channelId: string, channel: webhookSchemaType) => void;
 	} = $props();
@@ -37,10 +37,12 @@
 		{#if channels && channels.length > 0}
 			{@render children?.()}
 		{:else}
-			<div class="flex flex-col size-full items-center justify-center">
-                <PackageOpenIcon class="size-16"/>
-				<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Don't have any channel here</h3>
-                <p class="text-muted-foreground text-sm">Add channel to continue</p>
+			<div class="flex size-full flex-col items-center justify-center">
+				<PackageOpenIcon class="size-16" />
+				<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">
+					Don't have any channel here
+				</h3>
+				<p class="text-sm text-muted-foreground">Add channel to continue</p>
 			</div>
 		{/if}
 	</Resizable.Pane>
