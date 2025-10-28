@@ -1,4 +1,4 @@
-import { user } from '$lib/store/auth.svelte';
+import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
 import type { ServerSchemaType } from '$lib/schema/serverSchema';
 import { consola } from 'consola';
@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid';
 export async function createServerAction(server: ServerSchemaType) {
 	if (!server) throw new Error('Server Not Define');
 	const serverId = nanoid(8);
-	const curUser = await user.awaitUser();
+	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User Not Define');
 	await db.servers.set(db.servers.id(serverId), {
 		name: server.name,
