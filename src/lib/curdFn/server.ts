@@ -4,75 +4,99 @@ import type { ServerSchemaType } from '$lib/schema/serverSchema';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
-export async function createServerAction(server: ServerSchemaType) {
-	if (!server) throw new Error('Server Not Define');
-	const serverId = nanoid(8);
-	const curUser = await getCurUserPromise();
-	if (!curUser) throw new Error('User Not Define');
-	await db.servers.set(db.servers.id(serverId), {
-		name: server.name,
-		color: server.color,
-		create_by: curUser?.uid
-	});
+type Server = ServerSchemaType & { create_by?: string };
+interface FnResponse{
+	status: number,
+	message: 'success' | 'error',
+	serverId: string,
+	affectedServer: Server | Partial<ServerSchemaType>
+}
 
-	consola.success('CreateServerAction', server);
+export async function createServerAction(server: Omit<ServerSchemaType, 'id'>): Promise<FnResponse> {
+	if (!server) throw new Error('Server data is not defined');
+	const curUser = await getCurUserPromise();
+	if (!curUser) throw new Error('User is not authenticated');
+
+	const serverId = nanoid();
+	const serverRef = db.servers.id(serverId);
+
+	const dataToSet = {
+		...server,
+		create_by: curUser.uid
+	};
+
+	await db.servers.set(serverRef, dataToSet);
+
+	consola.success('createServerAction', dataToSet);
+
 	return {
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedServer: server
+		affectedServer: {...dataToSet,id:serverId}
 	};
 }
 
-export async function editServerAction(serverId: string, server: ServerSchemaType) {
-	if (!serverId) throw new Error('Server Id Not Define');
-	if (!server) throw new Error('Server Not Define');
-	consola.success('EditServerAction', server);
+export async function editServerAction(
+	serverId: string,
+	server: Partial<ServerSchemaType>
+): Promise<FnResponse> {
+	if (!serverId) throw new Error('Server ID is not defined');
+	if (!server) throw new Error('Server data is not defined');
+	const curUser = await getCurUserPromise();
+	if (!curUser) throw new Error('User is not authenticated');
+
+	const id = db.servers.id(serverId);
+	await db.servers.update(id, server);
+
+	consola.success('editServerAction', server);
+
 	return {
 		status: 200,
 		message: 'success',
-		serverId,
-		affectedServer: server
+		serverId: serverId,
+		affectedServer: {name:String(server?.name),color:server?.color,id:serverId,create_by: undefined}
 	};
+	
 }
 
-export async function getServerAction(serverId: string): Promise<ServerSchemaType> {
-	consola.success('GetServerAction');
-	return {
-		id: 'xxx',
-		name: 'x'
-	};
-}
-
-export async function getServersAction(
-	offset?: number,
-	limit?: number
-): Promise<ServerSchemaType[]> {
-	consola.success('GetServer(s)Action');
+export async function getServerAction(serverId: string): Promise<Partial<Server> | null> {
+	if (!serverId) throw new Error('Server ID is not defined');
 	const curUser = await getCurUserPromise();
-	if (!curUser || !curUser.uid) throw new Error('User Not Define');
+	if (!curUser) throw new Error('User is not authenticated');
+	const id = db.servers.id(serverId);
+	const serverDoc = await db.servers.get(id);
+
+	if (!serverDoc) {
+		consola.error('getServerAction: Server not found');
+		return null;
+	}
+
+	consola.success('getServerAction');
+	
+	return { ...serverDoc.data , id:serverDoc?.ref?.id  };
+}
+
+export async function getServersAction(): Promise<Server[]> {
+	const curUser = await getCurUserPromise();
+	if (!curUser || !curUser.uid) throw new Error('User is not authenticated');
+
 	try {
-		const servers = await db.servers.query(($) => $.field("create_by").eq(curUser.uid));
-		console.log(servers);
-		return servers.map((v) => ({ id: v.data?.id || '', name: v.data?.name || '' }));
+		const serverDocs = await db.servers.query(($) => $.field('create_by').eq(curUser.uid));
+		consola.success('getServersAction');
+		return serverDocs.map((doc) => ({ ...doc.data, id: doc.ref.id }));
 	} catch (e) {
 		consola.error(e);
-		return [
-		];
+		return [];
 	}
 }
 
 export async function removeServerAction(serverId: string) {
-	consola.success('RemoveServerAction');
+	if (!serverId) throw new Error('Server ID is not defined');
 
-	return {
-		status: 200,
-		message: 'success',
-		serverId,
-		affectedServer: {
-			id: 'xxx',
-			name: 'x',
-			url: 'xx'
-		}
-	};
+	const id = db.servers.id(serverId);
+	await db.servers.remove(id);
+
+	consola.success('removeServerAction');
+	return { id: serverId };
 }

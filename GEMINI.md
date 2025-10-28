@@ -114,3 +114,10 @@ Based on the project documentation, here are my operating instructions to ensure
 
 - **Svelte Events:** In Svelte components, I must use the `onclick` attribute for events, not `on:click`.
 - **File Length:** I will adhere to the guideline that a single file should not have more than 200 lines.
+
+### Typesaurus & Data Layer
+
+- **Use Collection-Bound Functions:** I must use the collection-bound functions provided by Typesaurus (e.g., `db.servers.query()`) instead of the standalone functions (e.g., `query(db.servers, ...)`).
+- **Use `Ref` Objects for Mutations:** For `update` and `remove` operations, I must first create a `Ref` object using `db.collection.id()` and pass the `Ref` to the function.
+- **Respect Schema Type Definitions:** I must pay close attention to the type definitions in `db.schema.ts`. If a function returns data that includes fields not present in the base Zod schema (like `create_by`), I must ensure the function's return type accurately reflects the shape of the returned object. If the necessary types are not exported from the schema file, I will create local types in the relevant `curdFn` file.
+- **Respect File Restrictions:** If instructed not to edit a specific file (e.g., `db.schema.ts`), I must find a solution that works around this constraint, such as defining local types or asking for clarification if I am blocked.

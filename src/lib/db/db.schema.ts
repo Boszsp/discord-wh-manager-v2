@@ -26,5 +26,5 @@ interface Server extends ServerSchemaType {
 }
 
 interface Template extends TemplateSchemaType {
-	create_by: string;
+	templates: TemplateSchemaType[];
 }

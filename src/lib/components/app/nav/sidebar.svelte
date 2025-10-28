@@ -16,7 +16,7 @@
 		link?: string;
 		isSelected?: boolean;
 		class?: ClassValue;
-		color?: string;
+		color?: string | undefined;
 		id?: string;
 	}
 	const {

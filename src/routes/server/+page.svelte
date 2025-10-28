@@ -15,7 +15,7 @@
 
 	const { data }: PageProps = $props();
 
-	let servers = $state(data?.servers);
+	let servers: ServerType[] = $state(data.servers ?? []);
 
 	let searchTerm = $state('');
 	let isDeleteDialogOpen = $state(false);
@@ -29,7 +29,7 @@
 	function createServer({ name, color }: { name: string; color: string }) {
 		createServerAction({ name, color }).then((v) => {
 			if (v?.affectedServer) {
-				servers.unshift({
+				servers?.unshift({
 					id: v?.serverId || '',
 					title: v?.affectedServer?.name || '',
 					color: v?.affectedServer?.color || ''
@@ -39,18 +39,26 @@
 	}
 
 	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
-		const index = servers.findIndex((s) => s.id === id);
+		const index = servers?.findIndex((s) => s.id === id);
 		editServerAction(id, { name, color }).then((r) => {
 			if (index !== -1 && r.affectedServer) {
-				servers[index].title = r.affectedServer?.name;
-				servers[index].color = r.affectedServer?.color || '';
+				servers = servers.concat([{
+					id: (r.serverId + '') as string,
+					title: (r.affectedServer?.name + '') as string,
+					color:
+						(r.affectedServer?.color === null
+							? undefined
+							: r.affectedServer?.color) as string | undefined
+				}]);
+				//servers[index].title = r.affectedServer?.name;
+				//servers[index].color = r.affectedServer?.color || '';
 			}
 		});
 	}
 
 	function deleteServer({ id }: { id: string }) {
 		//console.log(id)
-		serverToDelete = servers.find((s) => s.id === id) ?? null;
+		serverToDelete = servers?.find((s) => s.id === id) ?? null;
 		isDeleteDialogOpen = true;
 		//console.log(serverToDelete)
 		deleteTarget = id;

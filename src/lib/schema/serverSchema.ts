@@ -10,7 +10,7 @@ export const serverSchema = z.object({
 		.regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, {
 			message: 'Invalid hexadecimal color code. Must be #RGB or #RRGGBB.'
 		})
-		.optional()
+		.optional().nullable()
 });
 
 export type ServerSchemaType = z.infer<typeof serverSchema>;
