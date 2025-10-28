@@ -49,17 +49,15 @@ export async function getServersAction(
 	limit?: number
 ): Promise<ServerSchemaType[]> {
 	consola.success('GetServer(s)Action');
+	const curUser = await getCurUserPromise();
+	if (!curUser || !curUser.uid) throw new Error('User Not Define');
 	try {
-		const servers = await db.servers.all();
+		const servers = await db.servers.query(($) => $.field("create_by").eq(curUser.uid));
 		console.log(servers);
 		return servers.map((v) => ({ id: v.data?.id || '', name: v.data?.name || '' }));
 	} catch (e) {
 		consola.error(e);
 		return [
-			{
-				id: 'xxx',
-				name: 'xxx'
-			}
 		];
 	}
 }
