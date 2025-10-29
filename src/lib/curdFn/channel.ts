@@ -1,15 +1,17 @@
 import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
+import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { webhookSchemaType } from '$lib/schema/webhookSchema';
+import { loadTempCache, saveTempCache } from '$lib/store/temp-cache.svelte';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
-type Channel = webhookSchemaType & {  };
+type Channel = webhookSchemaType & {};
 interface FnResponse {
 	status: number,
 	message: 'success' | 'error',
 	serverId: string,
-	affectedServer: Channel | Partial<Channel>
+	affectedChannel: Channel | Partial<Channel>
 }
 
 export async function createChannelAction(
@@ -22,7 +24,7 @@ export async function createChannelAction(
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
 
-	const channelId = nanoid();
+	const channelId = nanoid(DEFAULT_ID_LENGTH);
 	const serverIdRef = await db.servers.id(serverId)
 	const channelRef = db.servers(serverIdRef).channels.id(channelId);
 
@@ -38,7 +40,7 @@ export async function createChannelAction(
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedServer: { ...dataToSet, id: channelId }
+		affectedChannel: { ...dataToSet, id: channelId }
 	};
 }
 
@@ -56,13 +58,13 @@ export async function editChannelAction(
 	const id = db.servers(serverIdRef).channels.id(channelId);
 	await db.servers(serverIdRef).channels.update(id, channel);
 
-	consola.success('editChannelAction', channel);
+	consola.success('EditChannelAction', channel);
 
 	return {
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedServer: { ...channel, id: channelId }
+		affectedChannel: { ...channel, id: channelId }
 	};
 }
 
@@ -74,15 +76,23 @@ export async function getChannelAction(
 	if (!channelId) throw new Error('Channel ID is not defined');
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
+
+	const cache = loadTempCache(`server-${serverId}-channel-${channelId}`)
+	if (cache) {
+		consola.success('GetServerChannelAction Cache');
+		return cache
+	}
+
 	const serverIdRef = await db.servers.id(serverId)
 	const channelIdRef = await db.servers(serverIdRef).channels.id(channelId);
 	const channelDoc = await db.servers(serverIdRef).channels.get(channelIdRef);
 	if (!channelDoc) {
-		consola.error('getChannelAction: Channel not found');
+		consola.error('GetChannelAction: Channel not found');
 		return null;
 	}
+	saveTempCache(`server-${serverId}-channel-${channelId}`,channelDoc.data)
 
-	consola.success('getChannelAction');
+	consola.success('GetChannelAction');
 	return { ...channelDoc.data, id: channelDoc.ref.id };
 }
 
@@ -90,12 +100,18 @@ export async function getChannelsAction(serverId: string): Promise<Channel[]> {
 	if (!serverId) throw new Error('Server ID is not defined');
 	const curUser = await getCurUserPromise();
 	if (!curUser || !curUser.uid) throw new Error('User is not authenticated');
+	const cache = loadTempCache(`server-${serverId}-channels`)
+	if (cache) {
+		consola.success('GetServerChannelActions Cache');
+		return cache
+	}
 	const serverIdRef = await db.servers.id(serverId)
 	try {
 
 		const channelDocs = await db
 			.servers(serverIdRef)
 			.channels.all();
+		saveTempCache(`server-${serverId}-channels`, channelDocs.map((doc) => ({ ...doc.data, id: doc.ref.id })))
 		consola.success('getChannelsAction');
 		return channelDocs.map((doc) => ({ ...doc.data, id: doc.ref.id }));
 	} catch (e) {

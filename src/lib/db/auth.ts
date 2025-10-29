@@ -11,6 +11,7 @@ import { firebaseapp } from './init';
 import { browser } from '$app/environment';
 import { userStore } from '$lib/store/auth.svelte';
 import consola from 'consola';
+import { get } from 'svelte/store';
 
 export const auth = getAuth(firebaseapp);
 
@@ -29,8 +30,7 @@ export async function logout() {
 export async function getCurUserPromise(): Promise<FirebaseUser | null> {
 	let count = 0
 	let limit = 10
-	let chache = null
-	userStore.subscribe((u)=>chache = u)
+	let chache = get(userStore)
 	if (chache!==null) {
 		consola.info("Chched")
 		return chache

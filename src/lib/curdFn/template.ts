@@ -1,5 +1,6 @@
 import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
+import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { TemplateSchemaType } from '$lib/schema/templateSchema';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
@@ -12,7 +13,7 @@ export async function createTemplateAction(template: Omit<TemplateSchemaType, 'i
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
 
-	const templateId = nanoid();
+	const templateId = nanoid(DEFAULT_ID_LENGTH);
 	const templateRef = db.templates.id(templateId);
 
 	const dataToSet = {

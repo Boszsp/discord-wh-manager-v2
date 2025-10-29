@@ -28,6 +28,7 @@ export const load: PageLoad = async ({ url, depends }) => {
 
 	consola.info(`In serverId: ${serverId}, At ChannelId: ${channelId}`);
 	channelCurId.set({ id: serverId, cid: channelId });
+	console.log(channels)
 	return {
 		form: await superValidate(zod4(hookJsonPartial), {
 			defaults: {

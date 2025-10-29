@@ -25,7 +25,7 @@ export const DEFAULT_WEBHOOK_CONTENT = {
 
 export const DEFAULT_WEBHOOK_CONTENT_AS_STRING = JSON.stringify(DEFAULT_WEBHOOK_CONTENT);
 
-export const DEFAULT_ID_LENGTH = 21;
+export const DEFAULT_ID_LENGTH = 8;
 
 export const DEFAULT_SERVER_BG_COLOR = '#222226';
 

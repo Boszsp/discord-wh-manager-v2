@@ -60,6 +60,16 @@
 
 	let channels: webhookSchemaType[] = $state(data?.channels || []);
 
+	$effect(() => {
+		if (data?.channels) {
+			channels = data?.channels
+		}
+		if(data?.templates){
+			templates = data?.templates
+		}
+	}
+	)
+
 	const isMoble = new IsMobile();
 
 	export const snapshot: Snapshot<{ formdata: typeof $formData }> = {
@@ -140,7 +150,7 @@
 
 	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
 		createChannelAction(serverId, channel).then((r) => {
-			if (r?.affectedChannel?.id) channels.push(r.affectedChannel);
+			if (r?.affectedChannel?.id) channels.push(r.affectedChannel as webhookSchemaType);
 		});
 	}
 

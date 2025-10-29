@@ -1,6 +1,8 @@
 import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
+import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { ServerSchemaType } from '$lib/schema/serverSchema';
+import { loadTempCache, saveTempCache } from '$lib/store/temp-cache.svelte';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
@@ -17,14 +19,14 @@ export async function createServerAction(server: Omit<ServerSchemaType, 'id'>): 
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
 
-	const serverId = nanoid();
+	const serverId = nanoid(DEFAULT_ID_LENGTH);
 	const serverRef = db.servers.id(serverId);
 
 	const dataToSet = {
 		...server,
 		create_by: curUser.uid
 	};
-
+	console.log(serverRef, dataToSet)
 	await db.servers.set(serverRef, dataToSet);
 
 	consola.success('createServerAction', dataToSet);
@@ -80,10 +82,16 @@ export async function getServerAction(serverId: string): Promise<Partial<Server>
 export async function getServersAction(): Promise<Server[]> {
 	const curUser = await getCurUserPromise();
 	if (!curUser || !curUser.uid) throw new Error('User is not authenticated');
+	const cache = loadTempCache(`servers-${curUser.uid}`)
+	if (cache){
+		 consola.success('GetServersAction Cache');
+		 return cache
+	}
 
 	try {
 		const serverDocs = await db.servers.query(($) => $.field('create_by').eq(curUser.uid));
-		consola.success('getServersAction');
+		if (!cache)saveTempCache(`servers-${curUser.uid}`,serverDocs.map((doc) => ({ ...doc.data, id: doc.ref.id })))
+		consola.success('GetServersAction');
 		return serverDocs.map((doc) => ({ ...doc.data, id: doc.ref.id }));
 	} catch (e) {
 		consola.error(e);
