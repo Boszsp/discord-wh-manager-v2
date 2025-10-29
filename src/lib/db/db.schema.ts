@@ -12,7 +12,11 @@ export const db = schema(
 		servers: $.collection<Server>().sub({
 			channels: $.collection<webhookSchemaType>()
 		}),
-		templates: $.collection<Template>()
+		templates: $.collection().sub(
+			{
+				template: $.collection<Template>()
+			}
+		)
 	}),
 	{
 		app: firebaseapp.name
@@ -26,5 +30,4 @@ interface Server extends ServerSchemaType {
 }
 
 interface Template extends TemplateSchemaType {
-	templates: TemplateSchemaType[];
 }
