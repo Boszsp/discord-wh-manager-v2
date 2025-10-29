@@ -24,7 +24,7 @@ export async function createChannelAction(
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
 
-	const channelId = nanoid(DEFAULT_ID_LENGTH);
+	const channelId = nanoid(Math.floor(DEFAULT_ID_LENGTH/2));
 	const serverIdRef = await db.servers.id(serverId)
 	const channelRef = db.servers(serverIdRef).channels.id(channelId);
 
@@ -120,7 +120,7 @@ export async function getChannelsAction(serverId: string): Promise<Channel[]> {
 	}
 }
 
-export async function removeChannelAction(serverId: string, channelId: string) {
+export async function removeChannelAction(serverId: string, channelId: string): Promise<FnResponse> {
 	if (!serverId) throw new Error('Server ID is not defined');
 	if (!channelId) throw new Error('Channel ID is not defined');
 	const curUser = await getCurUserPromise();
@@ -129,7 +129,16 @@ export async function removeChannelAction(serverId: string, channelId: string) {
 
 	const id = db.servers(serverIdRef).channels.id(channelId);
 	await db.servers(serverIdRef).channels.remove(id);
+	const cache = loadTempCache(`server-${serverId}-channels`)
+	if (cache) 
+		saveTempCache(`server-${serverId}-channels`, (cache as Channel[])?.filter((doc) => doc.id !== channelId))
 
 	consola.success('removeChannelAction');
-	return { id: channelId };
+	return {
+		status: 200,
+		message: 'success',
+		serverId: serverId,
+		affectedChannel: { id: channelId }
+	};
+
 }

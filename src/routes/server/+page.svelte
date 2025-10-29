@@ -35,6 +35,7 @@
 					color: v?.affectedServer?.color || ''
 				});
 			}
+			toast.success('Server created successfully');
 		});
 	}
 
@@ -42,6 +43,7 @@
 		const index = servers?.findIndex((s) => s.id === id);
 		editServerAction(id, { name, color }).then((r) => {
 			if (index !== -1 && r.affectedServer) {
+				servers = servers.filter((s) => s.id !== id)
 				servers = servers.concat([{
 					id: (r.serverId + '') as string,
 					title: (r.affectedServer?.name + '') as string,
@@ -53,6 +55,7 @@
 				//servers[index].title = r.affectedServer?.name;
 				//servers[index].color = r.affectedServer?.color || '';
 			}
+			toast.success('Server saved successfully');
 		});
 	}
 
@@ -69,6 +72,8 @@
 			removeServerAction(deleteTarget)
 				.then(() => {
 					serverToDelete = servers.find((s) => s.id === deleteTarget) ?? null;
+					servers = servers.filter((s) => s.id !== deleteTarget);
+					toast.success('Server deleted successfully');
 				})
 				.finally(() => (isDeleteDialogOpen = false));
 		}

@@ -49,8 +49,9 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 				title: v?.name,
 				link: `/channel?id=${v?.id}`
 			})) ?? [];
+		console.log(servers)
 		return {
-			servers: servers
+			servers: servers || []
 		};
 	}
 

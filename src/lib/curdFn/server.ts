@@ -1,8 +1,9 @@
+import { invalidate } from '$app/navigation';
 import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
 import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { ServerSchemaType } from '$lib/schema/serverSchema';
-import { loadTempCache, saveTempCache } from '$lib/store/temp-cache.svelte';
+import { loadTempCache, saveTempCache, updateTempCache } from '$lib/store/temp-cache.svelte';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
@@ -28,9 +29,9 @@ export async function createServerAction(server: Omit<ServerSchemaType, 'id'>): 
 	};
 	console.log(serverRef, dataToSet)
 	await db.servers.set(serverRef, dataToSet);
-
-	consola.success('createServerAction', dataToSet);
-
+	updateTempCache(`servers-${curUser.uid}`, { ...dataToSet, id: serverId })
+	consola.success('createServerAction', {...dataToSet,id:serverId});
+	invalidate("servers:get")
 	return {
 		status: 200,
 		message: 'success',
@@ -50,9 +51,9 @@ export async function editServerAction(
 
 	const id = db.servers.id(serverId);
 	await db.servers.update(id, server);
-
+	updateTempCache(`servers-${curUser.uid}`, {...server,id:serverId}, serverId)
 	consola.success('editServerAction', server);
-
+	invalidate("servers:get")
 	return {
 		status: 200,
 		message: 'success',
@@ -101,10 +102,12 @@ export async function getServersAction(): Promise<Server[]> {
 
 export async function removeServerAction(serverId: string) {
 	if (!serverId) throw new Error('Server ID is not defined');
-
+	const curUser = await getCurUserPromise();
+	if (!curUser || !curUser.uid) throw new Error('User is not authenticated');
 	const id = db.servers.id(serverId);
 	await db.servers.remove(id);
-
+	updateTempCache(`servers-${curUser.uid}`,undefined,serverId)
 	consola.success('removeServerAction');
+	invalidate("servers:get")
 	return { id: serverId };
 }

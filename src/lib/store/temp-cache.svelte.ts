@@ -11,11 +11,13 @@ export function saveTempCache(key:string,val:object){
 export function loadTempCache(key:string){
     return get(userTempCacheStore).get(key)
 }
-export function updateTempCache(key:string,val:object){
+export function updateTempCache(key: string, val?: object, oldId?: string){
     let tempVal = loadTempCache(key);
     if (tempVal instanceof Array){
-        tempVal.push(val);
+        if (oldId) tempVal = tempVal?.filter((v: any) => v.id !== oldId)
+        if (val)tempVal.push(val)
     } else if((typeof tempVal) === "object"){
+        if (val)
         tempVal = Object.assign(tempVal,val)
     }
     userTempCacheStore.update(
