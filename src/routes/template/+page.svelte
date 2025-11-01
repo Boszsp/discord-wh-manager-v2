@@ -53,7 +53,12 @@
 	}
 
 	function onEdit(id: string, template: TemplateSchemaType) {
-		editTemplateAction(id, template).then();
+		editTemplateAction(id, template)
+			.then()
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	async function handleSubmit() {
@@ -61,17 +66,27 @@
 			const result = await editTemplateAction(selectedTemplate?.id + '', {
 				...$formData,
 				id: selectedTemplate.id
-			}).catch((e)=>{
+			}).catch((e) => {
 				consola.error(e);
 				toast.error(e.message);
 				return;
 			});
-			templates = templates.map((t) =>
-				t.id === selectedTemplate!.id ? {name:result.affectedTemplate.name,content:result.affectedTemplate.content,id:String(result.affectedTemplate?.id)} as TemplateSchemaType : t
-			);
+			if (result) {
+				templates = templates.map((t) =>
+					t.id === selectedTemplate!.id
+						? ({ ...result.affectedTemplate } as TemplateSchemaType)
+						: t
+				);
+			}
 		} else {
-			const result = await createTemplateAction({ ...$formData });
-			templates = [...templates, result.affectedTemplate as TemplateSchemaType];
+			createTemplateAction({ ...$formData })
+				.then((result) => {
+					templates = [...templates, result.affectedTemplate as TemplateSchemaType];
+				})
+				.catch((e) => {
+					consola.error(e);
+					toast.error(e.message);
+				});
 		}
 		isOpenEditDialog = false;
 	}
@@ -83,8 +98,16 @@
 	}
 
 	function deleteTemplate() {
-		removeTemplateAction(selectedTemplate?.id + '');
-		templateStore.update((templates) => templates.filter((t) => t.name !== selectedTemplate?.name));
+		removeTemplateAction(selectedTemplate?.id + '')
+			.then(() => {
+				templateStore.update((templates) =>
+					templates.filter((t) => t.name !== selectedTemplate?.name)
+				);
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 </script>
 
@@ -132,6 +155,6 @@
 	title="Remove Template"
 	description="Are you sure you want to remove this template?"
 	confirmText="Remove"
-	itemName={selectedTemplate?.name}
+	itemName={selectedTemplate?.name || ''}
 	onConfirm={deleteTemplate}
 />

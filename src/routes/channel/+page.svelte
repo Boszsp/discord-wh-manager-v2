@@ -34,6 +34,7 @@
 	import z from 'zod';
 	import type { FileType } from '$lib/components/app/types';
 	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
+	import consola from 'consola';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -148,29 +149,47 @@
 	}
 
 	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
-		createChannelAction(serverId, channel).then((r) => {
-			if (r?.affectedChannel?.id) channels.push(r.affectedChannel as webhookSchemaType);
-		});
+		createChannelAction(serverId, channel)
+			.then((r) => {
+				if (r?.affectedChannel?.id) channels.push(r.affectedChannel as webhookSchemaType);
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onRemoveChannel(serverId: string, channelId: string) {
-		removeChannelAction(serverId, channelId).then((r) => {
-			if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
-		});
+		removeChannelAction(serverId, channelId)
+			.then((r) => {
+				if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onEditChannel(channelId: string, channel: webhookSchemaType) {
-		editChannelAction(data?.server?.id, channelId, channel).then((r) => {
-			if (r?.affectedChannel?.name) {
-				const channelIndex = channels.findIndex((v) => v.id === channelId);
-				console.log(channelIndex);
-				if (channelIndex >= 0) {
-					const channelsTemp = [...channels];
-					channelsTemp[channelIndex] = Object.assign({ id: channelId }, r.affectedChannel);
-					channels = channelsTemp;
+		editChannelAction(data?.server?.id, channelId, channel)
+			.then((r) => {
+				if (r?.affectedChannel?.name) {
+					const channelIndex = channels.findIndex((v) => v.id === channelId);
+					console.log(channelIndex);
+					if (channelIndex >= 0) {
+						const channelsTemp = [...channels];
+						channelsTemp[channelIndex] = {
+							...channelsTemp[channelIndex],
+							...r.affectedChannel
+						};
+						channels = channelsTemp;
+					}
 				}
-			}
-		});
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onSaveTemplate() {
@@ -178,21 +197,31 @@
 			id: selectedTemplateObj?.id,
 			name: selectedTemplateObj?.name || '',
 			content: safeStrinifyTemplateString($formData)
-		}).then((r) => {
-			const templatesTemp = [...templates];
-			templatesTemp.find(
-				(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
-			);
-			templates = templatesTemp;
-		});
+		})
+			.then((r) => {
+				const templatesTemp = [...templates];
+				templatesTemp.find(
+					(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
+				);
+				templates = templatesTemp;
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 	function onCreateTemplate(name: string | undefined) {
 		createTemplateAction({
 			name: name + '',
 			content: safeStrinifyTemplateString($formData)
-		}).then((r) => {
-			if (r?.affectedTemplate?.id) templates.push(r.affectedTemplate);
-		});
+		})
+			.then((r) => {
+				if (r?.affectedTemplate?.id) templates.push(r.affectedTemplate as TemplateSchemaType);
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 </script>
 
