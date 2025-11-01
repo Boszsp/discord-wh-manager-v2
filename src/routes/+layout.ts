@@ -23,7 +23,7 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 
 
 		let user = await getCurUserPromise()
-		consola.info('Loading user', user);
+		//consola.info('Loading user', user);
 
 		if (user && public_paths.filter(v => !['/', ''].includes(v)).includes(pathname)) {
 			throw redirect(307, '/');
@@ -49,7 +49,6 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 				title: v?.name,
 				link: `/channel?id=${v?.id}`
 			})) ?? [];
-		console.log(servers)
 		return {
 			servers: servers || []
 		};

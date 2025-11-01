@@ -62,13 +62,12 @@
 
 	$effect(() => {
 		if (data?.channels) {
-			channels = data?.channels
+			channels = data?.channels;
 		}
-		if(data?.templates){
-			templates = data?.templates
+		if (data?.templates) {
+			templates = data?.templates;
 		}
-	}
-	)
+	});
 
 	const isMoble = new IsMobile();
 
@@ -207,7 +206,7 @@
 	leftWidth={16}
 	class="overflow-hidden bg-background"
 >
-	{#if data?.channels && data?.channels?.length > 0}
+	{#if data?.channels && data?.channels?.length > 0 && data?.channel?.id}
 		<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 			<Resizable.Pane defaultSize={40} class="w-fit">
 				<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
@@ -244,7 +243,7 @@
 						</p>
 						<ChannelSentCard
 							server={data?.server}
-							channel={data?.channel}
+							channel={data.channel as { name: string; url: string; id: string }}
 							{templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
@@ -278,6 +277,7 @@
 								<Separator class="mt-8 mb-4" />
 								<ChannelForm {form} />
 							</div>
+						
 						{:else}
 							<TemplateVariableForm
 								bind:values={templateFromValues}

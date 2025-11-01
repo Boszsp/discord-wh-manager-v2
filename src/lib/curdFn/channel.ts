@@ -1,8 +1,9 @@
+import { invalidate } from '$app/navigation';
 import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
 import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { webhookSchemaType } from '$lib/schema/webhookSchema';
-import { loadTempCache, saveTempCache } from '$lib/store/temp-cache.svelte';
+import { loadTempCache, saveTempCache, updateTempCache } from '$lib/store/temp-cache.svelte';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
@@ -34,7 +35,9 @@ export async function createChannelAction(
 
 	await db.servers(serverIdRef).channels.set(channelRef, dataToSet);
 
+	updateTempCache(`server-${serverId}-channels`,{...dataToSet,id:channelId})
 	consola.success('createChannelAction', dataToSet);
+	invalidate("channel:get")
 
 	return {
 		status: 200,
@@ -57,9 +60,9 @@ export async function editChannelAction(
 	const serverIdRef = await db.servers.id(serverId)
 	const id = db.servers(serverIdRef).channels.id(channelId);
 	await db.servers(serverIdRef).channels.update(id, channel);
-
+	updateTempCache(`server-${serverId}-channels`, { ...channel, id: channelId },channelId)
 	consola.success('EditChannelAction', channel);
-
+	invalidate("channel:get")
 	return {
 		status: 200,
 		message: 'success',
@@ -91,7 +94,6 @@ export async function getChannelAction(
 		return null;
 	}
 	saveTempCache(`server-${serverId}-channel-${channelId}`,channelDoc.data)
-
 	consola.success('GetChannelAction');
 	return { ...channelDoc.data, id: channelDoc.ref.id };
 }
@@ -102,7 +104,7 @@ export async function getChannelsAction(serverId: string): Promise<Channel[]> {
 	if (!curUser || !curUser.uid) throw new Error('User is not authenticated');
 	const cache = loadTempCache(`server-${serverId}-channels`)
 	if (cache) {
-		consola.success('GetServerChannelActions Cache');
+		consola.success('GetServerChannel(s)Action Cache');
 		return cache
 	}
 	const serverIdRef = await db.servers.id(serverId)
@@ -134,6 +136,7 @@ export async function removeChannelAction(serverId: string, channelId: string): 
 		saveTempCache(`server-${serverId}-channels`, (cache as Channel[])?.filter((doc) => doc.id !== channelId))
 
 	consola.success('removeChannelAction');
+	invalidate("channel:get")
 	return {
 		status: 200,
 		message: 'success',
