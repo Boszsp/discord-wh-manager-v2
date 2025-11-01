@@ -54,7 +54,9 @@
 
 	function onEdit(id: string, template: TemplateSchemaType) {
 		editTemplateAction(id, template)
-			.then()
+			.then(() => {
+				toast.success('Template updated successfully');
+			})
 			.catch((e) => {
 				consola.error(e);
 				toast.error(e.message);
@@ -66,11 +68,16 @@
 			const result = await editTemplateAction(selectedTemplate?.id + '', {
 				...$formData,
 				id: selectedTemplate.id
-			}).catch((e) => {
-				consola.error(e);
-				toast.error(e.message);
-				return;
-			});
+			})
+				.then((r) => {
+					toast.success('Template updated successfully');
+					return r;
+				})
+				.catch((e) => {
+					consola.error(e);
+					toast.error(e.message);
+					return undefined;
+				});
 			if (result) {
 				templates = templates.map((t) =>
 					t.id === selectedTemplate!.id
@@ -82,6 +89,7 @@
 			createTemplateAction({ ...$formData })
 				.then((result) => {
 					templates = [...templates, result.affectedTemplate as TemplateSchemaType];
+					toast.success('Template created successfully');
 				})
 				.catch((e) => {
 					consola.error(e);
@@ -103,6 +111,7 @@
 				templateStore.update((templates) =>
 					templates.filter((t) => t.name !== selectedTemplate?.name)
 				);
+				toast.success('Template removed successfully');
 			})
 			.catch((e) => {
 				consola.error(e);

@@ -34,7 +34,6 @@
 	import z from 'zod';
 	import type { FileType } from '$lib/components/app/types';
 	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
-	import { updateTempCache } from '$lib/store/temp-cache.svelte';
 	import consola from 'consola';
 
 	const { data }: PageProps = $props();
@@ -152,7 +151,10 @@
 	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
 		createChannelAction(serverId, channel)
 			.then((r) => {
-				if (r?.affectedChannel?.id) channels.push(r.affectedChannel as webhookSchemaType);
+				if (r?.affectedChannel?.id) {
+					channels.push(r.affectedChannel as webhookSchemaType);
+					toast.success('Channel created successfully');
+				}
 			})
 			.catch((e) => {
 				consola.error(e);
@@ -163,7 +165,10 @@
 	function onRemoveChannel(serverId: string, channelId: string) {
 		removeChannelAction(serverId, channelId)
 			.then((r) => {
-				if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
+				if (r?.affectedChannel?.id) {
+					channels = channels.filter((v) => v.id !== channelId);
+					toast.success('Channel removed successfully');
+				}
 			})
 			.catch((e) => {
 				consola.error(e);
@@ -184,6 +189,7 @@
 							...r.affectedChannel
 						};
 						channels = channelsTemp;
+						toast.success('Channel updated successfully');
 					}
 				}
 			})
@@ -205,6 +211,7 @@
 					(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
 				);
 				templates = templatesTemp;
+				toast.success('Template saved successfully');
 			})
 			.catch((e) => {
 				consola.error(e);
@@ -217,7 +224,10 @@
 			content: safeStrinifyTemplateString($formData)
 		})
 			.then((r) => {
-				if (r?.affectedTemplate?.id) templates.push(r.affectedTemplate as TemplateSchemaType);
+				if (r?.affectedTemplate?.id) {
+					templates.push(r.affectedTemplate as TemplateSchemaType);
+					toast.success('Template created successfully');
+				}
 			})
 			.catch((e) => {
 				consola.error(e);
