@@ -284,35 +284,35 @@
 						<FileManipulation class="mt-4" bind:files />
 
 						<Separator class="my-4" />
-						{#if !selectedTemplate || selectedTemplate === ''}
-							<div transition:fade>
-								<div class="flex gap-4">
-									<div>
-										<h3 class="text-lg font-medium">Form Data</h3>
-										<p class="mb-2 text-xs text-muted-foreground">
-											Type your content here. | กรอกข้อมูลของคุณที่นี่.
-										</p>
-									</div>
-									<Button
-										class="ml-auto"
-										variant="outline"
-										onclick={() => {
-											$formData = { content: '' };
-											files = [];
-										}}>Clear</Button
-									>
-								</div>
-								<ChannelFile bind:files />
-								<Separator class="mt-8 mb-4" />
-								<ChannelForm {form} />
-							</div>
-						
-						{:else}
+						{#if selectedTemplate && selectedTemplate !== ''}
 							<TemplateVariableForm
+								class="mb-8"
 								bind:values={templateFromValues}
 								templateContent={selectedTemplateObj?.content || ''}
 							/>
+							<Separator class="my-4" />
 						{/if}
+						<div transition:fade>
+							<div class="flex gap-4">
+								<div>
+									<h3 class="text-lg font-medium">Form Data</h3>
+									<p class="mb-2 text-xs text-muted-foreground">
+										Type your content here. | กรอกข้อมูลของคุณที่นี่.
+									</p>
+								</div>
+								<Button
+									class="ml-auto"
+									variant="outline"
+									onclick={() => {
+										$formData = { content: '' };
+										files = [];
+									}}>Clear</Button
+								>
+							</div>
+							<ChannelFile bind:files />
+							<Separator class="mt-8 mb-4" />
+							<ChannelForm {form} />
+						</div>
 					</div>
 				</ScrollArea>
 			</Resizable.Pane>

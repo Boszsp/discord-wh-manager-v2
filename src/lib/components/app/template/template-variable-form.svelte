@@ -2,21 +2,25 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { extractVariables } from '$lib/utilsFn/template';
+	import type { ClassValue } from 'svelte/elements';
+	import { cn } from '$lib/utils';
 
 	type Values = Record<string, string>;
 
 	let {
 		templateContent = '',
-		values = $bindable({})
+		values = $bindable({}),
+		class:className
 	}: {
 		templateContent: string;
 		values?: Values;
+		class?:ClassValue;
 	} = $props();
 
 	const variables = $derived(extractVariables(templateContent));
 </script>
 
-<div class="space-y-4 rounded-md border p-4">
+<div class={cn("space-y-4 rounded-md border p-4",className)}>
 	<h3 class="text-lg font-medium">Template Variables</h3>
 	{#if variables.length > 0}
 		<div>
