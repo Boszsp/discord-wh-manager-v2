@@ -2,7 +2,7 @@ import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
 import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { TemplateSchemaType } from '$lib/schema/templateSchema';
-import { loadTempCache, saveTempCache } from '$lib/store/temp-cache.svelte';
+import { loadTempCache, saveTempCache, updateTempCache } from '$lib/store/temp-cache.svelte';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
 
@@ -37,13 +37,16 @@ export async function createTemplateAction(
 
 	await db.templates(templateURef).template.set(templateRef, dataToSet);
 
+	const affectedTemplate = { ...dataToSet, id: templateId };
+	updateTempCache('templates-all', affectedTemplate);
+
 	consola.success('createTemplateAction', dataToSet);
 
 	return {
 		status: 200,
 		message: 'success',
 		templateId: templateId,
-		affectedTemplate: { ...dataToSet, id: templateId }
+		affectedTemplate: affectedTemplate
 	};
 }
 
@@ -61,13 +64,16 @@ export async function editTemplateAction(
 	const id = db.templates(templateUId).template.id(templateId);
 	await db.templates(templateUId).template.update(id, template);
 
+	const affectedTemplate = { ...template, id: templateId };
+	updateTempCache('templates-all', affectedTemplate, templateId);
+
 	consola.success('editTemplateAction', template);
 
 	return {
 		status: 200,
 		message: 'success',
 		templateId: templateId,
-		affectedTemplate: { ...template, id: templateId }
+		affectedTemplate: affectedTemplate
 	};
 }
 
@@ -126,8 +132,11 @@ export async function removeTemplateAction(templateId: string) {
 	const curUser = await getCurUserPromise();
 	if (!curUser) throw new Error('User is not authenticated');
 
-	const id = db.templates.id(templateId);
-	await db.templates.remove(id);
+	const templateURef = db.templates.id(curUser.uid);
+	const templateRef = db.templates(templateURef).template.id(templateId);
+	await db.templates(templateURef).template.remove(templateRef);
+
+	updateTempCache('templates-all', undefined, templateId);
 
 	consola.success('removeTemplateAction');
 	return { id: templateId };

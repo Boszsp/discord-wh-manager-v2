@@ -34,6 +34,7 @@
 	import z from 'zod';
 	import type { FileType } from '$lib/components/app/types';
 	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
+	import { updateTempCache } from '$lib/store/temp-cache.svelte';
 	import consola from 'consola';
 
 	const { data }: PageProps = $props();
