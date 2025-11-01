@@ -18,6 +18,8 @@
 		removeTemplateAction
 	} from '$lib/curdFn/template';
 	import ConfirmDialog from '$lib/components/app/dialog/confirm-dialog.svelte';
+	import consola from 'consola';
+	import { toast } from 'svelte-sonner';
 
 	const { data }: PageProps = $props();
 	let isOpenEditDialog = $state(false);
@@ -59,13 +61,17 @@
 			const result = await editTemplateAction(selectedTemplate?.id + '', {
 				...$formData,
 				id: selectedTemplate.id
+			}).catch((e)=>{
+				consola.error(e);
+				toast.error(e.message);
+				return;
 			});
 			templates = templates.map((t) =>
-				t.id === selectedTemplate!.id ? result.affectedTemplate : t
+				t.id === selectedTemplate!.id ? {name:result.affectedTemplate.name,content:result.affectedTemplate.content,id:String(result.affectedTemplate?.id)} as TemplateSchemaType : t
 			);
 		} else {
-			const result = await createTemplateAction({ ...$formData, id: '' });
-			templates = [...templates, result.affectedTemplate];
+			const result = await createTemplateAction({ ...$formData });
+			templates = [...templates, result.affectedTemplate as TemplateSchemaType];
 		}
 		isOpenEditDialog = false;
 	}

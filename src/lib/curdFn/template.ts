@@ -32,7 +32,7 @@ export async function createTemplateAction(
 
 	const dataToSet = {
 		...template,
-		id: templateId // Initialize templates as an empty array as per schema
+		//id: templateId // Initialize templates as an empty array as per schema
 	};
 
 	await db.templates(templateURef).template.set(templateRef, dataToSet);
