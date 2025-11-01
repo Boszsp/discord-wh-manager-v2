@@ -12,6 +12,7 @@
 	import { toast } from 'svelte-sonner';
 	import { createServerAction, editServerAction, removeServerAction } from '$lib/curdFn/server';
 	import { channelCurId } from '$lib/store/channel.svelte';
+	import consola from 'consola';
 
 	const { data }: PageProps = $props();
 
@@ -27,36 +28,48 @@
 	);
 
 	function createServer({ name, color }: { name: string; color: string }) {
-		createServerAction({ name, color }).then((v) => {
-			if (v?.affectedServer) {
-				servers?.unshift({
-					id: v?.serverId || '',
-					title: v?.affectedServer?.name || '',
-					color: v?.affectedServer?.color || ''
-				});
-			}
-			toast.success('Server created successfully');
-		});
+		createServerAction({ name, color })
+			.then((v) => {
+				if (v?.affectedServer) {
+					servers?.unshift({
+						id: v?.serverId || '',
+						title: v?.affectedServer?.name || '',
+						color: v?.affectedServer?.color || ''
+					});
+				}
+				toast.success('Server created successfully');
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function saveServer({ id, name, color }: { id: string; name: string; color: string }) {
 		const index = servers?.findIndex((s) => s.id === id);
-		editServerAction(id, { name, color }).then((r) => {
-			if (index !== -1 && r.affectedServer) {
-				servers = servers.filter((s) => s.id !== id)
-				servers = servers.concat([{
-					id: (r.serverId + '') as string,
-					title: (r.affectedServer?.name + '') as string,
-					color:
-						(r.affectedServer?.color === null
-							? undefined
-							: r.affectedServer?.color) as string | undefined
-				}]);
-				//servers[index].title = r.affectedServer?.name;
-				//servers[index].color = r.affectedServer?.color || '';
-			}
-			toast.success('Server saved successfully');
-		});
+		editServerAction(id, { name, color })
+			.then((r) => {
+				if (index !== -1 && r.affectedServer) {
+					servers = servers.filter((s) => s.id !== id);
+					servers = servers.concat([
+						{
+							id: (r.serverId + '') as string,
+							title: (r.affectedServer?.name + '') as string,
+							color:
+								(r.affectedServer?.color === null
+									? undefined
+									: r.affectedServer?.color) as string | undefined
+						}
+					]);
+					//servers[index].title = r.affectedServer?.name;
+					//servers[index].color = r.affectedServer?.color || '';
+				}
+				toast.success('Server saved successfully');
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function deleteServer({ id }: { id: string }) {
@@ -74,6 +87,10 @@
 					serverToDelete = servers.find((s) => s.id === deleteTarget) ?? null;
 					servers = servers.filter((s) => s.id !== deleteTarget);
 					toast.success('Server deleted successfully');
+				})
+				.catch((e) => {
+					consola.error(e);
+					toast.error(e.message);
 				})
 				.finally(() => (isDeleteDialogOpen = false));
 		}
