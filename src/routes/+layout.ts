@@ -19,28 +19,31 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 		const { pathname } = url;
 		const public_paths = ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup', '/', '', '/home', '/home/', '/default', '/default/'];
 
-		if (public_paths.filter(v => !['/', '', '/home', '/home/', '/default', '/default/'].includes(v)).includes(pathname))
-			return {}
-
+		//if (public_paths.filter(v => !['/', '', '/default', '/default/', '/home', '/home/'].includes(v)).includes(pathname))
+		//	return {}
+		
+		//consola.info(pathname)
 
 		let user = await getCurUserPromise().catch()
 		//consola.info('Loading user', user);
 		const enckey = loadFromLocalStorage(DEFAULT_LOCAL_ENC_KEY)
-		console.log('enckey', enckey)
 
+		if (user && pathname.startsWith("/login/enckey")) return
 		if (user && !enckey) {
-			throw redirect(307, '/login/enckey');
+			throw redirect(302, '/login/enckey');
 		}
 
 		if (user && ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup'].includes(pathname)) {
-			throw redirect(307, '/');
+			throw redirect(302, '/');
 		}
 
-		if (!user && !public_paths.includes(pathname)) {
-			throw redirect(307, '/login');
+		if((!user) && pathname.startsWith("/login"))return
+
+		if (!(user && public_paths.includes(pathname))) {
+			throw redirect(302, '/login');
 		}
 
-		if (!user && public_paths.includes(pathname))return
+		if ((!user) && public_paths.includes(pathname)) return
 
 		depends('servers:get');
 		consola.info('Loading server(s)...');

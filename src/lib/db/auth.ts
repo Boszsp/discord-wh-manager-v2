@@ -12,6 +12,9 @@ import { browser } from '$app/environment';
 import { userStore } from '$lib/store/auth.svelte';
 import consola from 'consola';
 import { get } from 'svelte/store';
+import { clearFromLocalStorage } from '$lib/store/local-storage-cache.svelte';
+import { DEFAULT_LOCAL_ENC_KEY } from '$lib/default';
+import { refreshAll } from '$app/navigation';
 
 export const auth = getAuth(firebaseapp);
 
@@ -24,7 +27,9 @@ export async function signup(email: string, password: string) {
 }
 
 export async function logout() {
+	clearFromLocalStorage(DEFAULT_LOCAL_ENC_KEY)
 	await signOutFn(auth);
+	await refreshAll()
 }
 
 export async function getCurUserPromise(): Promise<FirebaseUser | null> {
