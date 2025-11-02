@@ -22,7 +22,7 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 		//if (public_paths.filter(v => !['/', '', '/default', '/default/', '/home', '/home/'].includes(v)).includes(pathname))
 		//	return {}
 		
-		//consola.info(pathname)
+		consola.info(pathname)
 
 		let user = await getCurUserPromise().catch()
 		//consola.info('Loading user', user);
@@ -39,7 +39,7 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 
 		if((!user) && pathname.startsWith("/login"))return
 
-		if (!(user && public_paths.includes(pathname))) {
+		if (!(user || public_paths.includes(pathname))) {
 			throw redirect(302, '/login');
 		}
 
