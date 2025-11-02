@@ -51,5 +51,16 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
+	<Form.Field {form} name="passkey">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Passkey</Form.Label>
+				<Input {...props} bind:value={$formData.passkey} type="password" placeholder="****************" />
+			{/snippet}
+		</Form.Control>
+		<Form.Description>{$formData.passkey.length}/16</Form.Description>
+		<Form.FieldErrors />
+	</Form.Field>
+
 	<Button type="submit" class="w-full">Login</Button>
 </form>

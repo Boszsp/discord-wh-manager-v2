@@ -22,7 +22,9 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 			return {}
 
 
-		let user = await getCurUserPromise()
+		let user = await getCurUserPromise().catch(
+			
+		)
 		//consola.info('Loading user', user);
 
 		if (user && public_paths.filter(v => !['/', ''].includes(v)).includes(pathname)) {
@@ -32,6 +34,8 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 		if (!user && !public_paths.includes(pathname)) {
 			throw redirect(307, '/login');
 		}
+
+		if (!user && public_paths.includes(pathname))return
 
 		depends('servers:get');
 		consola.info('Loading server(s)...');

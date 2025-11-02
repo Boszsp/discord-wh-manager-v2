@@ -8,6 +8,7 @@
 	import { DEFAULT_SIDEBAR_FIRST_MENU } from '$lib/default';
 	import { convertToFallbackString } from '$lib/utilsFn/string';
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
+	import type { Snippet } from 'svelte';
 
 	export interface sidebarMenuProps {
 		image?: string;
@@ -21,8 +22,9 @@
 	}
 	const {
 		sidebarMenu,
-		class: className
-	}: { sidebarMenu?: sidebarMenuProps[]; class?: ClassValue } = $props();
+		class: className,
+		children
+	}: { sidebarMenu?: sidebarMenuProps[]; class?: ClassValue; children?: Snippet } = $props();
 </script>
 
 <aside class="h-full overflow-hidden">
@@ -104,6 +106,7 @@
 				</div>
 			{/each}
 			<div class="h-10"></div>
+			{@render children?.()}
 		</nav>
 	</ScrollArea>
 </aside>
