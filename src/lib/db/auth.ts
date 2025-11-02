@@ -29,6 +29,7 @@ export async function signup(email: string, password: string) {
 export async function logout() {
 	clearFromLocalStorage(DEFAULT_LOCAL_ENC_KEY)
 	await signOutFn(auth);
+	userStore.set(null)
 	await refreshAll()
 }
 

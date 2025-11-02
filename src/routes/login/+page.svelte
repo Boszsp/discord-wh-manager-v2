@@ -9,6 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	let { data } = $props();
+	let isLoading = $state(false)
 	const form = superForm(data.form, {
 		validators: zod4(loginSchema),
 		validationMethod: 'onblur',
@@ -16,6 +17,7 @@
 			inp.cancel();
 			const { data: formData, valid } = await form.validateForm();
 			if (!valid) return false;
+			isLoading = true
 			await login(formData.username, formData.password)
 				.then((res) => {
 					toast.success('Login Successful');
@@ -25,6 +27,7 @@
 				.catch((err) => {
 					toast.error(err.message);
 				});
+			isLoading = false
 			return false;
 		},
 		clearOnSubmit: 'errors'
@@ -47,7 +50,7 @@
 		</div>
 		<div class="flex flex-1 items-center justify-center">
 			<div class="w-full max-w-xs">
-				<LoginForm {form} />
+				<LoginForm {form} {isLoading} />
 			</div>
 		</div>
 	</div>

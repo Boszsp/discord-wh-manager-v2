@@ -6,14 +6,17 @@
 	import type { SuperForm } from 'sveltekit-superforms';
 	import * as Form from '$lib/components/ui/form';
 	import type { loginSchemaType } from '$lib/schema/loginSchema';
+	import { LoaderIcon } from 'lucide-svelte';
 
 	let {
 		ref = $bindable(null),
 		class: className,
+		isLoading,
 		form,
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & {
 		form: SuperForm<loginSchemaType, any>;
+		isLoading: boolean;
 	} = $props();
 	const id = $props.id();
 	const { form: formData, enhance } = form;
@@ -51,5 +54,9 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Button type="submit" class="w-full">Login</Button>
+	<Button type="submit" disabled={isLoading} class="w-full">
+		{#if isLoading}
+		<LoaderIcon class="animate-spin" />
+		{/if}
+		Login</Button>
 </form>
