@@ -25,7 +25,7 @@
 <button
 	onclick={handlerOpenFile}
 	class={cn(
-		'relative mt-2 flex w-fit items-center gap-2 rounded-md border bg-card p-4 text-start outline-none overflow-hidden'
+		'relative mt-2 flex w-fit items-center gap-2 overflow-hidden rounded-md border bg-card p-4 text-start outline-none'
 	)}
 >
 	<FileIcon class="size-10 text-muted-foreground" strokeWidth={2} />
@@ -42,6 +42,6 @@
 		{/if}
 	</div>
 	{#if $selectedFileStore.includes((file as FileType)?.id)}
-		<div class="absolute inset-0 size-full bg-indigo-800/20 pointer-events-none"></div>
+		<div class="pointer-events-none absolute inset-0 size-full bg-indigo-800/20"></div>
 	{/if}
 </button>

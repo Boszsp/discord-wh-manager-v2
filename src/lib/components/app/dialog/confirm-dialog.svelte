@@ -65,8 +65,7 @@
 			<TrashIcon class="mr-2 size-4" />
 			Remove
 		{:else}
-			{#snippet trigger()}
-			{/snippet}
+			{#snippet trigger()}{/snippet}
 		{/if}
 	</Dialog.Trigger>
 	<Dialog.Content class="w-md">
@@ -74,7 +73,7 @@
 			<Dialog.Title>
 				{title}
 			</Dialog.Title>
-			<Dialog.Description >
+			<Dialog.Description>
 				{description}
 			</Dialog.Description>
 		</Dialog.Header>
@@ -93,7 +92,7 @@
 			</div>
 		{/if}
 
-		<Dialog.Footer >
+		<Dialog.Footer>
 			<Button variant="outline" onclick={() => (open = false)}>
 				{cancelText}
 			</Button>

@@ -5,26 +5,36 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/schema/loginSchema';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
+	import { login } from '$lib/db/auth.js';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 	let { data } = $props();
 	const form = superForm(data.form, {
 		validators: zod4(loginSchema),
-		validationMethod:"onblur",
-		onSubmit:(inp)=>{
-			inp.cancel()
-			return false
+		validationMethod: 'onblur',
+		onSubmit: async (inp) => {
+			inp.cancel();
+			const { data: formData, valid } = await form.validateForm();
+			if (!valid) return false;
+			await login(formData.username, formData.password)
+				.then((res) => {
+					toast.success('Login Successful');
+					goto('/');
+					return res;
+				})
+				.catch((err) => {
+					toast.error(err.message);
+				});
+			return false;
 		},
-		clearOnSubmit:"errors"
-		
+		clearOnSubmit: 'errors'
 	});
 </script>
-<PageTransition/>
+
+<PageTransition />
 <div class="fixed top-0 left-0 z-60 grid h-svh min-h-svh w-svw bg-background lg:grid-cols-2">
 	<div class="relative hidden bg-muted lg:block">
-		<img
-			src="/bg-1.png"
-			alt="placeholder"
-			class="absolute inset-0 h-full w-full object-cover"
-		/>
+		<img src="/bg-1.png" alt="placeholder" class="absolute inset-0 h-full w-full object-cover" />
 	</div>
 	<div class="flex flex-col gap-4 p-6 md:p-10">
 		<div class="flex justify-center gap-2 md:justify-start">
@@ -37,7 +47,7 @@
 		</div>
 		<div class="flex flex-1 items-center justify-center">
 			<div class="w-full max-w-xs">
-				<LoginForm form={form} />
+				<LoginForm {form} />
 			</div>
 		</div>
 	</div>

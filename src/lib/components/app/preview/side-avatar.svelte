@@ -11,7 +11,7 @@
 		children,
 		image = '/webhook/dwh-sm.png',
 		name = 'Webhook Name',
-		content = ""
+		content = ''
 	}: {
 		children: Snippet;
 		image?: string;

@@ -1,14 +1,22 @@
 <script lang="ts">
-    import type { ServerType } from '../types';
-    import ServerListItem from './server-list-item.svelte';
+	import type { ServerType } from '../types';
+	import ServerListItem from './server-list-item.svelte';
 
-    let { servers, onSave, onDelete }: { servers: ServerType[], onSave: (detail: { id: string; name: string; color: string }) => void, onDelete: (detail: { id: string }) => void } = $props();
+	let {
+		servers,
+		onSave,
+		onDelete
+	}: {
+		servers: ServerType[];
+		onSave: (detail: { id: string; name: string; color: string }) => void;
+		onDelete: (detail: { id: string }) => void;
+	} = $props();
 </script>
 
-<div class="rounded-md border overflow-hidden bg-card">
-    <div class="flex flex-col">
-        {#each servers as server , i(server.title+"-"+i)}
-            <ServerListItem {server} {onSave} {onDelete} />
-        {/each}
-    </div>
+<div class="overflow-hidden rounded-md border bg-card">
+	<div class="flex flex-col">
+		{#each servers as server, i (server.title + '-' + i)}
+			<ServerListItem {server} {onSave} {onDelete} />
+		{/each}
+	</div>
 </div>

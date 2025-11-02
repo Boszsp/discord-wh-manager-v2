@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { Card } from '$lib/components/ui/card';
-	import { HashIcon, LoaderCircleIcon, SaveIcon, SendIcon, SquarePlus, SquareXIcon } from 'lucide-svelte';
+	import {
+		HashIcon,
+		LoaderCircleIcon,
+		SaveIcon,
+		SendIcon,
+		SquarePlus,
+		SquareXIcon
+	} from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import Autocomplelte from '$lib/components/app/form/autocomplete.svelte';

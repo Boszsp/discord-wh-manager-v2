@@ -2,10 +2,9 @@
 	import { convertMdToHTML } from '$lib/utilsFn/md';
 	import { fade } from 'svelte/transition';
 	import './side-avatar.css';
-	
 
 	let {
-		content = ""
+		content = ''
 	}: {
 		content?: string;
 	} = $props();

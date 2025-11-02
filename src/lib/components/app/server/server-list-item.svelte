@@ -29,7 +29,7 @@
 	function startEditing() {
 		isEditing = true;
 		editingName = server.title;
-		editingColor = colorNameToHex(server.color+"") ?? DEFAULT_SERVER_BG_COLOR;
+		editingColor = colorNameToHex(server.color + '') ?? DEFAULT_SERVER_BG_COLOR;
 	}
 
 	function saveEdit() {

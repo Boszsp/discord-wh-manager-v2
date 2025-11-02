@@ -1,44 +1,42 @@
-  .carta-editor {
-      --border-color: var(--input);
-      --selection-color:var(--foreground);
-      --focus-outline: var(--focus-outline-dark);
-      --hover-color: var(--hover-color-dark);
-      --caret-color: var(--caret-color-dark);
-      --text-color: var(--foreground);
-      /* background-color: color-mix(in oklab, var(--input) 30%, transparent);*/
+.carta-editor {
+	--border-color: var(--input);
+	--selection-color: var(--foreground);
+	--focus-outline: var(--focus-outline-dark);
+	--hover-color: var(--hover-color-dark);
+	--caret-color: var(--caret-color-dark);
+	--text-color: var(--foreground);
+	/* background-color: color-mix(in oklab, var(--input) 30%, transparent);*/
+}
 
+.carta-editor .carta-toolbar {
+	border-bottom-width: 1px;
+}
 
-  }
+.carta-editor .carta-icon:hover {
+	background-color: color-mix(in oklab, var(--input) 50%, transparent);
+}
 
-  .carta-editor .carta-toolbar {
-      border-bottom-width: 1px;
-  }
+.carta-editor .carta-toolbar,
+.carta-editor .carta-wrapper {
+	padding: calc(var(--spacing) * 2) /* 0.5rem = 8px */;
+}
 
-  .carta-editor .carta-icon:hover {
-      background-color: color-mix(in oklab, var(--input) 50%, transparent);
-  }
+.carta-editor .carta-wrapper {
+	min-height: calc(var(--spacing) * 32);
+}
 
-  .carta-editor .carta-toolbar,
-  .carta-editor .carta-wrapper {
-      padding: calc(var(--spacing) * 2)
-          /* 0.5rem = 8px */
-      ;
-  }
+.carta-editor .shiki,
+.carta-editor .shiki span {
+	color: var(--shiki-dark) !important;
+	font-size: var(--text-sm);
+	font-family: var(--default-font-family);
+}
 
-  .carta-editor .carta-wrapper{
-    min-height:calc(var(--spacing) * 32);
-  }
-
-  .carta-editor .shiki,
-  .carta-editor .shiki span {
-      color: var(--shiki-dark) !important;
-      font-size:var(--text-sm);
-      font-family: var(--default-font-family);
-  }
-
-  .carta-editor .carta-toolbar-left , .carta-editor .carta-filler , .carta-editor .carta-renderer {
-      display: none !important;
-  }
-  .carta-editor .carta-icon:nth-child(1) {
-      margin: 0px;
-  }
+.carta-editor .carta-toolbar-left,
+.carta-editor .carta-filler,
+.carta-editor .carta-renderer {
+	display: none !important;
+}
+.carta-editor .carta-icon:nth-child(1) {
+	margin: 0px;
+}

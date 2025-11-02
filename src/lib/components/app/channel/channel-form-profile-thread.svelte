@@ -17,7 +17,7 @@
 	const { form: formData } = form;
 </script>
 
-<Accordion.Root type="multiple" >
+<Accordion.Root type="multiple">
 	<Accordion.Item value="profile">
 		<Accordion.Trigger class={className}>Profile</Accordion.Trigger>
 		<Accordion.Content class={className}>
@@ -51,7 +51,7 @@
 
 	<Accordion.Item value="thread">
 		<Accordion.Trigger class={className}>Thread</Accordion.Trigger>
-		<Accordion.Content class={cn("flex flex-col gap-4 text-balance",className)}>
+		<Accordion.Content class={cn('flex flex-col gap-4 text-balance', className)}>
 			<Form.Field {form} name="thread_name">
 				<Form.Control>
 					{#snippet children({ props })}

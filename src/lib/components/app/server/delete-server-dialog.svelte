@@ -4,11 +4,15 @@
 	import { Input } from '$lib/components/ui/input';
 	import type { ServerType } from '../types';
 
-	let { open = $bindable(false), serverToDelete = $bindable(null), onConfirm = () => {} } :{
+	let {
+		open = $bindable(false),
+		serverToDelete = $bindable(null),
+		onConfirm = () => {}
+	}: {
 		open: boolean;
 		serverToDelete: ServerType | null;
 		onConfirm: () => void;
-	}= $props();
+	} = $props();
 
 	let deleteConfirmName = $state('');
 

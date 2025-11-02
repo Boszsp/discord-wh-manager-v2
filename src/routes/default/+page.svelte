@@ -101,7 +101,7 @@
 		const result = sendToWebhook(
 			$whData.url,
 			cleanUpBlank($formData),
-			files?.map(v=>v?.file),
+			files?.map((v) => v?.file),
 			(mss, type: 'error' | 'success' = 'success') => {
 				if (type === 'error') toast.error(mss);
 				else toast.success(mss);
@@ -155,7 +155,7 @@
 				<div class="p-4">
 					<h3 class="mb-4 text-lg font-medium">Preview</h3>
 					<div>
-						<Preview content={$formData} files={files} />
+						<Preview content={$formData} {files} />
 						<Separator class="my-8" />
 						<TextareaJson value={JSON.stringify($formData, null, 2)} class="mt-4" />
 					</div>

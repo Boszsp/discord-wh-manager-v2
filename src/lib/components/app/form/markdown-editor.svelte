@@ -14,11 +14,10 @@
 		extensions: [code({ theme: 'github-dark' }), emoji()]
 	});
 
-    let {value = $bindable(""),class:className}:{value:string,class?:ClassValue} = $props();
-    
+	let { value = $bindable(''), class: className }: { value: string; class?: ClassValue } = $props();
 </script>
 
-<div class={cn("overflow-hidden rounded-md border border-input bg-input/30",className)}>
+<div class={cn('overflow-hidden rounded-md border border-input bg-input/30', className)}>
 	<MarkdownEditor {carta} bind:value theme="github-dark" />
 </div>
 
@@ -26,8 +25,8 @@
 	/* Set your monospace font  */
 	/* Required to have the editor working correctly! */
 	:global(.carta-font-code) {
-        font-size:var(--text-sm);
-        font-family: var(--default-font-family);
+		font-size: var(--text-sm);
+		font-family: var(--default-font-family);
 		line-height: 1.1rem;
 		letter-spacing: normal;
 	}

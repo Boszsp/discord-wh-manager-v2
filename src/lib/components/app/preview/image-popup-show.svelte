@@ -5,7 +5,7 @@
 
 	function addEventListenerToImages() {
 		const images = document.querySelectorAll('.image-showable');
-		imgList.clear()
+		imgList.clear();
 		images.forEach((img, i) => {
 			imgList.set(i, (img as HTMLImageElement)?.src ?? '');
 
@@ -22,7 +22,11 @@
 	}
 </script>
 
-<svelte:window oninput={addEventListenerToImages} ondblclick={addEventListenerToImages}  onclick={addEventListenerToImages} />
+<svelte:window
+	oninput={addEventListenerToImages}
+	ondblclick={addEventListenerToImages}
+	onclick={addEventListenerToImages}
+/>
 
 {#if isOpen}
 	<button

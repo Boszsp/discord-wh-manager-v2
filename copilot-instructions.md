@@ -1,11 +1,13 @@
 # Copilot Instructions for discord-wh-manager-v2 (GEMINI)
 
 ## Purpose
+
 This file provides explicit instructions for GitHub Copilot and other AI coding agents to work effectively in this project. It is based on the GEMINI.md documentation and the codebase structure and conventions.
 
 ---
 
 ## 1. Technology Stack
+
 - **Framework:** SvelteKit (**Svelte 5**). This project uses Svelte 5, which introduces significant changes from Svelte 4, including Runes for reactivity. Please refer to the [Svelte 5 migration guide](https://svelte.dev/docs/svelte/v5-migration-guide) and write Svelte 5 compatible code. Avoid using Svelte 4 syntax.
 - **Frontend:**
   - UI Components: shadcn-svelte (code in `src/lib/components/ui/`, read-only, follow https://shadcn-svelte.com/docs)
@@ -24,6 +26,7 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 ---
 
 ## 2. Project Structure
+
 - Follow SvelteKit conventions.
 - Key folders:
   - `src/lib/components/app/`: Composite components (layouts, nav, etc.)
@@ -39,6 +42,7 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 ---
 
 ## 3. Coding Rules
+
 - **Respect the codebase and tech stack.**
 - **Write Svelte 5 compatible code.** Use Runes for reactivity (e.g., `$state`, `$derived`, `$effect`). Do not use Svelte 4's `let`, `export let`, or lifecycle functions like `onMount` unless necessary for specific cases not covered by Runes.
 - **Understand the project structure and existing code before making changes.**
@@ -53,6 +57,7 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 ---
 
 ## 4. References
+
 - [Svelte 5 Docs](https://svelte.dev/docs/svelte/overview)
 - [Svelte 5 Migration Guide](https://svelte.dev/docs/svelte/v5-migration-guide) (**MUST READ**)
 - [SvelteKit Docs](https://svelte.dev/docs/kit/introduction)
@@ -62,6 +67,7 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 ---
 
 ## 5. Example Workflow for Copilot
+
 1. **Read GEMINI.md and these Copilot Instructions before starting.**
 2. **Review the Svelte 5 migration guide to understand the new reactivity model.**
 3. **Check the codebase for existing patterns and styles, especially the use of Runes.**
@@ -70,9 +76,11 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 6. **For UI components, follow shadcn-svelte conventions.**
 7. **For CRUD/data, use Firebase Firestore client-side.**
 8. **Update documentation if you add new conventions or improve understanding.**
+
 ---
 
 ## 6. Additional Notes
+
 - This project is designed for static hosting and does not use any server-side logic.
 - All CRUD/data operations must be performed on the client using Firebase Firestore.
 - UI components in `src/lib/components/ui/` are considered read-only and should not be modified unless explicitly allowed.
@@ -82,9 +90,11 @@ This file provides explicit instructions for GitHub Copilot and other AI coding 
 ---
 
 ## 7. Contact
+
 For questions about conventions or architecture, refer to GEMINI.md or contact the project owner.
 
 ---
 
 ## 8. MCP Server
+
 - https://mcp.svelte.dev/mcp

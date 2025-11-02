@@ -17,7 +17,8 @@
 		TooltipTrigger
 	} from '$lib/components/ui/tooltip';
 
-	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } = $props();
+	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } =
+		$props();
 
 	function addFiles(filelist: FileList | File[] | null) {
 		if (filelist === null) return;
@@ -81,8 +82,7 @@
 				variant="secondary"
 				size="icon"
 				title="paste from clipboard"
-				onclick={onPasteFromClipboard}
-				><ClipboardIcon class="size-4" /></Button
+				onclick={onPasteFromClipboard}><ClipboardIcon class="size-4" /></Button
 			>
 			<Button variant="secondary" size="icon" onclick={sortFiles} title="sort file"
 				><SortAsc class="size-4" /></Button
@@ -96,7 +96,7 @@
 				</Accordion.Trigger>
 				<Accordion.Content class="text-sm">
 					<div class="flex flex-col gap-2">
-						{#each files as file, i ("channel-file-"+file?.file?.name+"-" + i)}
+						{#each files as file, i ('channel-file-' + file?.file?.name + '-' + i)}
 							<div class="inline-flex items-center rounded-md bg-input/20 p-2 text-foreground/60">
 								<FileIcon class="mr-2 size-4 w-4" />
 								<Tooltip>
@@ -107,7 +107,7 @@
 										<p>{file?.file?.name}</p>
 									</TooltipContent>
 								</Tooltip>
-								<div class="mr-2 text-nowrap text-xs">{formatFileSize(file?.file?.size)}</div>
+								<div class="mr-2 text-xs text-nowrap">{formatFileSize(file?.file?.size)}</div>
 								<div class="inline-flex gap-2">
 									<Button
 										variant="ghost"

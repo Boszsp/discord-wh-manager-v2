@@ -104,10 +104,10 @@
 										variant="outline"
 										size="sm"
 										class="h-fit p-1 text-xs"
-										disabled={i === 0}>
-										<ArrowBigUpIcon/>
-										</Button
+										disabled={i === 0}
 									>
+										<ArrowBigUpIcon />
+									</Button>
 									<Button
 										onclick={(e) => {
 											e.stopPropagation();
@@ -117,10 +117,10 @@
 										variant="outline"
 										size="sm"
 										class="h-fit p-1 text-xs"
-										disabled={i === ($formData.embeds?.length || 0) - 1}>
-										<ArrowBigDownIcon/>
-										</Button
+										disabled={i === ($formData.embeds?.length || 0) - 1}
 									>
+										<ArrowBigDownIcon />
+									</Button>
 									<Button
 										onclick={(e) => {
 											e.stopPropagation();
@@ -129,8 +129,10 @@
 										type="button"
 										variant="destructive"
 										class="h-fit p-1 text-xs"
-										size="sm"> <Trash2Icon/> </Button
+										size="sm"
 									>
+										<Trash2Icon />
+									</Button>
 								</div>
 							</div>
 						</Accordion.Trigger>
@@ -212,7 +214,7 @@
 																	>{embed?.author?.name?.length ?? 0}/256</span
 																></Form.Label
 															>
-															<Input {...props} bind:value={(embed.author as {name:string}).name as string} />
+															<Input {...props} bind:value={embed.author.name} />
 														{/snippet}
 													</Form.Control>
 													<Form.FieldErrors />
@@ -222,7 +224,7 @@
 														<Form.Control>
 															{#snippet children({ props })}
 																<Form.Label>URL</Form.Label>
-																<Input {...props} bind:value={(embed.author as {url:string}).url} />
+																<Input {...props} bind:value={embed.author.url} />
 															{/snippet}
 														</Form.Control>
 														<Form.FieldErrors />
@@ -231,7 +233,7 @@
 														<Form.Control>
 															{#snippet children({ props })}
 																<Form.Label>Icon URL</Form.Label>
-																<Input {...props} bind:value={(embed.author as {icon_url:string}).icon_url} />
+																<Input {...props} bind:value={embed.author.icon_url} />
 															{/snippet}
 														</Form.Control>
 														<Form.FieldErrors />
@@ -247,7 +249,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={(embed.thumbnail as {url:string}).url} />
+														<Input {...props} bind:value={embed.thumbnail.url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -267,7 +269,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>URL</Form.Label>
-														<Input {...props} bind:value={(embed.image as {url:string}).url} />
+														<Input {...props} bind:value={embed.image.url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -287,7 +289,7 @@
 																>{embed?.footer?.text?.length ?? 0}/2048</span
 															></Form.Label
 														>
-														<Input {...props} bind:value={(embed.footer as {text:string}).text} />
+														<Input {...props} bind:value={embed.footer.text} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />
@@ -296,7 +298,7 @@
 												<Form.Control>
 													{#snippet children({ props })}
 														<Form.Label>Icon URL</Form.Label>
-														<Input {...props} bind:value={(embed.footer as {icon_url:string}).icon_url} />
+														<Input {...props} bind:value={embed.footer.icon_url} />
 													{/snippet}
 												</Form.Control>
 												<Form.FieldErrors />

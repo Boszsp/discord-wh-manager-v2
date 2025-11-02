@@ -14,7 +14,7 @@
 		isRemoveSoure: z.boolean().default(true),
 		isFixedSize: z.boolean().default(true),
 		compressLevel: z.number().min(0).max(9).default(6),
-		processAll:z.boolean().default(true)
+		processAll: z.boolean().default(true)
 	});
 </script>
 
@@ -103,7 +103,9 @@
 
 	function onZipHandler() {
 		loading = true;
-		const processFile = files.filter((file) => $formData.processAll || $selectedFileStore.includes(file.id));
+		const processFile = files.filter(
+			(file) => $formData.processAll || $selectedFileStore.includes(file.id)
+		);
 
 		if (processFile.length < 1) return onEmptyProcessFile();
 		createZip(
@@ -145,7 +147,9 @@
 	}
 	function onPdf() {
 		loading = true;
-		const processFile = files.filter((f) => $formData.processAll || $selectedFileStore.includes(f.id));
+		const processFile = files.filter(
+			(f) => $formData.processAll || $selectedFileStore.includes(f.id)
+		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		createPdfFromImages(
 			processFile.map((f) => f.file),
@@ -193,7 +197,7 @@
 			splitFile(
 				p?.file,
 				$formData.fileSizeLimit,
-				($formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined)
+				$formData.compressLevel as 0 | 1 | 3 | 9 | 6 | 8 | 2 | 4 | 5 | 7 | undefined
 			)
 				.then((f) => {
 					loading = true;
@@ -260,7 +264,7 @@
 </script>
 
 <Accordion
-	class={cn('relative overflow-hidden border-0 border-t rounded-md bg-secondary/80', className)}
+	class={cn('relative overflow-hidden rounded-md border-0 border-t bg-secondary/80', className)}
 	type="single"
 >
 	<AccordionItem value="item-1">
@@ -269,8 +273,7 @@
 				<CardTitle>File Manipulation</CardTitle>
 				<CardDescription>Manipulation file</CardDescription>
 			</div>
-		</AccordionTrigger
-		>
+		</AccordionTrigger>
 		<AccordionContent>
 			<CardContent class="grid gap-4">
 				<FileManipulationSelectedfile {files} />
@@ -310,7 +313,7 @@
 								<Toggle
 									{...props}
 									bind:pressed={$formData.isRemoveSoure}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
+									class="w-full bg-input/30 transition data-[state=on]:bg-primary/40"
 									variant="outline"
 								>
 									{#if $formData.isRemoveSoure}
@@ -324,14 +327,14 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
-				
+
 					<Form.Field {form} name="isFixedSize" class="flex-1">
 						<Form.Control>
 							{#snippet children({ props })}
 								<Toggle
 									{...props}
 									bind:pressed={$formData.isFixedSize}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
+									class="w-full bg-input/30 transition data-[state=on]:bg-primary/40"
 									variant="outline"
 								>
 									{#if $formData.isFixedSize}
@@ -351,7 +354,7 @@
 								<Toggle
 									{...props}
 									bind:pressed={$formData.processAll}
-									class="bg-input/30 transition data-[state=on]:bg-primary/40 w-full"
+									class="w-full bg-input/30 transition data-[state=on]:bg-primary/40"
 									variant="outline"
 								>
 									{#if $formData.processAll}
@@ -369,7 +372,9 @@
 				<Separator class="my-4" />
 				<Label>File Manipulation Menu</Label>
 				<div class="flex flex-wrap gap-2">
-					<Button variant="outline" class="flex-1" onclick={onZipHandler} disabled={loading}><PackageIcon /> Zip</Button>
+					<Button variant="outline" class="flex-1" onclick={onZipHandler} disabled={loading}
+						><PackageIcon /> Zip</Button
+					>
 					<Button variant="outline" class="flex-1" onclick={onUnZipHandler} disabled={loading}
 						><PackageOpen /> Unzip</Button
 					>
@@ -403,12 +408,7 @@
 							<Form.Control>
 								{#snippet children({ props })}
 									<Form.Label>Scale</Form.Label>
-									<Input
-										step="0.1"
-										type="number"
-										{...props}
-										bind:value={$formData.scale}
-									/>
+									<Input step="0.1" type="number" {...props} bind:value={$formData.scale} />
 								{/snippet}
 							</Form.Control>
 							<Form.FieldErrors />
@@ -418,10 +418,8 @@
 								{#snippet children({ props })}
 									<Form.Label>Extension</Form.Label>
 									<Select.Root type="single" bind:value={$formData.extension}>
-										<Select.Trigger class="min-w-28 w-full" {...props}>
-											{$formData.extension
-												? $formData.extension
-												: 'Select a verified extension'}
+										<Select.Trigger class="w-full min-w-28" {...props}>
+											{$formData.extension ? $formData.extension : 'Select a verified extension'}
 										</Select.Trigger>
 										<Select.Content>
 											<Select.Item value="jpg">jpg</Select.Item>

@@ -34,6 +34,7 @@
 	import z from 'zod';
 	import type { FileType } from '$lib/components/app/types';
 	import FileManipulation from '$lib/components/app/file/file-manipulation.svelte';
+	import consola from 'consola';
 
 	const { data }: PageProps = $props();
 	const form = superForm(data.form, {
@@ -59,6 +60,15 @@
 	let templateFromValues: Record<string, string> = $state({});
 
 	let channels: webhookSchemaType[] = $state(data?.channels || []);
+
+	$effect(() => {
+		if (data?.channels) {
+			channels = data?.channels;
+		}
+		if (data?.templates) {
+			templates = data?.templates;
+		}
+	});
 
 	const isMoble = new IsMobile();
 
@@ -139,29 +149,54 @@
 	}
 
 	async function onCreateChannel(serverId: string, channel: webhookSchemaType) {
-		createChannelAction(serverId, channel).then((r) => {
-			if (r?.affectedChannel?.id) channels.push(r.affectedChannel);
-		});
+		createChannelAction(serverId, channel)
+			.then((r) => {
+				if (r?.affectedChannel?.id) {
+					channels.push(r.affectedChannel as webhookSchemaType);
+					toast.success('Channel created successfully');
+				}
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onRemoveChannel(serverId: string, channelId: string) {
-		removeChannelAction(serverId, channelId).then((r) => {
-			if (r?.affectedChannel?.id) channels = channels.filter((v) => v.id !== channelId);
-		});
+		removeChannelAction(serverId, channelId)
+			.then((r) => {
+				if (r?.affectedChannel?.id) {
+					channels = channels.filter((v) => v.id !== channelId);
+					toast.success('Channel removed successfully');
+				}
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onEditChannel(channelId: string, channel: webhookSchemaType) {
-		editChannelAction(data?.server?.id, channelId, channel).then((r) => {
-			if (r?.affectedChannel?.name) {
-				const channelIndex = channels.findIndex((v) => v.id === channelId);
-				console.log(channelIndex);
-				if (channelIndex >= 0) {
-					const channelsTemp = [...channels];
-					channelsTemp[channelIndex] = Object.assign({ id: channelId }, r.affectedChannel);
-					channels = channelsTemp;
+		editChannelAction(data?.server?.id, channelId, channel)
+			.then((r) => {
+				if (r?.affectedChannel?.name) {
+					const channelIndex = channels.findIndex((v) => v.id === channelId);
+					console.log(channelIndex);
+					if (channelIndex >= 0) {
+						const channelsTemp = [...channels];
+						channelsTemp[channelIndex] = {
+							...channelsTemp[channelIndex],
+							...r.affectedChannel
+						};
+						channels = channelsTemp;
+						toast.success('Channel updated successfully');
+					}
 				}
-			}
-		});
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 
 	function onSaveTemplate() {
@@ -169,21 +204,35 @@
 			id: selectedTemplateObj?.id,
 			name: selectedTemplateObj?.name || '',
 			content: safeStrinifyTemplateString($formData)
-		}).then((r) => {
-			const templatesTemp = [...templates];
-			templatesTemp.find(
-				(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
-			);
-			templates = templatesTemp;
-		});
+		})
+			.then((r) => {
+				const templatesTemp = [...templates];
+				templatesTemp.find(
+					(t) => t.id === selectedTemplate && (t.content = safeStrinifyTemplateString($formData))
+				);
+				templates = templatesTemp;
+				toast.success('Template saved successfully');
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 	function onCreateTemplate(name: string | undefined) {
 		createTemplateAction({
 			name: name + '',
 			content: safeStrinifyTemplateString($formData)
-		}).then((r) => {
-			if (r?.affectedTemplate?.id) templates.push(r.affectedTemplate);
-		});
+		})
+			.then((r) => {
+				if (r?.affectedTemplate?.id) {
+					templates.push(r.affectedTemplate as TemplateSchemaType);
+					toast.success('Template created successfully');
+				}
+			})
+			.catch((e) => {
+				consola.error(e);
+				toast.error(e.message);
+			});
 	}
 </script>
 
@@ -197,7 +246,7 @@
 	leftWidth={16}
 	class="overflow-hidden bg-background"
 >
-	{#if data?.channels && data?.channels?.length > 0}
+	{#if data?.channels && data?.channels?.length > 0 && data?.channel?.id}
 		<Resizable.PaneGroup direction={isMoble.current ? 'vertical' : 'horizontal'}>
 			<Resizable.Pane defaultSize={40} class="w-fit">
 				<ScrollArea orientation="both" class="h-full w-full overflow-hidden text-wrap  break-all">
@@ -234,7 +283,7 @@
 						</p>
 						<ChannelSentCard
 							server={data?.server}
-							channel={data?.channel}
+							channel={data.channel as { name: string; url: string; id: string }}
 							{templates}
 							bind:newTemplateValue
 							bind:selectedValue={selectedTemplate}
@@ -246,34 +295,35 @@
 						<FileManipulation class="mt-4" bind:files />
 
 						<Separator class="my-4" />
-						{#if !selectedTemplate || selectedTemplate === ''}
-							<div transition:fade>
-								<div class="flex gap-4">
-									<div>
-										<h3 class="text-lg font-medium">Form Data</h3>
-										<p class="mb-2 text-xs text-muted-foreground">
-											Type your content here. | กรอกข้อมูลของคุณที่นี่.
-										</p>
-									</div>
-									<Button
-										class="ml-auto"
-										variant="outline"
-										onclick={() => {
-											$formData = { content: '' };
-											files = [];
-										}}>Clear</Button
-									>
-								</div>
-								<ChannelFile bind:files />
-								<Separator class="mt-8 mb-4" />
-								<ChannelForm {form} />
-							</div>
-						{:else}
+						{#if selectedTemplate && selectedTemplate !== ''}
 							<TemplateVariableForm
+								class="mb-8"
 								bind:values={templateFromValues}
 								templateContent={selectedTemplateObj?.content || ''}
 							/>
+							<Separator class="my-4" />
 						{/if}
+						<div transition:fade>
+							<div class="flex gap-4">
+								<div>
+									<h3 class="text-lg font-medium">Form Data</h3>
+									<p class="mb-2 text-xs text-muted-foreground">
+										Type your content here. | กรอกข้อมูลของคุณที่นี่.
+									</p>
+								</div>
+								<Button
+									class="ml-auto"
+									variant="outline"
+									onclick={() => {
+										$formData = { content: '' };
+										files = [];
+									}}>Clear</Button
+								>
+							</div>
+							<ChannelFile bind:files />
+							<Separator class="mt-8 mb-4" />
+							<ChannelForm {form} />
+						</div>
 					</div>
 				</ScrollArea>
 			</Resizable.Pane>
