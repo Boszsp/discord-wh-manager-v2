@@ -44,14 +44,16 @@
 					for (const server of data.servers) {
 						const serverResponse = await createServerAction({
 							name: server.name,
-							color: server.color
+							color: server.color ?? '#ffffff'
 						});
 						if (serverResponse.status !== 200) continue;
 						const serverId = serverResponse.serverId;
-						const serverChannels = data.channels.find((c) => c.serverId === server.id);
-						if (serverChannels) {
-							for (const channel of serverChannels.channels) {
-								await createChannelAction(serverId, { name: channel.name, url: channel.url });
+						if (server.id) {
+							const serverChannels = data.channels.find((c) => c.serverId === server.id);
+							if (serverChannels) {
+								for (const channel of serverChannels.channels) {
+									await createChannelAction(serverId, { name: channel.name, url: channel.url });
+								}
 							}
 						}
 					}
@@ -74,10 +76,12 @@
 			const servers = await getServersAction();
 			const templates = await getTemplatesAction();
 			const channels = await Promise.all(
-				servers.map(async (server) => {
-					const serverChannels = await getChannelsAction(server.id);
-					return { serverId: server.id, channels: serverChannels };
-				})
+				servers
+					.filter((server) => server.id)
+					.map(async (server) => {
+						const serverChannels = await getChannelsAction(server.id as string);
+						return { serverId: server.id, channels: serverChannels };
+					})
 			);
 
 			const dataToExport = {
@@ -116,7 +120,7 @@
 				</p>
 				<div class="mt-2 flex items-center space-x-2">
 					<Input type="file" bind:files accept=".json" />
-					<Button on:click={importData}>Import</Button>
+					<Button onclick={importData}>Import</Button>
 				</div>
 			</div>
 
@@ -124,7 +128,7 @@
 				<h2 class="text-lg font-semibold">Export Data</h2>
 				<p class="text-sm text-muted-foreground">Export all your data to a JSON file.</p>
 				<div class="mt-2">
-					<Button on:click={exportData}>Export</Button>
+					<Button onclick={exportData}>Export</Button>
 				</div>
 			</div>
 		</div>
