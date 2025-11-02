@@ -17,9 +17,9 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 
 	if (browser) {
 		const { pathname } = url;
-		const public_paths = ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup', '/', '', '/default', '/default/'];
+		const public_paths = ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup', '/', '', '/home', '/home/', '/default', '/default/'];
 
-		if (public_paths.filter(v => !['/', '', '/default', '/default/'].includes(v)).includes(pathname))
+		if (public_paths.filter(v => !['/', '', '/home', '/home/', '/default', '/default/'].includes(v)).includes(pathname))
 			return {}
 
 
