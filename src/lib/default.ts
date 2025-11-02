@@ -31,3 +31,6 @@ export const DEFAULT_SERVER_BG_COLOR = '#222226';
 
 export const DEFAULT_FILE_LIMIT_COUNT = 10;
 export const DEFAULT_FILE_LIMIT_SIZE = 10;
+
+export const DEFAULT_LOCAL_ENC_KEY = "enc-key";
+

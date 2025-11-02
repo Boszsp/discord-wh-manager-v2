@@ -5,7 +5,6 @@
 	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import * as Form from '$lib/components/ui/form';
-	import type { loginSchemaType } from '$lib/schema/loginSchema';
 
 	let {
 		ref = $bindable(null),
@@ -13,7 +12,7 @@
 		form,
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & {
-		form: SuperForm<loginSchemaType, any>;
+		form: SuperForm<{enckey:string}, any>;
 	} = $props();
 	const { form: formData, enhance } = form;
 </script>
@@ -31,18 +30,18 @@
 			Enter your enc key below for decrypt & encrypt your data
 		</p>
 	</div>
-	<Form.Field {form} name="passkey">
+	<Form.Field {form} name="enckey">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Passkey</Form.Label>
+				<Form.Label>Enckey</Form.Label>
 				<Input
 					{...props}
-					bind:value={$formData.passkey}
+					bind:value={$formData.enckey}
 					placeholder="****************"
 				/>
 			{/snippet}
 		</Form.Control>
-		<Form.Description>{$formData.passkey.length}/16</Form.Description>
+		<Form.Description>{$formData.enckey.length}/16</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
 	<Button type="submit" class="w-full">Login</Button>

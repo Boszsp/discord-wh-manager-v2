@@ -16,7 +16,8 @@ export const db = schema(
 			{
 				template: $.collection<Template>()
 			}
-		)
+		),
+		ud: $.collection<UserData>()
 	}),
 	{
 		app: firebaseapp.name
@@ -30,4 +31,9 @@ interface Server extends ServerSchemaType {
 }
 
 interface Template extends TemplateSchemaType {
+}
+
+export interface UserData {
+	ek:string;
+	er:string;
 }

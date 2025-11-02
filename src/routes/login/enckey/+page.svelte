@@ -1,30 +1,25 @@
 <script lang="ts">
 	import EncForm from '$lib/components/app/form/enc-form.svelte';
-	import { APP_NAME } from '$lib/default';
+	import { APP_NAME, DEFAULT_LOCAL_ENC_KEY } from '$lib/default';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/schema/loginSchema';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
-	import { login } from '$lib/db/auth.js';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import { schema } from './schema.js';
+	import { saveToLocalStorage } from '$lib/store/local-storage-cache.svelte.js';
 	let { data } = $props();
 	const form = superForm(data.form, {
-		validators: zod4(loginSchema),
+		validators: zod4(schema),
 		validationMethod: 'onblur',
 		onSubmit: async (inp) => {
 			inp.cancel();
 			const { data: formData, valid } = await form.validateForm();
 			if (!valid) return false;
-			await login(formData.username, formData.password)
-				.then((res) => {
-					toast.success('Login Successful');
-					goto('/');
-					return res;
-				})
-				.catch((err) => {
-					toast.error(err.message);
-				});
+			saveToLocalStorage(DEFAULT_LOCAL_ENC_KEY, formData.enckey)
+			toast.success("Save enckey successful")
+			goto("/")
 			return false;
 		},
 		clearOnSubmit: 'errors'

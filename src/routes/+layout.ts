@@ -10,6 +10,8 @@ import { getServersAction } from '$lib/curdFn/server';
 import type { LayoutLoad } from './$types';
 import { consola } from 'consola';
 import { getCurUserPromise } from '$lib/db/auth';
+import { DEFAULT_LOCAL_ENC_KEY } from '$lib/default';
+import { loadFromLocalStorage } from '$lib/store/local-storage-cache.svelte';
 
 export const load: LayoutLoad = async ({ depends, url }) => {
 
@@ -21,10 +23,14 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 			return {}
 
 
-		let user = await getCurUserPromise().catch(
-			
-		)
+		let user = await getCurUserPromise().catch()
 		//consola.info('Loading user', user);
+		const enckey = loadFromLocalStorage(DEFAULT_LOCAL_ENC_KEY)
+		console.log('enckey', enckey)
+
+		if (user && !enckey) {
+			throw redirect(307, '/login/enckey');
+		}
 
 		if (user && ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup'].includes(pathname)) {
 			throw redirect(307, '/');
