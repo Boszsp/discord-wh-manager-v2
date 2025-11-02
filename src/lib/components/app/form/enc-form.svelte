@@ -15,7 +15,6 @@
 	}: WithElementRef<HTMLFormAttributes> & {
 		form: SuperForm<loginSchemaType, any>;
 	} = $props();
-	const id = $props.id();
 	const { form: formData, enhance } = form;
 </script>
 
@@ -27,29 +26,24 @@
 	use:enhance
 >
 	<div class="flex flex-col items-center gap-2 text-center">
-		<h1 class="text-2xl font-bold">Login to your account</h1>
+		<h1 class="text-2xl font-bold">Login to your account step 2</h1>
 		<p class="text-sm text-balance text-muted-foreground">
-			Enter your email below to login to your account
+			Enter your enc key below for decrypt & encrypt your data
 		</p>
 	</div>
-	<Form.Field {form} name="username">
+	<Form.Field {form} name="passkey">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Username</Form.Label>
-				<Input {...props} bind:value={$formData.username} placeholder="email@example.com" />
+				<Form.Label>Passkey</Form.Label>
+				<Input
+					{...props}
+					bind:value={$formData.passkey}
+					placeholder="****************"
+				/>
 			{/snippet}
 		</Form.Control>
+		<Form.Description>{$formData.passkey.length}/16</Form.Description>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Field {form} name="password">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>Password</Form.Label>
-				<Input {...props} bind:value={$formData.password} type="password" placeholder="******" />
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
-
 	<Button type="submit" class="w-full">Login</Button>
 </form>

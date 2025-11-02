@@ -15,7 +15,7 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 
 	if (browser) {
 		const { pathname } = url;
-		const public_paths = ['/login', '/login/', '/signup', '/', '', '/default', '/default/'];
+		const public_paths = ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup', '/', '', '/default', '/default/'];
 
 		if (public_paths.filter(v => !['/', '', '/default', '/default/'].includes(v)).includes(pathname))
 			return {}
@@ -26,7 +26,7 @@ export const load: LayoutLoad = async ({ depends, url }) => {
 		)
 		//consola.info('Loading user', user);
 
-		if (user && ['/login', '/login/', '/signup'].includes(pathname)) {
+		if (user && ['/login', '/login/', '/login/enckey', '/login/enckey/', '/signup'].includes(pathname)) {
 			throw redirect(307, '/');
 		}
 

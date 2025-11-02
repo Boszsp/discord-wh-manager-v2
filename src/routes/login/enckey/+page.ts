@@ -4,7 +4,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { loginSchema } from '$lib/schema/loginSchema';
 
 export const load: PageLoad = async () => {
-	return {
-		form: await superValidate(zod4(loginSchema))
-	};
+    return {
+        form: await superValidate(zod4(loginSchema))
+    };
 };
