@@ -90,9 +90,9 @@
 							}}
 							size="sm"
 							variant={selectedId === channel?.id ? 'secondary' : 'ghost'}
-							class="w-full justify-start truncate text-start"
+							class="w-auto justify-start text-start"
 						>
-							<HashIcon />{channel?.name}<span class="ml-auto">
+							<HashIcon /><p class="truncate">{channel?.name}</p><span class="ml-auto">
 								{#if selectedId === channel?.id}
 									<Button
 										onclick={(e) => {

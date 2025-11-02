@@ -41,7 +41,7 @@ export async function createChannelAction(
 
 	await db.servers(serverIdRef).channels.set(channelRef, dataToSet);
 
-	updateTempCache(`server-${serverId}-channels`,{...dataToSet,id:channelId})
+	updateTempCache(`server-${serverId}-channels`, { ...channel,id:channelId})
 	consola.success('createChannelAction', dataToSet);
 	invalidate("channel:get")
 
@@ -49,7 +49,7 @@ export async function createChannelAction(
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedChannel: { ...dataToSet, id: channelId }
+		affectedChannel: { ...channel, id: channelId }
 	};
 }
 
@@ -71,14 +71,14 @@ export async function editChannelAction(
 		url: encKey && channel.url ? await encStr(channel.url,encKey) : channel.url+""
 	}
 	await db.servers(serverIdRef).channels.update(id, dataToUpdate);
-	updateTempCache(`server-${serverId}-channels`, { ...dataToUpdate, id: channelId },channelId)
+	updateTempCache(`server-${serverId}-channels`, { ...channel, id: channelId },channelId)
 	consola.success('EditChannelAction', channel);
 	invalidate("channel:get")
 	return {
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedChannel: { ...dataToUpdate, id: channelId }
+		affectedChannel: { ...channel, id: channelId }
 	};
 }
 
@@ -109,6 +109,7 @@ export async function getChannelAction(
 		...channelDoc.data,
 		url: encKey && channelDoc.data.url ? await decStr(channelDoc.data.url,encKey) : channelDoc.data.url
 	}
+	console.log(data)
 	saveTempCache(`server-${serverId}-channel-${channelId}`,data)
 	consola.success('GetChannelAction');
 	return { ...data, id: channelDoc.ref.id };
