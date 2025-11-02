@@ -2,6 +2,8 @@
 // to derive a key from a user's password. This adds a salt and iterations
 // to make it harder to brute-force.
 
+import { consola } from "consola";
+
 const ENCRYPTION_ALGORITHM = 'AES-GCM';
 const KEY_DERIVATION_ALGORITHM = 'PBKDF2';
 const HASH_ALGORITHM = 'SHA-256';
@@ -96,4 +98,49 @@ export async function decrypt(key: CryptoKey, encryptedData: string): Promise<st
 	);
 
 	return new TextDecoder().decode(decryptedContent);
+}
+
+function uint8ArrayToBase64(array: Uint8Array): string {
+	return btoa(String.fromCharCode.apply(null, Array.from(array)));
+}
+
+function base64ToUint8Array(base64: string): Uint8Array {
+	return new Uint8Array(
+		atob(base64)
+			.split('')
+			.map((c) => c.charCodeAt(0))
+	);
+}
+
+export async function encStr(text: string, encKey: string): Promise<string> {
+	if (!text) return text;
+	try {
+		const salt = generateSalt();
+		const key = await deriveKey(encKey, salt);
+		const encrypted = await encrypt(key, text);
+		const saltB64 = uint8ArrayToBase64(salt);
+		return `${saltB64}:${encrypted}`;
+	} catch (e) {
+		consola.warn('Encryption failed', e);
+		return text;
+	}
+}
+
+export async function decStr(encryptedText: string, encKey: string): Promise<string> {
+	if (!encryptedText || !encryptedText.includes(':')) return encryptedText;
+	try {
+		const parts = encryptedText.split(':');
+		if (parts.length !== 2) {
+			return encryptedText;
+		}
+		const [saltB64, encrypted] = parts;
+		const salt = base64ToUint8Array(saltB64);
+		const key = await deriveKey(encKey, salt);
+		const deccrypted=  await decrypt(key, encrypted);
+		consola.success('Decryption successful with output', deccrypted);
+		return deccrypted
+	} catch (e) {
+		consola.warn('Decryption failed', e);
+		return encryptedText;
+	}
 }

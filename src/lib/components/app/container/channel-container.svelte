@@ -30,7 +30,12 @@
 
 <Resizable.PaneGroup class="h-full" direction="horizontal">
 	<Resizable.Pane defaultSize={leftWidth} class="h-full">
-		<ChannelSidebar {onEditChannel} {onCreateChannel} {onRemoveChannel} {channels} />
+		<ChannelSidebar
+			onEditChannel={onEditChannel ?? (() => {})}
+			onCreateChannel={onCreateChannel ?? (async () => {})}
+			onRemoveChannel={onRemoveChannel ?? (() => {})}
+			channels={channels ?? []}
+		/>
 	</Resizable.Pane>
 	<Resizable.Handle withHandle />
 	<Resizable.Pane class={cn('relative w-fit', className)} defaultSize={rightWidth}>

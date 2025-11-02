@@ -19,15 +19,15 @@
 	const {
 		name = 'Server Name',
 		channels = [],
-		onCreateChannel,
-		onRemoveChannel,
-		onEditChannel
+		onCreateChannel = async()=>{},
+		onRemoveChannel = ()=>{},
+		onEditChannel = ()=>{}
 	}: {
 		name?: string;
 		channels?: webhookSchemaType[];
-		onCreateChannel?: (serverId: string, channel: webhookSchemaType) => Promise<void>;
-		onRemoveChannel?: (serverId: string, channelId: string) => void;
-		onEditChannel?: (channelId: string, channel: webhookSchemaType) => void;
+		onCreateChannel: (serverId: string, channel: webhookSchemaType) => Promise<void>;
+		onRemoveChannel: (serverId: string, channelId: string) => void;
+		onEditChannel: (channelId: string, channel: webhookSchemaType) => void;
 	} = $props();
 	let selectedId = $state('');
 	//let isOpenCreateChannelDialog:boolean = $state(false);

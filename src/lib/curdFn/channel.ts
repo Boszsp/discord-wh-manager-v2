@@ -3,9 +3,12 @@ import { getCurUserPromise } from '$lib/db/auth';
 import { db } from '$lib/db/db.schema';
 import { DEFAULT_ID_LENGTH } from '$lib/default';
 import type { webhookSchemaType } from '$lib/schema/webhookSchema';
+import { encKeyStore } from '$lib/store/enc-key.svelte';
 import { loadTempCache, saveTempCache, updateTempCache } from '$lib/store/temp-cache.svelte';
+import { decStr, encStr } from '$lib/utilsFn/crypto';
 import { consola } from 'consola';
 import { nanoid } from 'nanoid';
+import { get } from 'svelte/store';
 
 type Channel = webhookSchemaType & {};
 interface FnResponse {
@@ -29,8 +32,11 @@ export async function createChannelAction(
 	const serverIdRef = await db.servers.id(serverId)
 	const channelRef = db.servers(serverIdRef).channels.id(channelId);
 
+	const encKey = get(encKeyStore);
+
 	const dataToSet = {
-		...channel
+		...channel,
+		url: encKey && channel.url ? await encStr(channel.url,encKey) : channel.url
 	};
 
 	await db.servers(serverIdRef).channels.set(channelRef, dataToSet);
@@ -59,15 +65,20 @@ export async function editChannelAction(
 	if (!curUser) throw new Error('User is not authenticated');
 	const serverIdRef = await db.servers.id(serverId)
 	const id = db.servers(serverIdRef).channels.id(channelId);
-	await db.servers(serverIdRef).channels.update(id, channel);
-	updateTempCache(`server-${serverId}-channels`, { ...channel, id: channelId },channelId)
+	const encKey = get(encKeyStore);
+	const dataToUpdate = {
+		...channel,
+		url: encKey && channel.url ? await encStr(channel.url,encKey) : channel.url+""
+	}
+	await db.servers(serverIdRef).channels.update(id, dataToUpdate);
+	updateTempCache(`server-${serverId}-channels`, { ...dataToUpdate, id: channelId },channelId)
 	consola.success('EditChannelAction', channel);
 	invalidate("channel:get")
 	return {
 		status: 200,
 		message: 'success',
 		serverId: serverId,
-		affectedChannel: { ...channel, id: channelId }
+		affectedChannel: { ...dataToUpdate, id: channelId }
 	};
 }
 
@@ -93,9 +104,14 @@ export async function getChannelAction(
 		consola.error('GetChannelAction: Channel not found');
 		return null;
 	}
-	saveTempCache(`server-${serverId}-channel-${channelId}`,channelDoc.data)
+	const encKey = get(encKeyStore);
+	const data = {
+		...channelDoc.data,
+		url: encKey && channelDoc.data.url ? await decStr(channelDoc.data.url,encKey) : channelDoc.data.url
+	}
+	saveTempCache(`server-${serverId}-channel-${channelId}`,data)
 	consola.success('GetChannelAction');
-	return { ...channelDoc.data, id: channelDoc.ref.id };
+	return { ...data, id: channelDoc.ref.id };
 }
 
 export async function getChannelsAction(serverId: string): Promise<Channel[]> {
@@ -113,9 +129,18 @@ export async function getChannelsAction(serverId: string): Promise<Channel[]> {
 		const channelDocs = await db
 			.servers(serverIdRef)
 			.channels.all();
-		saveTempCache(`server-${serverId}-channels`, channelDocs.map((doc) => ({ ...doc.data, id: doc.ref.id })))
+		const encKey = get(encKeyStore);
+		const data = await Promise.all(channelDocs.map(async (doc) => {
+			const docData = doc.data;
+			return {
+				...docData,
+				id: doc.ref.id,
+				url: encKey && docData.url ? await decStr(docData.url, encKey) : docData.url
+			}
+		}))
+		saveTempCache(`server-${serverId}-channels`, data)
 		consola.success('getChannelsAction');
-		return channelDocs.map((doc) => ({ ...doc.data, id: doc.ref.id }));
+		return data;
 	} catch (e) {
 		consola.error(e);
 		return [];
