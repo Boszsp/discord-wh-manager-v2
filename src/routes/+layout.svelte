@@ -11,25 +11,8 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
-	<!-- Primary Meta Tags -->
+	<link rel="icon" href={favicon} />	
 	<title>TWH | This Webhook Manager</title>
-	<meta name="title" content="TWH | This Webhook Manager" />
-	<meta name="description" content="This Webhook Manager" />
-
-	<!-- Open Graph / Facebook -->
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content="TWH | This Webhook Manager" />
-	<meta property="og:description" content="This Webhook Manager" />
-	<meta property="og:image" content="/seo.jpg" />
-
-	<!-- X (Twitter) -->
-	<meta property="twitter:card" content="summary_large_image" />
-	<meta property="twitter:title" content="TWH | This Webhook Manager" />
-	<meta property="twitter:description" content="This Webhook Manager" />
-	<meta property="twitter:image" content="/seo.jpg" />
-
-	<!-- Meta Tags Generated with https://metatags.io -->
 </svelte:head>
 
 <Toaster position="top-right" richColors class="border bg-background" />
