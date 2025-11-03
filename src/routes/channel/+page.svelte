@@ -235,7 +235,9 @@
 			});
 	}
 </script>
-
+<svelte:head>
+	<title>TWH | {data?.channel?.name}</title>	
+</svelte:head>
 <PageTransition />
 <ImagePopupShow />
 <ChannelContainer

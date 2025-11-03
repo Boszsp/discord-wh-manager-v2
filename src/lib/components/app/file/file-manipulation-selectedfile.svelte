@@ -38,6 +38,7 @@
 	<div class="flex flex-wrap justify-between gap-2">
 		{#each files.filter((f) => filterString?.length < 1 || f?.file?.name?.includes(filterString)) as file, i ('file-selected-mani-' + i)}
 			<FileCardSelectable
+				{file}
 				id={file?.id}
 				title={file?.file?.name}
 				description={`${formatFileSize(file?.file?.size)} | ${file?.file?.type?.split('/').pop()}`}
