@@ -7,7 +7,9 @@
 	import { goto } from '$app/navigation';
 	import PageTransition from '$lib/components/app/layout/page-transition.svelte';
 </script>
-
+<svelte:head>
+	<title>TWH | This Webhook Manager</title>
+</svelte:head>
 <PageTransition />
 <DashboardContainer class="relative bg-black bg-gradient-to-br from-indigo-950/0 to-indigo-800/60">
 	<img

@@ -143,7 +143,9 @@
 		});
 	});
 </script>
-
+<svelte:head>
+	<title>TWH | This Webhook Manager</title>
+</svelte:head>
 <ImagePopupShow />
 <DashboardContainer leftWidth={0} rightWidth={100} class="bg-background">
 	<Resizable.PaneGroup

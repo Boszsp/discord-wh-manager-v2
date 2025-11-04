@@ -116,9 +116,89 @@ export async function getFilesFromClipboard(): Promise<File[]> {
 		for (const type of item.types) {
 			if (type.startsWith('image/') || type === 'application/pdf' || type === 'application/zip') {
 				const blob = await item.getType(type);
-				files.push(new File([blob], 'clipboard-file', { type }));
+				files.push(new File([blob], 'file-' + Date.now() + getExtensionFromMimeType(type), { type }));
 			}
 		}
 	}
 	return files;
+}
+
+/**
+ * A map of common MIME types to their corresponding file extensions.
+ * The extension includes the leading dot (e.g., '.jpg').
+ */
+const MIME_TYPE_MAP: { [key: string]: string } = {
+	// Images
+	'image/jpeg': '.jpg',
+	'image/jpg': '.jpg',
+	'image/png': '.png',
+	'image/gif': '.gif',
+	'image/webp': '.webp',
+	'image/svg+xml': '.svg',
+	'image/bmp': '.bmp',
+	'image/tiff': '.tiff',
+	'image/x-icon': '.ico',
+
+	// Documents
+	'application/pdf': '.pdf',
+	'application/msword': '.doc',
+	'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+	'application/vnd.ms-excel': '.xls',
+	'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+	'application/vnd.ms-powerpoint': '.ppt',
+	'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+	'text/plain': '.txt',
+	'text/csv': '.csv',
+	'text/rtf': '.rtf',
+
+	// Web/Code
+	'text/html': '.html',
+	'text/css': '.css',
+	'text/javascript': '.js',
+	'application/json': '.json',
+	'application/xml': '.xml',
+	'application/ld+json': '.jsonld',
+
+	// Archives
+	'application/zip': '.zip',
+	'application/x-rar-compressed': '.rar',
+	'application/x-tar': '.tar',
+	'application/gzip': '.gz',
+	'application/x-7z-compressed': '.7z',
+
+	// Audio
+	'audio/mpeg': '.mp3',
+	'audio/wav': '.wav',
+	'audio/ogg': '.ogg',
+	'audio/aac': '.aac',
+	'audio/flac': '.flac',
+
+	// Video
+	'video/mp4': '.mp4',
+	'video/mpeg': '.mpeg',
+	'video/quicktime': '.mov',
+	'video/x-msvideo': '.avi',
+	'video/webm': '.webm',
+};
+
+/**
+ * Retrieves the file extension for a given MIME type.
+ *
+ * This function is case-insensitive and ignores any parameters in the MIME type string
+ * (e.g., it correctly processes 'text/html; charset=UTF-8').
+ *
+ * @param mimeType - The MIME type string (e.g., 'image/jpeg').
+ * @returns The corresponding file extension (e.g., '.jpg') or null if the MIME type is not found.
+ */
+export function getExtensionFromMimeType(mimeType: string | null | undefined): string | null {
+	// 1. Handle null, undefined, or empty input
+	if (!mimeType) {
+		return null;
+	}
+
+	// 2. Sanitize the input: convert to lowercase and remove any parameters (like '; charset=utf-8')
+	const baseMimeType = mimeType.toLowerCase().split(';')[0].trim();
+
+	// 3. Look up the MIME type in the map and return the extension, or null if not found.
+	return MIME_TYPE_MAP[baseMimeType] || "";
 }

@@ -20,8 +20,6 @@
 
 <script lang="ts">
 	import {
-		Card,
-		CardHeader,
 		CardTitle,
 		CardDescription,
 		CardContent
@@ -57,7 +55,6 @@
 	import type { FileType } from '../types';
 	import { createZip, unzipFiles, zipMimeTypeList } from '$lib/utilsFn/zip';
 	import { nanoid } from 'nanoid';
-	import { Spinner } from '$lib/components/ui/spinner';
 	import { selectedFileStore } from '$lib/store/selected-file-store.svelte';
 	import { createPdfFromImages, extractPdfImages, pdfMimeTypeList } from '$lib/utilsFn/pdf';
 	import { splitFile } from '$lib/utilsFn/file-splitter';
