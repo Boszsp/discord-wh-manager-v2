@@ -44,7 +44,7 @@ export function formatFileSize(bytes: number, decimals: number = 2): string {
 	return `${formattedSize} ${units[unitIndex]}`;
 }
 
-export function getMimeTypeFromFilename(fname: string): string {
+export function getMimeTypeFromFilename(fname: string): string|null {
 	const extension = fname.split('.').pop()?.toLowerCase();
 	switch (extension) {
 		case 'png':
@@ -54,8 +54,8 @@ export function getMimeTypeFromFilename(fname: string): string {
 			return 'image/jpeg';
 		case 'gif':
 			return 'image/gif';
-		case 'web':
-			return 'image/web';
+		case 'webp':
+			return 'image/webp';
 		case 'bmp':
 			return 'image/bmp';
 		case 'svg':
@@ -104,8 +104,10 @@ export function getMimeTypeFromFilename(fname: string): string {
 			return 'application/x-7z-compressed';
 		case 'rar':
 			return 'application/x-rar-compressed';
-		default:
+		case 'txt':
 			return 'text/plantext'; // Default to generic binary type
+		default:
+			return null
 	}
 }
 
@@ -201,4 +203,99 @@ export function getExtensionFromMimeType(mimeType: string | null | undefined): s
 
 	// 3. Look up the MIME type in the map and return the extension, or null if not found.
 	return MIME_TYPE_MAP[baseMimeType] || "";
+}
+
+
+
+/**
+ * Represents a file signature used for MIME type detection.
+ */
+interface FileSignature {
+	/** The MIME type string, e.g., 'image/png'. */
+	mime: string;
+	/** The byte sequence (magic numbers) that identifies the file type. */
+	signature: number[];
+	/** The offset in bytes where the signature starts. Defaults to 0. */
+	offset?: number;
+}
+
+/**
+ * A database of common file signatures.
+ * This list can be expanded to support more file types.
+ * Source: Wikipedia's "List of file signatures" and other references.
+ */
+const FILE_SIGNATURES: FileSignature[] = [
+	// Images
+	{ mime: 'image/png', signature: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A] },
+	{ mime: 'image/jpeg', signature: [0xFF, 0xD8, 0xFF] },
+	{ mime: 'image/gif', signature: [0x47, 0x49, 0x46, 0x38] }, // GIF87a or GIF89a
+	{ mime: 'image/webp', signature: [0x52, 0x49, 0x46, 0x46], offset: 0 }, // RIFF
+	{ mime: 'image/webp', signature: [0x57, 0x45, 0x42, 0x50], offset: 8 }, // WEBP
+
+	// Documents
+	{ mime: 'application/pdf', signature: [0x25, 0x50, 0x44, 0x46, 0x2D] }, // %PDF-
+	{ mime: 'application/msword', signature: [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1] }, // DOC, XLS, PPT (OLE2)
+	{ mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', signature: [0x50, 0x4B, 0x03, 0x04] }, // DOCX, XLSX, PPTX (ZIP-based)
+
+	// Archives
+	{ mime: 'application/zip', signature: [0x50, 0x4B, 0x03, 0x04] },
+	{ mime: 'application/x-rar-compressed', signature: [0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00] },
+	{ mime: 'application/x-7z-compressed', signature: [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C] },
+
+	// Video/Audio
+	{ mime: 'video/mp4', signature: [0x66, 0x74, 0x79, 0x70], offset: 4 }, // 'ftyp' box
+	{ mime: 'video/quicktime', signature: [0x6D, 0x6F, 0x6F, 0x76], offset: 4 }, // 'moov' box
+	{ mime: 'audio/mpeg', signature: [0x49, 0x44, 0x33] }, // ID3 tag for MP3
+	{ mime: 'audio/x-wav', signature: [0x52, 0x49, 0x46, 0x46], offset: 0 }, // RIFF
+	{ mime: 'audio/x-wav', signature: [0x57, 0x41, 0x56, 0x45], offset: 8 }, // WAVE
+];
+
+/**
+ * Determines the MIME type of a file by inspecting its binary signature.
+ * This is more reliable than using the file name or extension.
+ *
+ * @param file The File or Blob object to inspect.
+ * @returns A Promise that resolves to the detected MIME type string, or null if the type is unknown.
+ */
+export async function getMimeTypeFromBlob(file: File | Blob): Promise<string | null> {
+	// We only need to read the first few bytes of the file.
+	// Determine the maximum number of bytes we need to read for any signature.
+	const maxBytesToRead = Math.max(
+		...FILE_SIGNATURES.map(sig => (sig.offset || 0) + sig.signature.length)
+	);
+
+	// Ensure we don't try to read more bytes than the file contains.
+	const bytesToSlice = Math.min(file.size, maxBytesToRead);
+	if (bytesToSlice === 0) {
+		return null; // Empty file
+	}
+
+	try {
+		// Read the necessary part of the file as an ArrayBuffer.
+		const buffer = await file.slice(0, bytesToSlice).arrayBuffer();
+		const arr = new Uint8Array(buffer);
+
+		// Check the file's bytes against each known signature.
+		for (const signature of FILE_SIGNATURES) {
+			const offset = signature.offset || 0;
+			const fileSlice = arr.slice(offset, offset + signature.signature.length);
+
+			if (fileSlice.length !== signature.signature.length) {
+				continue; // Not enough bytes to match this signature.
+			}
+
+			// Check if every byte in the slice matches the signature.
+			const isMatch = fileSlice.every((byte, index) => byte === signature.signature[index]);
+
+			if (isMatch) {
+				return signature.mime;
+			}
+		}
+	} catch (error) {
+		console.error("Error reading file for MIME type detection:", error);
+		return null;
+	}
+
+	// If no signature matches, the MIME type is unknown.
+	return file.type;
 }

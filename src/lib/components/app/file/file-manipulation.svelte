@@ -59,6 +59,7 @@
 	import { createPdfFromImages, extractPdfImages, pdfMimeTypeList } from '$lib/utilsFn/pdf';
 	import { splitFile } from '$lib/utilsFn/file-splitter';
 	import { consola } from 'consola';
+	import { getMimeTypeFromFilename } from '$lib/utilsFn/file';
 
 	const form = superForm(defaults(zod4(formSchema)), {
 		validators: zod4(formSchema),
@@ -126,7 +127,7 @@
 		const processFile = files.filter(
 			(f) =>
 				($formData.processAll || $selectedFileStore.includes(f.id)) &&
-				zipMimeTypeList.includes(f?.file?.type)
+				(zipMimeTypeList.includes(f?.file?.type) || zipMimeTypeList.includes(getMimeTypeFromFilename(f?.file?.name?.toLowerCase())||""))
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((z, i) => {
@@ -213,7 +214,7 @@
 		const processFile = files.filter(
 			(f) =>
 				($formData.processAll || $selectedFileStore.includes(f.id)) &&
-				f?.file?.type.startsWith('image')
+				f?.file?.type.startsWith('image') || f?.file?.type.startsWith(getMimeTypeFromFilename(f?.file?.name?.toLowerCase())||"")
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 
@@ -250,6 +251,7 @@
 
 		Promise.all(promises)
 			.then((newFiles) => {
+				loading = false
 				addFileHandler(newFiles, processFile);
 			})
 			.catch((err) => {

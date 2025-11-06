@@ -60,7 +60,7 @@
 			/>
 			<div class="grid gap-1.5 font-normal">
 				<p class="text-sm leading-none font-medium">
-					{title?.slice(0, 48)}{title?.length > 48 ? '...' : ''}.{title?.split('.')?.pop()}
+					{title?.split('.').slice(0, -1).join('').slice(0, 48)}{title?.length > 48 ? '...' : ''}.{title?.split('.')?.pop()}
 				</p>
 				<p class="text-xs text-muted-foreground">{description}</p>
 			</div>

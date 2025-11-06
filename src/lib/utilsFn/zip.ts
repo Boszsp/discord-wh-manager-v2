@@ -1,6 +1,6 @@
 import { consola } from 'consola';
 import { zip, unzip } from 'fflate/browser';
-import { getMimeTypeFromFilename } from './file';
+import { getExtensionFromMimeType, getMimeTypeFromBlob, getMimeTypeFromFilename } from './file';
 import { z } from 'zod';
 
 interface optionType {
@@ -20,7 +20,7 @@ export const zipSchema = z.file().refine((f) => zipMimeTypeList.includes(f.type)
 
 export const createZipFromUint8Array = (
 	files: Record<string, Uint8Array>,
-	level?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+	level: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 = 5
 ): Promise<Uint8Array> => {
 	return new Promise((resolve, reject) => {
 		zip(files, { level }, (err, data) => {
@@ -37,7 +37,7 @@ export const createZipFromUint8Array = (
 export const createZip = async (files: File[], option?: optionType): Promise<File> => {
 	files = filesSchema.parse(files);
 	const fileData: Record<string, Uint8Array> = {};
-	const fallbackFileName = files?.[0].name?.replaceAll('/', '-').replaceAll('.', '-') + '.zip';
+	const fallbackFileName = files?.[0].name?.replaceAll('/', '-').split(".").slice(0,-1).join("") + '.zip';
 	for (const file of files) {
 		const buffer = await file.arrayBuffer();
 		fileData[file.name] = new Uint8Array(buffer);
@@ -56,18 +56,29 @@ export const unzipFiles = async (zippedFile: File): Promise<File[]> => {
 	zippedFile = zipSchema.parse(zippedFile);
 	const zippedData = new Uint8Array(await zippedFile.arrayBuffer());
 	return await new Promise((resolve, reject) => {
-		unzip(zippedData, (err, unzipped) => {
+		unzip(zippedData, async (err, unzipped) => {
 			if (err) {
 				consola.error(err);
 				reject(err);
 			} else {
 				const files: File[] = [];
-				for (const fileName in unzipped) {
+				for (let fileName in unzipped) {
 					const fileData = unzipped[fileName];
 					const blob = new Blob([fileData]);
+					if (!fileName.includes(".")) {
+						if (blob.type && blob.type.length > 0)
+							fileName = fileName + "." + getExtensionFromMimeType(blob.type);
+					}
+
+					let type = blob?.type && blob?.type.length > 0 ? blob?.type : getMimeTypeFromFilename(fileName)
+					if (type == null){
+						type = await getMimeTypeFromBlob(blob)
+						fileName = fileName.split(".").slice(0,-1).join("")  + getExtensionFromMimeType(type)
+					}
+					
 					const file = new File([blob], fileName, {
-						type:
-							blob?.type && blob?.type.length > 0 ? blob?.type : getMimeTypeFromFilename(fileName)
+						type: type || "text/plantext"
+							
 					});
 					files.push(file);
 				}
