@@ -2,12 +2,10 @@
 	import type { SuperForm } from 'sveltekit-superforms';
 	import * as Form from '$lib/components/ui/form';
 	import type {
-		embedsPartialSchemaType,
 		embedsSchemaType,
 		hookJsonPartialSchemaType
 	} from '$lib/schema/webhookContentSchema';
 	import { Button } from '$lib/components/ui/button';
-	import { z } from 'zod';
 	import { Input } from '$lib/components/ui/input';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import ChannelFormEmbedFields from './channel-form-embed-fields.svelte';

@@ -9,9 +9,11 @@
 	import { cn } from '$lib/utils';
 	let {
 		class: className,
+		thread_id = $bindable(''),
 		form
 	}: {
 		class?: ClassValue;
+		thread_id:string;
 		form: SuperForm<hookJsonPartialSchemaType, any>;
 	} = $props();
 	const { form: formData } = form;
@@ -69,7 +71,7 @@
 			</Form.Field>
 			<div>
 				<Label class="mb-2">Thread Id</Label>
-				<Input />
+				<Input bind:value={thread_id} />
 			</div>
 		</Accordion.Content>
 	</Accordion.Item>

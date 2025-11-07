@@ -104,10 +104,8 @@ export function getMimeTypeFromFilename(fname: string): string|null {
 			return 'application/x-7z-compressed';
 		case 'rar':
 			return 'application/x-rar-compressed';
-		case 'txt':
-			return 'text/plantext'; // Default to generic binary type
 		default:
-			return null
+			return null;
 	}
 }
 

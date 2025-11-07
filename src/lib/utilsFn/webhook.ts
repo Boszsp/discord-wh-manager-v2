@@ -1,5 +1,5 @@
 import { colorCodeToInteger } from './color';
-import { hookJsonPartial } from '$lib/schema/webhookContentSchema';
+import { hookJsonPartial, type hookJsonSchemaType } from '$lib/schema/webhookContentSchema';
 import { DEFAULT_FILE_LIMIT_COUNT, DEFAULT_FILE_LIMIT_SIZE } from '$lib/default';
 import { ofetch } from 'ofetch';
 import { consola } from 'consola';
@@ -56,7 +56,7 @@ export async function sentFilesSequential(
 	url: string,
 	files: File[],
 	callBack: (mss: string, type?: 'error' | 'success') => void,
-	thread_id = undefined
+	thread_id: undefined | string = undefined
 ) {
 	const query = { wait: true, thread_id };
 	let allRes = [];
@@ -120,13 +120,16 @@ export async function sendToWebhook(
 	callBack: (mss: string, type?: 'error' | 'success') => void = (
 		mss: string,
 		type?: 'error' | 'success'
-	) => {}
+	) => { },
+	thread_id: string | undefined = undefined
 ) {
 	const payload = JSON.stringify(data);
 	const query = { wait: true };
-	let thread_id = undefined;
 	const allFileSize = Math.floor(files.reduce((acc, file) => acc + file.size, 0) ** (10 ** -6));
-
+	if (thread_id && thread_id?.length < 19) {
+		callBack(`thread_id is invalid`, 'error');
+		return { payloadRes: new Error("thread_id is invalid"), filesRes: [] }
+	}
 	if (
 		false &&
 		files.length > 0 &&

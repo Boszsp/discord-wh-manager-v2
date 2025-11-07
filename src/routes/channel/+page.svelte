@@ -47,6 +47,7 @@
 		},
 		clearOnSubmit: 'errors'
 	});
+	let thread_id = $state("")
 
 	const { form: formData } = form;
 	let files: FileType[] = $state([]);
@@ -128,7 +129,8 @@
 			(mss, type: 'error' | 'success' = 'success') => {
 				if (type === 'error') toast.error(mss);
 				else toast.success(mss);
-			}
+			},
+			thread_id
 		);
 		toast.promise(result);
 		const resultAwaited = await result;
@@ -143,7 +145,6 @@
 			toast.success('All Message sent successfully');
 		} else {
 			console.error(resultAwaited?.payloadRes, resultAwaited?.filesRes);
-
 			toast.error('Failed to send message');
 		}
 	}
@@ -324,7 +325,7 @@
 							</div>
 							<ChannelFile bind:files />
 							<Separator class="mt-8 mb-4" />
-							<ChannelForm {form} />
+							<ChannelForm {form} bind:thread_id={thread_id} />
 						</div>
 					</div>
 				</ScrollArea>

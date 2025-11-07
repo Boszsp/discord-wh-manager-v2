@@ -19,11 +19,7 @@
 </script>
 
 <script lang="ts">
-	import {
-		CardTitle,
-		CardDescription,
-		CardContent
-	} from '$lib/components/ui/card';
+	import { CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
 	import type { ClassValue } from 'svelte/elements';
 	import { Button } from '$lib/components/ui/button';
@@ -127,7 +123,8 @@
 		const processFile = files.filter(
 			(f) =>
 				($formData.processAll || $selectedFileStore.includes(f.id)) &&
-				(zipMimeTypeList.includes(f?.file?.type) || zipMimeTypeList.includes(getMimeTypeFromFilename(f?.file?.name?.toLowerCase())||""))
+				(zipMimeTypeList.includes(f?.file?.type) ||
+					zipMimeTypeList.includes(getMimeTypeFromFilename(f?.file?.name?.toLowerCase()) || ''))
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((z, i) => {
@@ -213,8 +210,9 @@
 		loading = true;
 		const processFile = files.filter(
 			(f) =>
-				($formData.processAll || $selectedFileStore.includes(f.id)) &&
-				f?.file?.type.startsWith('image') || f?.file?.type.startsWith(getMimeTypeFromFilename(f?.file?.name?.toLowerCase())||"")
+				(($formData.processAll || $selectedFileStore.includes(f.id)) &&
+					f?.file?.type.startsWith('image')) ||
+				f?.file?.type.startsWith(getMimeTypeFromFilename(f?.file?.name?.toLowerCase()) || '')
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 
@@ -248,15 +246,18 @@
 				};
 			});
 		});
-
+		if (promises?.length < 1) return onEmptyProcessFile();
 		Promise.all(promises)
 			.then((newFiles) => {
-				loading = false
+				loading = false;
 				addFileHandler(newFiles, processFile);
 			})
 			.catch((err) => {
 				consola.error(err);
 				toast.error(err.message);
+				loading = false;
+			})
+			.finally(() => {
 				loading = false;
 			});
 	}

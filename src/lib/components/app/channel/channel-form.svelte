@@ -11,9 +11,11 @@
 	let {
 		ref = $bindable(null),
 		class: className,
+		thread_id = $bindable(''),
 		form,
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & {
+		thread_id: string;
 		form: SuperForm<hookJsonPartialSchemaType, any>;
 	} = $props();
 	const { form: formData, enhance } = form;
@@ -29,7 +31,7 @@
 	<ChannelFormContent {form} />
 	<Separator />
 	<Card class="overflow-hidden p-2">
-		<ChannelFormProfileThread {form} class="px-4" />
+		<ChannelFormProfileThread {form} bind:thread_id={thread_id} class="px-4" />
 	</Card>
 	<Separator />
 	<ChannelFormEmbeds {form} />

@@ -20,6 +20,7 @@
 	let { files = $bindable([]), class: className }: { files: FileType[]; class?: ClassValue } =
 		$props();
 
+
 	function addFiles(filelist: FileList | File[] | null) {
 		if (filelist === null) return;
 		const newFiles = [...files];
@@ -74,6 +75,8 @@
 				class="grow"
 				onchange={(e) => {
 					addFiles(e.currentTarget.files);
+					e.currentTarget.files = null;
+					e.currentTarget.value = '';
 				}}
 				multiple
 				type="file"
