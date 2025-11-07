@@ -124,12 +124,12 @@ export async function sendToWebhook(
 	thread_id: string | undefined = undefined
 ) {
 	const payload = JSON.stringify(data);
-	const query = { wait: true };
 	const allFileSize = Math.floor(files.reduce((acc, file) => acc + file.size, 0) ** (10 ** -6));
 	if (thread_id && thread_id?.length < 19) {
 		callBack(`thread_id is invalid`, 'error');
 		return { payloadRes: new Error("thread_id is invalid"), filesRes: [] }
 	}
+	const query = { wait: true , thread_id };
 	if (
 		false &&
 		files.length > 0 &&
