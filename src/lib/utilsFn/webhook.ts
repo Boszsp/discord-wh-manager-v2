@@ -125,9 +125,12 @@ export async function sendToWebhook(
 ) {
 	const payload = JSON.stringify(data);
 	const allFileSize = Math.floor(files.reduce((acc, file) => acc + file.size, 0) ** (10 ** -6));
-	if (thread_id && thread_id?.length < 19) {
+	if (typeof thread_id === "string" && thread_id?.trim()?.length > 1&&thread_id?.length < 19) {
 		callBack(`thread_id is invalid`, 'error');
 		return { payloadRes: new Error("thread_id is invalid"), filesRes: [] }
+	} else if (typeof thread_id === "string" && thread_id?.trim()?.length < 1){
+		thread_id = undefined
+		console.log("xxx")
 	}
 	const query = { wait: true , thread_id };
 	if (
