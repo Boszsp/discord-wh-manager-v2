@@ -163,7 +163,10 @@
 		const processFile = files.filter(
 			(f) =>
 				($formData.processAll || $selectedFileStore.includes(f.id)) &&
-				pdfMimeTypeList.includes(f?.file?.type)
+				(
+					pdfMimeTypeList.includes(f?.file?.type)|| 
+					pdfMimeTypeList.includes(getMimeTypeFromFilename(f?.file?.name?.toLowerCase()) || '')
+				)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
 		processFile.map((p) =>
@@ -211,11 +214,11 @@
 		const processFile = files.filter(
 			(f) =>
 				(($formData.processAll || $selectedFileStore.includes(f.id)) &&
-					f?.file?.type.startsWith('image')) ||
-				f?.file?.type.startsWith(getMimeTypeFromFilename(f?.file?.name?.toLowerCase()) || '')
+				(f?.file?.type.startsWith('image') ||
+				getMimeTypeFromFilename(f?.file?.name?.toLowerCase())?.startsWith('image'))
+				)
 		);
 		if (processFile.length < 1) return onEmptyProcessFile();
-
 		const promises = processFile.map((f) => {
 			return new Promise<File>((resolve, reject) => {
 				const img = new Image();
